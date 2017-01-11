@@ -1,0 +1,127 @@
+<div>
+    
+    <div class="row">
+        <div class="col-lg-6">
+            
+            <table class="table-fill queries">
+                <label class="title">RICERCHE FREQUENTI</label>
+                <thead>
+                    <tr>
+                        <th class="text-center">MISURA</th>
+                        <th class="text-center">STAGIONE</th>
+                        <th class="text-center"></th>
+                        
+                    </tr>
+                </thead>
+                <tbody class="table-hover">
+                    <% @queries.each do |query| %>
+                        <tr class="table-item">
+                            <td class="text-center misura"><%= query.misura[0..2]+"/"+query.misura[3..4]+" "+query.misura[5..-1] %></td>
+                            <td class="text-center stagione" ><%= query.stagione %></td>
+                            <td class="text-center elimina" >
+                                <%= link_to(remove_query_path(query.id) , class: "btn btn-danger full-width") do %>
+                                    <i class="fa fa-trash" aria-hidden="true"></i> Elimina
+                                <% end %>
+                            </td>
+                        </tr>
+                    <% end %>
+                    <tr class="table-item">
+                        <%= form_tag(add_query_path(:params), :method => "get", :id => "query_form") do %>
+                            <td class="text-center misura">
+                                <%= text_field_tag(:misura, '', :class => "form-control text-center") %>
+                            </td>
+                            <td class="text-center stagione-query" >
+                                <%= select_tag "stagione", "<option>Tutte</option><option>Estate</option><option>Inverno</option><option>4 Stagioni</option>".html_safe, :class => "form-control  text-center"  %>
+                            </td>
+                            <td class="text-center elimina" >
+                                <%= button_tag(type: "submit", class: "btn btn-success full-width") do %>
+                                    <i class="fa fa-plus-circle" aria-hidden="true"></i> Aggiungi
+                                <% end %>
+                            </td>
+                        <% end %>
+                    </tr>
+                </tbody>
+            </table>    
+        </div>
+        <div class="col-lg-6" style="height:fill-parent;">
+            <div class="descrizione">
+                <h3>Aggiungi qui le ricerche più frequenti per velocizzare il caricamento dei risultati</h3>
+            </div>
+        </div>
+    </div>
+    <hr style="border-top: 1px solid #000 !important;margin: 2em 0 !important">
+    <div class="row" style="padding-top: 0 !important">
+        <div class="col-lg-6">
+            <div class="descrizione">
+                <h3>Da qui puoi gestire i tuoi fornitori, attivando o disattivando la ricerca a seconda delle necessità</h3>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <table class="table-fill">
+                <label class="title" style="text-align:right !important;">LISTA FORNITORI</label>
+                <thead>
+                    <tr>
+                        <th class="text-center">NOME</th>
+                        <th class="text-center">STATO</th>
+                        <th class="text-center"></th>
+                    </tr>
+                </thead>
+                <tbody class="table-hover">
+                    <% @fornitori.each do |fornitore| %>
+                        <tr class="table-item">
+                            <td class="text-center misura"><%= fornitore.nome %></td>
+                            <td class="text-center stagione-query"><%= fornitore.status %></td>
+                            <td class="text-center elimina" >
+                                <% if fornitore.status == "Attivo" %>
+                                    <%= link_to(disattiva_fornitore_path(fornitore.id) , class: "btn btn-danger full-width") do %>
+                                        <i class="fa fa-trash" aria-hidden="true"></i> Disattiva
+                                    <% end %>
+                                <% else %>
+                                    <%= link_to(attiva_fornitore_path(fornitore.id) , class: "btn btn-success full-width") do %>
+                                        <i class="fa fa-plus-circle" aria-hidden="true"></i> Attiva
+                                    <% end %>
+                                <% end %>
+                            </td>
+                        </tr>
+                    <% end %>
+                    <!--tr class="table-item">
+                        <= form_tag(add_fornitore_path(:params), :method => "get", :id => "query_form") do %>
+                            <td class="text-center misura">
+                                <= text_field_tag(:nome, '', :class => "form-control text-center") %>
+                            </td>
+                            <td class="text-center stagione-query" >
+                                <= text_field_tag(:indirizzo, '', :class => "form-control text-center") %>
+                            </td>
+                            <td class="text-center elimina" >
+                                <= button_tag(type: "submit", class: "btn btn-success full-width") do %>
+                                    <i class="fa fa-plus-circle" aria-hidden="true"></i> Aggiungi
+                                < end %>
+                            </td>
+                        < end %>
+                    </tr-->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr style="border-top: 1px solid #000 !important;margin: 2em 0 !important">
+    <div class="row">
+        
+    </div>
+    
+    
+</div>
+<script>
+$(document).ready(function () {
+
+    $('#query_form').validate({ // initialize the plugin
+        rules: {
+            misura: 
+                required: true,
+                minlength: 7,
+                maxlength: 7
+            }
+        }
+    });
+
+});
+</script>

@@ -1,0 +1,123 @@
+<%= content_tag :div, class: "temp_information", data: {temp: @marche} do %>
+<% end %>          
+
+<%= content_tag :div, class: "temp_information", data: {temp: @marche_pneumatici} do %>
+<% end %>          
+
+
+    
+    <div id="loading">
+        <%= image_tag("load2.gif") %> 
+        <h3 style="text-align:center;">Caricamento in corso...</h3>
+    </div>
+  
+
+  </br>
+<section class="advanced-search advance-search-header" id="form_section">
+  <div class="container">
+    <div class="row" id="form_div">
+      <div class="col-sm-12">
+        <label class="title" style="font-size:25px;color:#FFF;"> RICERCA </label>
+   
+        <hr/>
+        <div class="col-lg-6">
+          <%= form_tag(search_path(:params), :method => "get", :class => "form", :id => "form") do %>
+            <!--div id="radio" style="color:#FFF;">
+              <label class="radio-inline" >
+                <input type="radio" name="options" id="veloce" checked >Ricerca Veloce
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="options" id="avanzata">Ricerca Avanzata
+              </label>
+            </div-->
+            <div class="form-group" style="color:#FFF;">
+              <%= label_tag(:misura, "Misura:") %>
+              <%= text_field_tag(:misura, '', :class => "form-control  input") %>
+            </div>
+            <!--div class="form-group">
+              %= label_tag(:accoppiata, "Accoppiata:") %>
+              %= text_field_tag(:accoppiata, 'es: 16', :class => "form-control  input") %>
+            </div-->
+            <div class="form-group" id="id_marca" style="color:#FFF;">
+            <%= label_tag(:marca, "Marca:") %>
+            <%= select_tag :marca, options_for_select(@marche_pneumatici) , :class => "form-control  input"  %>
+            <!--  text_field_tag(:marca,"", :class => "form-control") %-->
+            </div>
+            <div class="form-group" style="color:#FFF;">
+              <%= label_tag(:stagione, "Stagione:") %>
+              <%= select_tag "stagione", "<option>Tutte</option><option>Estate</option><option>Inverno</option><option>4 Stagioni</option>".html_safe, :class => "form-control  input"  %>
+            </div>
+            
+            <%= submit_tag("CERCA", :class => 'btn btn-primary', :style =>"font-weight:700;color:#FFF;") %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+<script>
+
+$(document).ready(function() {
+    $('#loading').css('display', 'none');
+    $('.form-control').focus(function(){
+       $(this).data('value',$(this).attr('value'))
+              .attr('value','');
+    }).blur(function(){
+       $(this).attr('value',$(this).data('value'));
+    });
+});
+  $('#form').submit(function() {
+    $('#form_section').css('display', 'none');
+    $('#loading').css('display', 'block');
+    return true;
+  });
+</script>
+
+<script>
+  jQuery(window).bind('beforeunload', function(){
+    $('#veloce').check;
+    $('#form')[0].reset();
+  });
+</script>
+
+<script>
+  $(document).ready(function(){
+    $('#veloce').check;
+    $('#id_marca').css('display', 'none');
+    $('#veloce').change(function(){
+        if(this.checked)
+            $('#id_marca').fadeOut('slow');
+        else
+            $('#id_marca').fadeIn('slow');
+
+    });
+    $('#avanzata').change(function(){
+        if(this.checked)
+            $('#id_marca').fadeIn('slow');
+        else
+            $('#id_marca').fadeOut('slow');
+
+    });
+});
+</script>
+
+<script>
+  $(document).ready(function() {
+    var availableTags = $('.temp_information').data('temp');
+    console.log(availableTags);
+    
+    $('#marca').autocomplete({
+      source: function(request, response) {
+        var results = $.ui.autocomplete.filter(availableTags, request.term);
+        response(results.slice(0, 20));
+      },
+      delay: 0
+    });
+  } );
+</script>

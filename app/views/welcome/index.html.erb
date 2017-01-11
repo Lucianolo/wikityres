@@ -1,0 +1,181 @@
+
+
+<% if @results.empty? %>
+    <% if @res.nil? %>
+        <div class="jumbotron">Nessun Risultato</div>
+    <% else %>
+        <div id="filters">
+            <!-- panel -->
+            <div class="jplist-panel">
+
+                
+               
+         
+                
+                <!-- filter by title -->
+                <div class="text-filter-box">
+                   <i class="fa fa-search  jplist-icon"></i>
+                   <input 
+                      data-path=".marca" 
+                      type="text" 
+                      value="" 
+                      placeholder="Filtra per Marca" 
+                      data-control-type="textbox" 
+                      data-control-name="marca-filter" 
+                      data-control-action="filter"
+                   />
+                </div>
+                <div class="text-filter-box">
+                   <i class="fa fa-search  jplist-icon"></i>
+                   <input 
+                      data-path=".fornitore" 
+                      type="text" 
+                      value="" 
+                      placeholder="Filtra per Fornitore" 
+                      data-control-type="textbox" 
+                      data-control-name="fornitore-filter" 
+                      data-control-action="filter"
+                   />
+                </div>
+                <div class="text-filter-box">
+                   <i class="fa fa-search  jplist-icon"></i>
+                   <input 
+                      data-path=".descrizione" 
+                      type="text" 
+                      value="" 
+                      placeholder="Filtra per Descrizione" 
+                      data-control-type="textbox" 
+                      data-control-name="descrizione-filter" 
+                      data-control-action="filter"
+                   />
+                </div>
+                <select 
+                    class="jplist-select pull-right" 
+                    data-control-type="sort-select" 
+                    data-control-name="sort" 
+                    data-control-action="sort">
+         
+                    <option data-path="default">Ordina per</option>
+                    <option data-path=".p_netto" data-order="asc" data-type="number">Prezzo Crescente</option>
+                    <option data-path=".p_netto" data-order="desc" data-type="number">Prezzo Decrescente</option>
+                    <option data-path=".giacenza" data-order="desc" data-type="number">Giacenza</option>
+                </select>		
+                <select 
+                    class="jplist-select" 
+                    style="display:none"
+                    data-control-type="sort-select" 
+                    data-control-name="sort2" 
+                    data-control-action="sort">
+         
+                    <option data-path="default">Ordina per</option>
+                    <option data-path=".p_netto" data-order="asc" data-type="number">Prezzo Crescente</option>
+                    <option data-path=".p_netto" data-order="desc" data-type="number">Prezzo Decrescente</option>
+                    <option data-path=".giacenza" data-order="desc" data-type="number">Giacenza</option>
+                </select>		
+            </div>		
+            <table class="table-fill">
+                <thead>
+                    <tr>
+                        <th class="text-left">FORNITORE</th>
+                        <th class="text-left">MARCA</th>
+                        <th class="text-left">DESCRIZIONE</th>
+                        <!--th class="text-left">LISTINO</th-->
+                        <th class="text-left">€ IVA ESCL.</th>
+                        <th class="text-left">GIACENZA</th>
+                        <th class="text-left">STAGIONE</th>
+                    </tr>
+                </thead>
+                <tbody class="table-hover">
+                    <% @res.each do |item| %>
+                        <tr class="table-item">
+                            <td class="text-left fornitore"><%= link_to (image_tag "#{item.nome_fornitore}.png"  , :class => 'logo') + item.nome_fornitore, item.fornitore, :target => 'blank' %></td>
+                            <td class="text-left marca" ><%= item.marca %></td>
+                            <td class="text-left descrizione"><%= item.modello.to_s.force_encoding("UTF-8") %></td>
+                            <!--td class="text-left">
+                                % if item.prezzo_listino.to_i == 0 %>
+                                    -
+                                % else %>
+                                    %= item.prezzo_listino %>
+                                % end %>
+                            </td-->
+                            <td class="text-left p_netto" style="padding-left:1.5em !important;"><%= number_with_precision(item.prezzo_netto, precision: 2) %>€</td>
+                            <td class="text-left giacenza" ><%= item.giacenza %></td>
+                            <% if item.stagione == "4 Stagioni" %>
+                                <td class="text-left stagione">4 S</td>
+                            <% else %>
+                                <td class="text-left stagione"><%= item.stagione %></td>
+                            <% end %>
+                        </tr>
+                    <% end %>
+                    
+                    
+                </tbody>
+            </table>
+            <div class="jplist-no-results">
+                <table class="table-fill">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Nessun Risultato</th>
+                        </tr>
+                    </thead>
+                    
+                </table>
+            </div>
+            <div class="jplist-panel">
+                <!-- pagination control -->
+                <div 
+                    class="jplist-label" 
+                    style="text-align:center;"
+                    data-type="Pagina {current} di {pages}" 
+                    data-control-type="pagination-info" 
+                    data-control-name="paging" 
+                    data-control-action="paging">
+                </div>	
+                <div 
+                    class="jplist-pagination" 
+                    data-control-type="pagination" 
+                    data-control-name="paging" 
+                    data-control-action="paging"
+                    data-items-per-page="100"
+                    data-range="1"
+                    data-mode="google-like">
+                </div>
+                
+            </div>		
+        </div>
+    <% end %>    
+        
+    
+        
+        
+<% end %>
+   
+
+<script type="text/javascript">	
+$('document').ready(function(){
+   
+   $('#filters').jplist({
+      
+    //enable/disable logging information in the browser console
+    debug: true
+         
+    //the path to the items container
+    ,itemsBox: '.table-fill' 
+
+    //the path to the item within the items container
+    ,itemPath: '.table-item'
+
+    //the path to the bundles and controls panel
+    ,panelPath: '.jplist-panel'
+
+    //the path to the 'no results' message
+    ,noResults: '.jplist-no-results' 
+        
+    //animate to top - enabled by data-control-animate-to-top="true" attribute in control. 
+    ,animateToTop: 'html, body'
+    ,animateToTop: 0 //in milliseconds (1000 ms = 1 sec)
+
+    
+   });
+});
+</script>
