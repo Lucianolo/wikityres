@@ -11,44 +11,45 @@
                 
                
          
-                
+                <div class="row">
                 <!-- filter by title -->
-                <div class="text-filter-box">
-                   <i class="fa fa-search  jplist-icon"></i>
-                   <input 
-                      data-path=".marca" 
-                      type="text" 
-                      value="" 
-                      placeholder="Filtra per Marca" 
-                      data-control-type="textbox" 
-                      data-control-name="marca-filter" 
-                      data-control-action="filter"
-                   />
-                </div>
-                <div class="text-filter-box">
-                   <i class="fa fa-search  jplist-icon"></i>
-                   <input 
-                      data-path=".fornitore" 
-                      type="text" 
-                      value="" 
-                      placeholder="Filtra per Fornitore" 
-                      data-control-type="textbox" 
-                      data-control-name="fornitore-filter" 
-                      data-control-action="filter"
-                   />
-                </div>
-                <div class="text-filter-box">
-                   <i class="fa fa-search  jplist-icon"></i>
-                   <input 
-                      data-path=".descrizione" 
-                      type="text" 
-                      value="" 
-                      placeholder="Filtra per Descrizione" 
-                      data-control-type="textbox" 
-                      data-control-name="descrizione-filter" 
-                      data-control-action="filter"
-                   />
-                </div>
+                    <div class="text-filter-box">
+                       <i class="fa fa-search  jplist-icon"></i>
+                       <input 
+                          data-path=".marca" 
+                          type="text" 
+                          value="" 
+                          placeholder="Marca" 
+                          data-control-type="textbox" 
+                          data-control-name="marca-filter" 
+                          data-control-action="filter"
+                       />
+                    </div>
+                    <!--div class="text-filter-box">
+                       <i class="fa fa-search  jplist-icon"></i>
+                       <input 
+                          data-path=".fornitore" 
+                          type="text" 
+                          value="" 
+                          placeholder="Fornitore" 
+                          data-control-type="textbox" 
+                          data-control-name="fornitore-filter" 
+                          data-control-action="filter"
+                       />
+                    </div-->
+                    <div class="text-filter-box">
+                       <i class="fa fa-search  jplist-icon"></i>
+                       <input 
+                          data-path=".descrizione" 
+                          type="text" 
+                          value="" 
+                          placeholder="Descrizione" 
+                          data-control-type="textbox" 
+                          data-control-name="descrizione-filter" 
+                          data-control-action="filter"
+                       />
+                    </div>
+                
                 <select 
                     class="jplist-select pull-right" 
                     data-control-type="sort-select" 
@@ -71,8 +72,37 @@
                     <option data-path=".p_netto" data-order="asc" data-type="number">Prezzo Crescente</option>
                     <option data-path=".p_netto" data-order="desc" data-type="number">Prezzo Decrescente</option>
                     <option data-path=".giacenza" data-order="desc" data-type="number">Giacenza</option>
-                </select>		
+                </select>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-8">
+                <div
+                     class="jplist-group"
+                     data-control-type="checkbox-text-filter"
+                     data-control-action="filter"
+                     data-control-name="fornitori"
+                     data-path=".fornitore"
+                     data-logic="or">
+                    <% @fornitori.each do |f| %>
+                    
+                         <input
+                           value="<%= f %>"
+                           id="<%= f %>"
+                           type="checkbox"
+                         />
+                         <label for="<%= f %>"><%= f %></label>
+                         
+                    <% end %>
+                     
+                </div>
+                </div>
+                <div class="col-md-2">
+                </div>
+            </div>
             </div>		
+            <hr>
             <table class="table-fill">
                 <thead>
                     <tr>
@@ -100,11 +130,15 @@
                             </td-->
                             <td class="text-left p_netto" style="padding-left:1.5em !important;"><%= number_with_precision(item.prezzo_netto, precision: 2) %>€</td>
                             <td class="text-left giacenza" ><%= item.giacenza %></td>
-                            <% if item.stagione == "4 Stagioni" %>
-                                <td class="text-left stagione">4 S</td>
-                            <% else %>
-                                <td class="text-left stagione"><%= item.stagione %></td>
-                            <% end %>
+                                <% if item.stagione == "4 Stagioni" %>
+                                    <td class="text-center stagione"><%= image_tag "4S.png", :class => 'logo-stagione' %></td>
+                                <% elsif item.stagione == "" %>
+                                    <td class="text-center stagione"></td>
+                                 
+                                <% else %>
+                                    <td class="text-center stagione"><%= image_tag item.stagione+".png", :class => 'logo-stagione' %></td>
+                                <% end %>
+                          
                         </tr>
                     <% end %>
                     

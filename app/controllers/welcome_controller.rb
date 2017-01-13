@@ -38,7 +38,10 @@ class WelcomeController < ApplicationController
     
     marca = ""
     stagione = params[:stagione]
-    if params[:misura].to_i.to_s != params[:misura] || params[:misura].length != 7
+    
+    # DA AGGIUNGERE SUPPORTO CAMION
+    
+    if params[:misura].to_i.to_s != params[:misura] || params[:misura].length != 7 
       flash[:alert] = "Ricerca non valida"
       redirect_to root_path
     else
@@ -70,12 +73,33 @@ class WelcomeController < ApplicationController
             @res = Pneumatico.where("misura like ? AND raggio like ?", "%#{tmp_misura}%","%#{tmp_raggio}%" ).order(:prezzo_netto)
           end
         end
-        puts @res.inspect
+        inactives = []
+        Fornitore.where(status: "Disattivato").each do |el|
+          if el.nome == "MultiTyre"
+            inactives.push "MultiTires"
+          else
+            inactives.push el.nome
+          end
+        end
+        puts inactives
+        @res.each do |item|
+          if inactives.include? item.nome_fornitore 
+            puts "removing"
+            puts item
+            @res.delete item
+          end
+        end
+        #puts @res.inspect
+        @fornitori = []
+        @res.each do |r|
+          @fornitori.push r.nome_fornitore
+        end
       else
-        Watir.default_timeout = 60
+        Watir.default_timeout = 30
         
         Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
         populate(query_list, max_results, stagione)
+
         if stagione != "Tutte"
           if marca != ""
             @res = Pneumatico.where("misura like ? AND raggio like ? AND (stagione like ?  OR stagione like ?) AND marca like ?", "%#{tmp_misura}%","%#{tmp_raggio}%", stagione, "4 Stagioni", marca).order(:prezzo_netto)
@@ -92,6 +116,12 @@ class WelcomeController < ApplicationController
         
         Query.create(misura: query.to_s , stagione: stagione)
       end  
+      @fornitori = []
+      @res.each do |r|
+          if !@fornitori.include? r.nome_fornitore
+            @fornitori.push r.nome_fornitore
+          end
+      end
     end
   end
   
@@ -133,6 +163,18 @@ private
       puts query
       threads = []
       
+      # PNEUSHOPPING.IT
+      
+      if fornitori.include? "PneuShopping"
+        threads << Thread.new {
+          begin
+            search_pneushopping(query,stagione,max_results)
+          ensure
+            ActiveRecord::Base.connection_pool.release_connection
+          end
+        }
+      end
+      
       # PENDINGOMME.IT
       if fornitori.include? "PendinGomme"
         threads << Thread.new {
@@ -143,6 +185,7 @@ private
           end
         }
       end
+      
       
       # FARNESEPNEUS.IT
       if fornitori.include? "FarnesePneus"
@@ -231,6 +274,63 @@ private
       end
       i+=1
     end
+  end
+  
+  
+  def search_pneushopping(query, stagione, max_results)
+    switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs, :args => switches
+    browser.window.maximize
+    sureLoadLink(10){ browser.goto 'http://www.pneushopping.it/login?_next=/' }
+               
+    puts "page loaded"
+    
+    fornitore_pneushopping = Fornitore.where(nome: "PneuShopping").first
+    browser.text_field(:name => 'username').set fornitore_pneushopping.user_name
+    browser.text_field(:name => 'password').set fornitore_pneushopping.password
+    browser.button(:class => 'btn').click           
+    puts "login effettuato"
+    browser.link(:href => '/catalogo').click
+    puts "pagina risultati"
+    
+    sleep 1
+    browser.text_field(:class => 'form-control input-sm').set query
+    
+    sleep 2
+    table = browser.table(:id => 'Grid').tbody
+    
+    if table.td(:class => 'dataTables_empty').exists?
+      puts "nessun risultato per PneuShopping"
+      browser.close
+      return
+    end
+    File.open('pages/pneushopping.html', 'w') {|f| f.write table.html }
+    puts "closing Watir"
+    browser.close
+    
+    file = File.open('pages/pneushopping.html', 'r')
+    document = Nokogiri::HTML(file)
+    tmp = query.to_s[0..2]+"/"+query.to_s[3..-1]
+    puts tmp
+    document.css('tr').each do |row|
+      puts row.text
+      misura = row.css('td')[1].text + "/" + row.css('td')[2].text
+      raggio = row.css('td')[3].text
+      marca = row.css('td')[4].text 
+      cod_vel = row.css('td')[6].text+row.css('td')[7].text
+      modello = misura+" "+raggio+" "+marca+" "+row.css('td')[5].text+" "+cod_vel
+      puts row.css('td.sorting_1').text[3..-1]
+      prezzo_netto = row.css('td.sorting_1').text[3..-1].strip.gsub(",",".").to_f.round(2)
+      giacenza = row.css('td')[9].text
+      
+      misura_totale = misura+raggio
+     
+      if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
+        Pneumatico.create(nome_fornitore: "PneuShopping", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pneushopping, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: "", cod_vel: cod_vel)
+      end
+    end
+    
+    file.close
   end
   
   def search_pendingomme(query,stagione,max_results)
@@ -337,15 +437,23 @@ private
       
       browser.button(:type => 'submit').click
       
-      sleep 5
+      sleep 0.25
       
-      if browser.td(:class => 'dataTables_empty').present?
+      # MODO ALTERNATIVO PER ATTENDERE IL CARICAMENTO DEI RISULTATI IN MANIERA SICURA 
+      
+      while browser.div(:id=>"price-list_processing").visible? do 
+        sleep 1 
+      end
+      
+      #browser.tr(:class => 'even').wait_until_present(timeout: 5)
+      
+      if browser.td(:class => 'dataTables_empty').exists?
         puts "no results for farnese"
         browser.close
         return false
       end
       
-      browser.tr(:class => 'even').wait_until_present(timeout: 15)
+      
     }
     puts flag 
     if flag 
@@ -446,14 +554,18 @@ private
       browser.button(:id => 'id_imgRicerca').click
       
       # SE NON DOVESSE FUNZIONARE TORNARE ALL'IMPOSTAZIONE PRECEDENTE CON SLEEP 5 E WAIT SOTTO A NESSUN RISULTATO
-      browser.table(:id => 'result').wait_until_present(timeout: 10)
+      sleep 0.25
+      while browser.div(:class=>"modal").visible? do 
+        sleep 1 
+      end
       
-      if browser.table(:id => 'result').span(:class => 'infoBanner').present?
+      if browser.table(:id => 'result').span(:class => 'infoBanner').exists?
         puts "no results for fintyre"
         browser.close
         return false
       end
       
+      browser.table(:id => 'result').wait_until_present(timeout: 5)
     }
     if flag 
             
@@ -467,11 +579,17 @@ private
       tmp = query.to_s[0..2]+"/"+query.to_s[3..-1]
       i = 0
       document.css('tbody tr').each do |row|
-        if i<max_results
+        begin
+        if (i<max_results && row.css('td.descrizione').text != "")
           marca = row.css('span.logoMarca').text.strip
-          cod_vel = row.css("td")[2].text.strip
-          puts cod_vel
-          modello = row.css('td.descrizione').text.strip+" "+cod_vel
+          
+          if row.css("td")[2].text.strip != nil
+            cod_vel = row.css("td")[2].text.strip
+            modello = row.css('td.descrizione').text.strip+" "+cod_vel
+          else
+            cod_vel = ""
+            modello = row.css('td.descrizione').text.strip
+          end
           temp = '#id_listino'+i.to_s
           prezzo_netto = row.css('.netnet').text.to_f.round(2)
           stock = 0
@@ -484,9 +602,16 @@ private
               stock += x.strip.to_i
             end
           end
-          misura = modello.split("R").first.strip.gsub("Z","")
-          raggio = modello.split("R").second.split(" ").first
-          
+          puts "Fintyre"
+          puts row.css('td.descrizione').text
+          puts modello
+          if (modello[6] != "R" && modello[7] != "R")
+            raggio = modello.split(" ").second.split(" ").first
+            misura = modello[0..5]
+          else
+            raggio = modello.split("R").second.split(" ").first
+            misura = modello.split("R").first.strip.gsub("Z","")
+          end
           if row.css('span.eti._4stagioni').present?
             stagione = "4 Stagioni"
           elsif row.css('span.eti._invernale').present?
@@ -495,15 +620,20 @@ private
             stagione = "Estate"
           end
           
-          
+        
           misura_totale = misura+raggio
           
+          puts misura_totale
+          puts tmp
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
             Pneumatico.create(nome_fornitore: "Fintyre",marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @fintyre, prezzo_netto: prezzo_netto, giacenza: stock, stagione: stagione)
             i+=1
           end
         end
-        
+        rescue NoMethodError
+          puts "error"
+          next
+        end
       end
       file.close    
     else
@@ -544,8 +674,10 @@ private
        
       browser.button(:id => 'bottone_cerca').click
       
-      sleep 5
-      
+      sleep 0.25
+      while browser.div(:id=>"tmp_loading").visible? do 
+        sleep 1 
+      end
       
       
       if browser.div(:id => 'tmp_noresult').present?
@@ -554,7 +686,7 @@ private
         return false
       end
        
-      browser.table(:id => 'searchartico_WT_39019_mt_data').wait_until_present(timeout: 15)
+      browser.table(:id => 'searchartico_WT_39019_mt_data').wait_until_present(timeout: 5)
       
       #condition = browser.table(:id => 'searchartico_WT_39019_mt_data').exists? 
       
@@ -665,8 +797,10 @@ private
               
       browser.iframe.button(:name => 'ctl00$ContenutoPagina$ucRicerca1$butCercaA').click
       
-      sleep 5
-      
+      sleep 0.25
+      while browser.div(:id=>"divwait").visible? do 
+        sleep 1 
+      end
       
       if browser.iframe(:id => 'search1').span(:class => 'NessunArticolo').text.strip == "Articoli Trovati 0"
         puts "no results for multitires"
@@ -674,9 +808,7 @@ private
         return false
       end
       
-      browser.iframe(:id => 'search1').table(:class => 'gvTheGrid').wait_until_present(timeout: 10)
-      puts browser.iframe(:id => 'search1').table(:class => 'gvTheGrid').exists?
-      
+      browser.iframe(:id => 'search1').table(:class => 'gvTheGrid').wait_until_present(timeout: 5)
             
       
     }
@@ -765,7 +897,7 @@ private
                    
         browser.link(:id => 'button-1017').click
           
-        sleep 5
+        sleep 3
         puts "login effettuato"
           
         browser.link(:id =>"button-1026").click
@@ -815,31 +947,12 @@ private
         retry
       end
     end
-    count = 0
     if flag
       table = []
       #max_scrolls = 10
-      while true
-        if count < 5
-          count = table.length
-          el = browser.tables(:class => 'x-grid-item').last
-          browser.tables(:class => 'x-grid-item').each do |item|
-            if !table.include? item
-              table.push item
-            end
-          end
-          if count == table.length
-            puts "no more results"
-            break
-          end
-          puts "scrolling"
-          el.wd.location_once_scrolled_into_view
-          sleep 0.25
-          count+=1
-        else
-          break
-        end
-      end
+      #puts browser.div(:class => "x-grid-item-container").tables.html
+      table = maxtyre_create_table(browser)
+
       
       
      
@@ -896,6 +1009,51 @@ private
     end    
   end
     
+    
+  def maxtyre_create_table(browser)
+    last_tmp = ""
+    i=0
+    table = []
+    flag = false
+    while i<31
+      puts flag
+        if flag == true
+          puts "Devo ritornaaa"
+          break
+        end
+      begin
+        
+          
+          container = browser.div(:class => "x-grid-item-container")
+             
+          puts container.tables.last.text
+          if last_tmp == container.tables.last.text
+            puts "no more results"
+            break
+          end
+          container.tables.each do |item|
+            if !table.include? item
+              table.push item
+              i+=1
+            end
+          end
+              
+          puts "scrolling"
+          last_tmp = container.tables.last.text
+          container.tables.last.wd.location_once_scrolled_into_view
+          sleep 0.20
+         
+          puts i
+        
+      rescue Watir::Exception::UnknownObjectException
+        puts "End"
+        flag = true
+        next
+      end
+      
+    end
+    return table
+  end
   def try_until(browser, search_page, element)
     wait = true
     i = 0
