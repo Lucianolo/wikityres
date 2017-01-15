@@ -131,7 +131,7 @@ class WelcomeController < ApplicationController
     Query.where(tag: "routine").each do |query|
       query_list.push(query.misura)
     end
-    Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
+    #Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
     puts query_list
     #query_list = ["2055516", "1956515", "1856515","1956015", "1756514", "1756515"]
     populate(query_list, 300)
