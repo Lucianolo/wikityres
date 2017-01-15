@@ -42,7 +42,9 @@ class ProfilesController < ApplicationController
     def add_fornitore
         nome = params[:nome]
         indirizzo = params[:indirizzo]
-        Fornitore.create(nome: nome, indirizzo: indirizzo, status: "Attivo")
+        user_name = params[:user_name]
+        password = params[:password]
+        Fornitore.create(nome: nome, indirizzo: indirizzo, status: "Attivo", user_name: user_name, password: password)
         redirect_to profile_path
     end
 end
