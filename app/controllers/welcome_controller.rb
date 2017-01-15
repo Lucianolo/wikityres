@@ -97,7 +97,7 @@ class WelcomeController < ApplicationController
       else
         Watir.default_timeout = 30
         
-        Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
+        Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s || '/bin/phantomjs'
         populate(query_list, max_results, stagione)
 
         if stagione != "Tutte"
