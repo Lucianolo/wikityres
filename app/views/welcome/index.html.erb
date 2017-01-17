@@ -1,215 +1,63 @@
 
+<div id="spinner"></div>
+<div id = "items_grid">
+    <%= render partial: 'results_grid', locals: { res: @res , fornitori: @fornitori}  %>
+</div>
 
-<% if @results.empty? %>
-    <% if @res.nil? %>
-        <div class="jumbotron">Nessun Risultato</div>
-    <% else %>
-        <div id="filters">
-            <!-- panel -->
-            <div class="jplist-panel">
-
-                
-               
-         
-                <div class="row">
-                <!-- filter by title -->
-                    <div class="text-filter-box">
-                       <i class="fa fa-search  jplist-icon"></i>
-                       <input 
-                          data-path=".marca" 
-                          type="text" 
-                          value="" 
-                          placeholder="Marca" 
-                          data-control-type="textbox" 
-                          data-control-name="marca-filter" 
-                          data-control-action="filter"
-                       />
-                    </div>
-                    <!--div class="text-filter-box">
-                       <i class="fa fa-search  jplist-icon"></i>
-                       <input 
-                          data-path=".fornitore" 
-                          type="text" 
-                          value="" 
-                          placeholder="Fornitore" 
-                          data-control-type="textbox" 
-                          data-control-name="fornitore-filter" 
-                          data-control-action="filter"
-                       />
-                    </div-->
-                    <div class="text-filter-box">
-                       <i class="fa fa-search  jplist-icon"></i>
-                       <input 
-                          data-path=".descrizione" 
-                          type="text" 
-                          value="" 
-                          placeholder="Descrizione" 
-                          data-control-type="textbox" 
-                          data-control-name="descrizione-filter" 
-                          data-control-action="filter"
-                       />
-                    </div>
-                
-                <select 
-                    class="jplist-select pull-right" 
-                    data-control-type="sort-select" 
-                    data-control-name="sort" 
-                    data-control-action="sort">
-         
-                    <option data-path="default">Ordina per</option>
-                    <option data-path=".p_netto" data-order="asc" data-type="number">Prezzo Crescente</option>
-                    <option data-path=".p_netto" data-order="desc" data-type="number">Prezzo Decrescente</option>
-                    <option data-path=".giacenza" data-order="desc" data-type="number">Giacenza</option>
-                </select>		
-                <select 
-                    class="jplist-select" 
-                    style="display:none"
-                    data-control-type="sort-select" 
-                    data-control-name="sort2" 
-                    data-control-action="sort">
-         
-                    <option data-path="default">Ordina per</option>
-                    <option data-path=".p_netto" data-order="asc" data-type="number">Prezzo Crescente</option>
-                    <option data-path=".p_netto" data-order="desc" data-type="number">Prezzo Decrescente</option>
-                    <option data-path=".giacenza" data-order="desc" data-type="number">Giacenza</option>
-                </select>
-            </div>
-            <div class="row">
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-8">
-                <div
-                     class="jplist-group"
-                     data-control-type="checkbox-text-filter"
-                     data-control-action="filter"
-                     data-control-name="fornitori"
-                     data-path=".fornitore"
-                     data-logic="or">
-                    <% @fornitori.each do |f| %>
-                    
-                         <input
-                           value="<%= f %>"
-                           id="<%= f %>"
-                           type="checkbox"
-                         />
-                         <label for="<%= f %>"><%= f %></label>
-                         
-                    <% end %>
-                     
-                </div>
-                </div>
-                <div class="col-md-2">
-                </div>
-            </div>
-            </div>		
-            <hr>
-            <table class="table-fill">
-                <thead>
-                    <tr>
-                        <th class="text-left">FORNITORE</th>
-                        <th class="text-left">MARCA</th>
-                        <th class="text-left">DESCRIZIONE</th>
-                        <!--th class="text-left">LISTINO</th-->
-                        <th class="text-left">€ IVA ESCL.</th>
-                        <th class="text-left">GIACENZA</th>
-                        <th class="text-left">STAGIONE</th>
-                    </tr>
-                </thead>
-                <tbody class="table-hover">
-                    <% @res.each do |item| %>
-                        <tr class="table-item">
-                            <td class="text-left fornitore"><%= link_to (image_tag "#{item.nome_fornitore}.png"  , :class => 'logo') + item.nome_fornitore, item.fornitore, :target => 'blank' %></td>
-                            <td class="text-left marca" ><%= item.marca %></td>
-                            <td class="text-left descrizione"><%= item.modello.to_s.force_encoding("UTF-8") %></td>
-                            <!--td class="text-left">
-                                % if item.prezzo_listino.to_i == 0 %>
-                                    -
-                                % else %>
-                                    %= item.prezzo_listino %>
-                                % end %>
-                            </td-->
-                            <td class="text-left p_netto" style="padding-left:1.5em !important;"><%= number_with_precision(item.prezzo_netto, precision: 2) %>€</td>
-                            <td class="text-left giacenza" ><%= item.giacenza %></td>
-                                <% if item.stagione == "4 Stagioni" %>
-                                    <td class="text-center stagione"><%= image_tag "4S.png", :class => 'logo-stagione' %></td>
-                                <% elsif item.stagione == "" %>
-                                    <td class="text-center stagione"></td>
-                                 
-                                <% else %>
-                                    <td class="text-center stagione"><%= image_tag item.stagione+".png", :class => 'logo-stagione' %></td>
-                                <% end %>
-                          
-                        </tr>
-                    <% end %>
-                    
-                    
-                </tbody>
-            </table>
-            <div class="jplist-no-results">
-                <table class="table-fill">
-                    <thead>
-                        <tr>
-                            <th class="text-center">Nessun Risultato</th>
-                        </tr>
-                    </thead>
-                    
-                </table>
-            </div>
-            <div class="jplist-panel">
-                <!-- pagination control -->
-                <div 
-                    class="jplist-label" 
-                    style="text-align:center;"
-                    data-type="Pagina {current} di {pages}" 
-                    data-control-type="pagination-info" 
-                    data-control-name="paging" 
-                    data-control-action="paging">
-                </div>	
-                <div 
-                    class="jplist-pagination" 
-                    data-control-type="pagination" 
-                    data-control-name="paging" 
-                    data-control-action="paging"
-                    data-items-per-page="100"
-                    data-range="1"
-                    data-mode="google-like">
-                </div>
-                
-            </div>		
-        </div>
-    <% end %>    
-        
-    
-        
-        
-<% end %>
-   
 
 <script type="text/javascript">	
-$('document').ready(function(){
-   
-   $('#filters').jplist({
-      
-    //enable/disable logging information in the browser console
-    debug: true
-         
-    //the path to the items container
-    ,itemsBox: '.table-fill' 
-
-    //the path to the item within the items container
-    ,itemPath: '.table-item'
-
-    //the path to the bundles and controls panel
-    ,panelPath: '.jplist-panel'
-
-    //the path to the 'no results' message
-    ,noResults: '.jplist-no-results' 
-        
-    //animate to top - enabled by data-control-animate-to-top="true" attribute in control. 
-    ,animateToTop: 'html, body'
-    ,animateToTop: 0 //in milliseconds (1000 ms = 1 sec)
-
+<% if @new %>
+    $.periodic({period: 5000, decay: 1.5, max_period: 20000}, function() {
+     $.ajax({
+        url: '/welcome/update_results/',
+        success: function(data) {
+        },
+        complete: this.ajax_complete
+      });
+    });
     
-   });
-});
+    
+    var opts = {
+      lines: 12             // The number of lines to draw
+    , length: 7             // The length of each line
+    , width: 4              // The line thickness
+    , radius: 8            // The radius of the inner circle
+    , scale: 1.0            // Scales overall size of the spinner
+    , corners: 1            // Roundness (0..1)
+    , color: '#000'         // #rgb or #rrggbb
+    , opacity: 1/4          // Opacity of the lines
+    , rotate: 0             // Rotation offset
+    , direction: 1          // 1: clockwise, -1: counterclockwise
+    , speed: 1              // Rounds per second
+    , trail: 100            // Afterglow percentage
+    , fps: 20               // Frames per second when using setTimeout()
+    , zIndex: 2e9           // Use a high z-index by default
+    , top: '13%'            // center vertically
+    , left: '78%'           // center horizontally
+    , shadow: false         // Whether to render a shadow
+    , hwaccel: false        // Whether to use hardware acceleration (might be buggy)
+    , position: 'absolute'  // Element positioning
+    }
+    var target = document.getElementById('spinner')
+    var spinner = new Spinner(opts).spin(target)
+    
+    
+
+    function remove_spin(){
+        $('#spinner').hide();
+    }
+    
+    setTimeout(remove_spin, 60000);
+<% end %>
+
+/*$('#results').PeriodicalUpdater("/welcome/update_results", 
+        { 
+            frequency: 10, 
+            method: 'get' 
+        },
+        function(remoteData, success, xhr, handle) {
+            console.log("successss");
+        });
+*/
+
 </script>

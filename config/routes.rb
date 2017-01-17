@@ -4,7 +4,8 @@ Rails.application.routes.draw do
   get    '/login',   to: 'sessions#new'
   post   '/login',   to: 'sessions#create'
   delete '/logout',  to: 'sessions#destroy'
-
+  
+  get 'welcome/update_results/' , to: 'welcome#update_results'
   get 'welcome/index/:params' => 'welcome#index', as: :search
   
   get 'welcome/search'

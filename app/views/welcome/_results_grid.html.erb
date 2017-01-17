@@ -1,0 +1,160 @@
+        <div id="filters">
+            <!-- panel -->
+            <div class="jplist-panel">
+                <div class="row full-line">
+                <!-- filter by title -->
+                    <div class="text-filter-box">
+                       <i class="fa fa-search  jplist-icon"></i>
+                       <input 
+                          data-path=".marca" 
+                          type="text" 
+                          value="" 
+                          placeholder="Marca" 
+                          data-control-type="textbox" 
+                          data-control-name="marca-filter" 
+                          data-control-action="filter"
+                       />
+                    </div>
+                    
+                    <div class="text-filter-box">
+                       <i class="fa fa-search  jplist-icon"></i>
+                       <input 
+                          data-path=".descrizione" 
+                          type="text" 
+                          value="" 
+                          placeholder="Descrizione" 
+                          data-control-type="textbox" 
+                          data-control-name="descrizione-filter" 
+                          data-control-action="filter"
+                       />
+                    </div>
+                
+                    <select 
+                        class="jplist-select pull-right" 
+                        data-control-type="sort-select" 
+                        data-control-name="sort" 
+                        data-control-action="sort">
+             
+                        <option data-path="default">Ordina per</option>
+                        <option data-path=".p_netto" data-order="asc" data-type="number">Prezzo Crescente</option>
+                        <option data-path=".p_netto" data-order="desc" data-type="number">Prezzo Decrescente</option>
+                        <option data-path=".giacenza" data-order="desc" data-type="number">Giacenza</option>
+                    </select>		
+                    <select 
+                        class="jplist-select" 
+                        style="display:none"
+                        data-control-type="sort-select" 
+                        data-control-name="sort2" 
+                        data-control-action="sort">
+             
+                        <option data-path="default">Ordina per</option>
+                        <option data-path=".p_netto" data-order="asc" data-type="number">Prezzo Crescente</option>
+                        <option data-path=".p_netto" data-order="desc" data-type="number">Prezzo Decrescente</option>
+                        <option data-path=".giacenza" data-order="desc" data-type="number">Giacenza</option>
+                    </select>
+                    
+                    <div
+                        class="jplist-group small"
+                        data-control-type="checkbox-text-filter"
+                        data-control-action="filter"
+                        data-control-name="fornitori"
+                        data-path=".fornitore"
+                        data-logic="or">
+                        <% purged = [] %>
+                        <% fornitori.each do |forn| %>
+                        <%     if !purged.include? forn %>
+                        <%         purged.push forn %>
+                        <%     end %>
+                        <% end %>
+                        <% purged.each do |f| %>
+                            <input
+                               value="<%= f %>"
+                               id="<%= f %>"
+                               type="checkbox"
+                            />
+                            <label for="<%= f %>"><%= f %></label>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+            
+            <hr>            
+                
+            <table class="table-fill">
+                <thead>
+                    <tr>
+                        <th class="text-left">FORNITORE</th>
+                        <th class="text-left">MARCA</th>
+                        <th class="text-left">DESCRIZIONE</th>
+                        <!--th class="text-left">LISTINO</th-->
+                        <th class="text-left">€ IVA ESCL.</th>
+                        <th class="text-left">GIACENZA</th>
+                        <th class="text-left">STAGIONE</th>
+                    </tr>
+                </thead>
+                <tbody class="table-hover">
+                <%= render partial: 'results', locals: { res: res}  %>
+                </tbody>
+            </table>    
+            <div class="jplist-no-results">
+                <table class="table-fill">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Nessun Risultato</th>
+                        </tr>
+                    </thead>
+                    
+                </table>
+            </div>
+            <div class="jplist-panel">
+                <!-- pagination control -->
+                <div 
+                    class="jplist-label" 
+                    style="text-align:center;"
+                    data-type="Pagina {current} di {pages}" 
+                    data-control-type="pagination-info" 
+                    data-control-name="paging" 
+                    data-control-action="paging">
+                </div>	
+                <div 
+                    class="jplist-pagination" 
+                    data-control-type="pagination" 
+                    data-control-name="paging" 
+                    data-control-action="paging"
+                    data-items-per-page="100"
+                    data-range="1"
+                    data-mode="google-like">
+                </div>
+                
+            </div>		
+        </div>
+        
+        
+<script type="text/javascript">
+    $('document').ready(function(){
+   
+   $('#filters').jplist({
+      
+    //enable/disable logging information in the browser console
+    debug: true
+         
+    //the path to the items container
+    ,itemsBox: '.table-fill' 
+
+    //the path to the item within the items container
+    ,itemPath: '.table-item'
+
+    //the path to the bundles and controls panel
+    ,panelPath: '.jplist-panel'
+
+    //the path to the 'no results' message
+    ,noResults: '.jplist-no-results' 
+        
+    //animate to top - enabled by data-control-animate-to-top="true" attribute in control. 
+    ,animateToTop: 'html, body'
+    ,animateToTop: 0 //in milliseconds (1000 ms = 1 sec)
+
+    
+   });
+});
+</script>

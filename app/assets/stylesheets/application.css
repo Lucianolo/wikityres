@@ -261,3 +261,12 @@ hr {
     margin-right: 2em;
     border-top: 2px solid #eee !important;
 }
+
+#main {
+  margin: 0 auto;
+  padding: 0 0;
+}
+
+#spinner{
+  display: block;
+}
