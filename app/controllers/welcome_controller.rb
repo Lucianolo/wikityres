@@ -195,7 +195,7 @@ class WelcomeController < ApplicationController
     end
     Pneumatico.delete_all
     Query.where(tag: nil).delete_all
-    Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
+    #Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
     puts query_list
     
     #populate(query_list, 300)
