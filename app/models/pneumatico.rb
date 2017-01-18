@@ -10,7 +10,7 @@ class Pneumatico < ActiveRecord::Base
         @multitires = "http://multitires.autotua.it/interna.asp"
         @maxtyre = "http://web.maxtyre.it/"
         @pendingomme = "http://www.pendingomme.it/login"
-        
+        @pneushopping = "http://www.pneushopping.it/"
         fornitori = []
         Fornitore.where(status: "Attivo").each do |f|
           fornitori.push(f.nome)

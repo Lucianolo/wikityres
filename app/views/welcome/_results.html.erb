@@ -2,7 +2,13 @@
                 
                     <% res.each do |item| %>
                         <tr class="table-item">
-                            <td class="text-left fornitore"><%= link_to (image_tag "#{item.nome_fornitore}.png"  , :class => 'logo') + item.nome_fornitore, item.fornitore, :target => 'blank' %></td>
+                            <td class="text-left fornitore">
+                                <% if item.nome_fornitore == "PneuShopping" %>
+                                    <%= link_to (image_tag "#{item.nome_fornitore}.png"  , :class => 'logo') + item.nome_fornitore, "http://www.pneushopping.it/catalogo", :target => 'blank' %>
+                                <% else %>
+                                    <%= link_to (image_tag "#{item.nome_fornitore}.png"  , :class => 'logo') + item.nome_fornitore, item.fornitore, :target => 'blank' %>
+                                <% end %>
+                            </td>
                             <td class="text-left marca" ><%= item.marca %></td>
                             <td class="text-left descrizione"><%= item.modello.to_s.force_encoding("UTF-8") %></td>
                             <!--td class="text-left">
