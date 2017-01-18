@@ -65,10 +65,12 @@ class Pneumatico < ActiveRecord::Base
               end
             }
           end
-      
+          threads.each(&:join)
+          
+          threads2 = []
           # CENTRO GOMME
           if fornitori.include? "CentroGomme"
-            threads << Thread.new {
+            threads2 << Thread.new {
               begin
                 search_centrogomme(query,stagione,max_results)
               ensure
@@ -78,9 +80,10 @@ class Pneumatico < ActiveRecord::Base
             }
           end
           
+          
           # MULTITYRES
           if fornitori.include? "MultiTyre"
-            threads << Thread.new {
+            threads2 << Thread.new {
               begin
                 search_multityre(query, stagione, max_results)
               ensure
@@ -92,7 +95,7 @@ class Pneumatico < ActiveRecord::Base
             
           # MAXTYRE
           if fornitori.include? "MaxTyre"
-            threads << Thread.new {
+            threads2 << Thread.new {
               begin
                 search_maxtyre(query, stagione, max_results)
               ensure
@@ -101,7 +104,7 @@ class Pneumatico < ActiveRecord::Base
               end
             }
           end
-          threads.each(&:join)
+          threads2.each(&:join)
         end
     end
 

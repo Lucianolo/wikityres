@@ -163,7 +163,7 @@ class WelcomeController < ApplicationController
         Query.create(misura: query.to_s , stagione: stagione)
       end  
       k = 0
-      while k < 10
+      while k < 8
         ActiveRecord::Base.connection.clear_query_cache
         puts Pneumatico.where("misura like ? AND raggio like ?", "%#{tmp_misura}%","%#{tmp_raggio}%" ).count
         if Pneumatico.where("misura like ? AND raggio like ?", "%#{tmp_misura}%","%#{tmp_raggio}%" ).count < 1
@@ -195,7 +195,7 @@ class WelcomeController < ApplicationController
     end
     Pneumatico.delete_all
     Query.where(tag: nil).delete_all
-    Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
+    #Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
     puts query_list
     
     #populate(query_list, 300)
