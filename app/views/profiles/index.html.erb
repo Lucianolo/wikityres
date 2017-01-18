@@ -119,7 +119,7 @@
             <br>
             <%= form_tag(update_password_path(:params) , :method => 'get' , :id => 'password_form') do %>
                 <div class="form-group" style="color:#333;">
-                  <%= label_tag(:misura, "Nuova Password") %>
+                  <%= label_tag(:misura, "Nuova Password   (Minimo 8 caratteri)") %>
                   <%= password_field_tag(:password, '', :class => "form-control  input") %>
                 </div>
                 <div class="form-group" style="color:#333;">
