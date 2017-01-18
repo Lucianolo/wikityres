@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   get 'profiles/disattiva_fornitore/:id' => 'profiles#disattiva_fornitore', as: :disattiva_fornitore
   get 'profiles/attiva_fornitore/:id' => 'profiles#attiva_fornitore', as: :attiva_fornitore
   get 'profiles/add_fornitore/:params' => 'profiles#add_fornitore', as: :add_fornitore
-  
+  get 'profiles/update_password/:params' => 'profiles#update_password', as: :update_password
   
   
   

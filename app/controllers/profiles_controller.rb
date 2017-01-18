@@ -47,4 +47,18 @@ class ProfilesController < ApplicationController
         Fornitore.create(nome: nome, indirizzo: indirizzo, status: "Attivo", user_name: user_name, password: password)
         redirect_to profile_path
     end
+    
+    def update_password
+        user = User.find(current_user.id)
+        password = params[:password]
+        password_confirmation = params[:password_confirmation]
+        if user.update(password: password, password_confirmation: password_confirmation)
+            flash[:success] = "Password aggiornata con successo!"
+            log_out
+            redirect_to login_path
+        else
+            flash[:alert] = "Le password inserite non corrispondono"
+            redirect_to profile_path
+        end
+    end
 end
