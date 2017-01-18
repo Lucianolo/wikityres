@@ -23,22 +23,24 @@ class Pneumatico < ActiveRecord::Base
           # PNEUSHOPPING.IT
           
           if fornitori.include? "PneuShopping"
-            threads << Thread.new {
+            
               begin
                 Pneumatico.search_pneushopping(query,stagione,max_results)
               ensure
                 ActiveRecord::Base.connection_pool.release_connection
               end
-            }
+            
           end
           
           # PENDINGOMME.IT
           if fornitori.include? "PendinGomme"
+            threads << Thread.new {
               begin
                 search_pendingomme(query,stagione,max_results)
               ensure
                 ActiveRecord::Base.connection_pool.release_connection
               end
+            }
           end
           
           
@@ -105,7 +107,10 @@ class Pneumatico < ActiveRecord::Base
             }
           end
           threads2.each(&:join)
+          @query = query.to_s
+          
         end
+      Search.where(misura: @query).first.update(finished: true)
     end
 
 private
@@ -154,17 +159,43 @@ private
     puts "pagina risultati"
     
     sleep 1
+    
+    
+    browser.link(:class => 'btn btn-default buttons-collection buttons-colvis').click
+    
+    browser.ul(:class => 'dt-button-collection dropdown-menu fixed three-column').links.each do |li|
+      if li.text == "Stagione"
+        li.click
+        browser.link(:class => 'btn btn-default buttons-collection buttons-colvis').click
+        break
+      end
+    end
+    
     browser.text_field(:class => 'form-control input-sm').set query
     
-    sleep 2
+    
+    
+    sleep 0.5
     table = browser.table(:id => 'Grid').tbody
+
     
     if table.td(:class => 'dataTables_empty').exists?
       puts "nessun risultato per PneuShopping"
       browser.close
-      return
     end
     File.open('pages/pneushopping.html', 'w') {|f| f.write table.html }
+    
+    
+    
+    browser.ul(:class => 'pagination').links.each do |link|
+      if link.text == '2'
+        link.click
+        sleep 0.5
+        puts "Second Page"
+        table2 = browser.table(:id => 'Grid').tbody
+        File.open('pages/pneushopping.html', 'a') {|f| f.write table2.html }
+      end
+    end
     puts "closing Watir"
     browser.close
     
@@ -185,9 +216,15 @@ private
       #puts row.css('td.sorting_1').text[3..-1]
       prezzo_netto = row.css('td.sorting_1').text[3..-1].strip.gsub(",",".").to_f.round(2)
       giacenza = row.css('td')[9].text
+      stag = row.css('td')[14].text
+      if stag == "All Season"
+        stag = "4 Stagioni"
+      end
       misura_totale = misura+raggio
+      puts misura_totale
+      puts tmp
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-        Pneumatico.create(nome_fornitore: "PneuShopping", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pneushopping, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: "", cod_vel: cod_vel)
+          Pneumatico.create(nome_fornitore: "PneuShopping", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pneushopping, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel)
       end
     end
     
@@ -876,7 +913,6 @@ private
         end
       end
       file.close
-    
     else
       browser.close
       puts "no results for maxtyre"

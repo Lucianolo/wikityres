@@ -25,10 +25,10 @@ class WelcomeController < ApplicationController
   end
   
   def update_results 
-    mis = Query.last.misura[0..4]
+    mis = Search.last.misura[0..4]
     misura = mis[0..2]+"/"+mis[3..-1]
     
-    raggio = Query.last.misura[5..-1]
+    raggio = Search.last.misura[5..-1]
     #stagione = params[:stagione]
     puts "UPDATING"
     @res = Pneumatico.where(misura: misura, raggio: raggio).order(:prezzo_netto)
@@ -61,7 +61,9 @@ class WelcomeController < ApplicationController
         end
       end
     end
-    puts @res.inspect
+    #puts @res.inspect
+    @finished = Search.last.finished
+    puts @finished
     respond_to do |format|
         format.js
     end
@@ -97,7 +99,7 @@ class WelcomeController < ApplicationController
       @raggio = tmp_raggio
       puts tmp_misura
       puts tmp_raggio
-      if Query.exists?(misura: query.to_s , stagione: stagione) || Query.exists?(misura: query.to_s, stagione: "Tutte")
+      if Search.exists?(misura: query.to_s , stagione: stagione) || Search.exists?(misura: query.to_s, stagione: "Tutte")
         
         puts "La query esiste già"
         @new = false
@@ -162,7 +164,8 @@ class WelcomeController < ApplicationController
           end
         end
         
-        Query.create(misura: query.to_s , stagione: stagione)
+        Search.create(misura: query.to_s , stagione: stagione, finished: false)
+        puts Search.last.inspect
       end  
       k = 0
       while k < 8
@@ -192,11 +195,11 @@ class WelcomeController < ApplicationController
   
   def cron_job
     query_list = []
-    Query.where(tag: "routine").each do |query|
+    Search.where(tag: "routine").each do |query|
       query_list.push(query.misura)
     end
     Pneumatico.delete_all
-    Query.where(tag: nil).delete_all
+    Search.where(tag: nil).delete_all
     #Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
     puts query_list
     

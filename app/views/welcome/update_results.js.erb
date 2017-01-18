@@ -1,2 +1,2 @@
 
-$('#items_grid').html("<%= escape_javascript(render('results_grid', res: @res , fornitori: @fornitori)) %>")
+$('#items_grid').html("<%= escape_javascript(render('results_grid', res: @res , fornitori: @fornitori, finished: @finished)) %>")

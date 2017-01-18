@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170116114306) do
+ActiveRecord::Schema.define(version: 20170118204126) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,12 +59,13 @@ ActiveRecord::Schema.define(version: 20170116114306) do
 
   add_index "pneumaticos", ["modello"], name: "index_pneumaticos_on_modello", unique: true, using: :btree
 
-  create_table "queries", force: :cascade do |t|
+  create_table "searches", force: :cascade do |t|
     t.string   "misura"
     t.string   "tag"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string   "stagione"
+    t.boolean  "finished"
   end
 
   create_table "users", force: :cascade do |t|
