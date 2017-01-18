@@ -9,12 +9,12 @@ class ProfilesController < ApplicationController
         stagione = params[:stagione]
         
         if misura.length != 7 || misura.to_i.to_s != misura
-            flash[:alert] = "Attenzione! Misura non valida. Esempio misura: 2055516"
+            flash.now[:alert] = "Attenzione! Misura non valida. Esempio misura: 2055516"
         else
             if !Query.exists?(misura: misura, stagione: stagione, tag: "routine")
                 Query.create(misura: misura, stagione: stagione, tag: "routine")
             end
-            flash[:success] = "Ricerca inserita con successo!"
+            flash.now[:success] = "Ricerca inserita con successo!"
         end
         redirect_to profile_path
     end
@@ -30,12 +30,20 @@ class ProfilesController < ApplicationController
     end
     
     def disattiva_fornitore
-        Fornitore.find(params[:id]).update(status:"Disattivato")
+        if Fornitore.find(params[:id]).update(status:"Disattivato")
+            flash[:success] = Fornitore.find(params[:id]).nome + " è stato temporaneamente Disattivato."
+        else
+            flash[:alert] = "Errore durante la disattivazione di "+Fornitore.find(params[:id]).nome + ", riprova."
+        end
         redirect_to profile_path
     end
     
     def attiva_fornitore
-        Fornitore.find(params[:id]).update(status:"Attivo")
+        if Fornitore.find(params[:id]).update(status:"Attivo")
+            flash[:success] = Fornitore.find(params[:id]).nome + " è ora Attivo."
+        else
+            flash[:alert] = "Errore durante l'attivazione di "+Fornitore.find(params[:id]).nome + ", riprova."
+        end
         redirect_to profile_path
     end
     

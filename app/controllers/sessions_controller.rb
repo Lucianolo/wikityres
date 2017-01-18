@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
       log_in user
       redirect_to root_path
     else
-      flash[:alert] = 'Credenziali errate.'
+      flash.now[:alert] = 'Credenziali errate.'
       render 'new'
     end
   end
