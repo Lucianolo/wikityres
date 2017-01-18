@@ -150,7 +150,22 @@ $(document).ready(function () {
             misura: 
                 required: true,
                 minlength: 7,
-                maxlength: 7
+                maxlength: 8
+            }
+        }
+    });
+    
+    $('#password_form').validate({ // initialize the plugin
+        rules: {
+            password: 
+                required: true,
+                minlength: 8,
+                maxlength: 20
+            },
+            password_confirmation: 
+                required: true,
+                minlength: 8,
+                maxlength: 20
             }
         }
     });

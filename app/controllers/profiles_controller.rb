@@ -57,7 +57,7 @@ class ProfilesController < ApplicationController
             log_out
             redirect_to login_path
         else
-            flash[:alert] = "Le password inserite non corrispondono"
+            flash[:alert] = "La password inserita non è abbastanza lunga o le due password inserite sono diverse"
             redirect_to profile_path
         end
     end
