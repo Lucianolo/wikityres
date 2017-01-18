@@ -73,6 +73,9 @@ class WelcomeController < ApplicationController
   
     query = params[:misura].to_i
     @query = query
+    @veicolo = params[:veicolo]
+    puts @veicolo
+    
     # Per ora tolgo la marca
     
     #marca = params[:marca]
@@ -81,8 +84,7 @@ class WelcomeController < ApplicationController
     stagione = params[:stagione]
     @stagione = stagione
     # DA AGGIUNGERE SUPPORTO CAMION
-    
-    if params[:misura].to_i.to_s != params[:misura] || params[:misura].length != 7 
+    if (params[:misura].to_i.to_s != params[:misura]) || (@veicolo == "leggero" && params[:misura].length != 7) || (@veicolo == "pesante" && params[:misura].length != 8) 
       flash[:alert] = "Ricerca non valida"
       redirect_to root_path
     else

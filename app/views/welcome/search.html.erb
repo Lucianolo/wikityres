@@ -22,6 +22,14 @@
         <hr/>
         <div class="col-lg-6">
           <%= form_tag(search_path(:params), :method => "get", :class => "form", :id => "form") do %>
+            <div id="radio" style="color:#FFF;">
+              <label class="radio-inline" >
+                <input type="radio" name="veicolo" value="leggero" id="leggero" checked >Trasporto Leggero
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="veicolo" value="pesante" id="pesante">Trasporto Pesante
+              </label>
+            </div>
             <!--div id="radio" style="color:#FFF;">
               <label class="radio-inline" >
                 <input type="radio" name="options" id="veloce" checked >Ricerca Veloce
@@ -81,14 +89,13 @@ $(document).ready(function() {
 
 <script>
   jQuery(window).bind('beforeunload', function(){
-    $('#veloce').check;
     $('#form')[0].reset();
   });
 </script>
 
 <script>
   $(document).ready(function(){
-    $('#veloce').check;
+    $('#leggero').check;
     $('#id_marca').css('display', 'none');
     $('#veloce').change(function(){
         if(this.checked)

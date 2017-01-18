@@ -139,9 +139,11 @@ private
     browser = Watir::Browser.new :phantomjs, :args => switches
     browser.window.maximize
     Pneumatico.sureLoadLink(10){ browser.goto 'http://www.pneushopping.it/login?_next=/' }
-               
+    query_old = query           
     puts "page loaded"
-    
+    if query.to_s.length > 7
+      query = query.to_s[0..-2]+"."+query.to_s.last
+    end
     fornitore_pneushopping = Fornitore.where(nome: "PneuShopping").first
     browser.text_field(:name => 'username').set fornitore_pneushopping.user_name
     browser.text_field(:name => 'password').set fornitore_pneushopping.password
@@ -168,21 +170,22 @@ private
     
     file = File.open('pages/pneushopping.html', 'r')
     document = Nokogiri::HTML(file)
-    tmp = query.to_s[0..2]+"/"+query.to_s[3..-1]
-    puts tmp
+    tmp = query_old.to_s[0..2]+"/"+query_old.to_s[3..-1]
     document.css('tr').each do |row|
-      puts row.text
+      puts "PneuShopping:" + row.text
       misura = row.css('td')[1].text + "/" + row.css('td')[2].text
-      raggio = row.css('td')[3].text
+      if query.to_s.length > 7
+        raggio = row.css('td')[3].text[0..1]+row.css('td')[3].text.last
+      else
+        raggio = row.css('td')[3].text
+      end
       marca = row.css('td')[4].text 
       cod_vel = row.css('td')[6].text+row.css('td')[7].text
       modello = misura+" "+raggio+" "+marca+" "+row.css('td')[5].text+" "+cod_vel
-      puts row.css('td.sorting_1').text[3..-1]
+      #puts row.css('td.sorting_1').text[3..-1]
       prezzo_netto = row.css('td.sorting_1').text[3..-1].strip.gsub(",",".").to_f.round(2)
       giacenza = row.css('td')[9].text
-      
       misura_totale = misura+raggio
-     
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
         Pneumatico.create(nome_fornitore: "PneuShopping", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pneushopping, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: "", cod_vel: cod_vel)
       end
@@ -220,7 +223,7 @@ private
       
     File.open('pages/pendingomme.html', 'w') {|f| f.write browser.ul(:class => 'product_list').html }
    
-    puts "closing Watir"
+    puts "PendinGomme: closing Watir"
     browser.close
     
     file = File.open('pages/pendingomme.html', 'r')
@@ -231,8 +234,13 @@ private
       line = row.css('h5').text.strip
         
       marca = line.split(" ").first
-      misura = line.split("(").last.split(")").first[0..-3]
-      raggio = line.split("(").last.split(")").first[5..6]
+      misura = line.split("(").last.split(")").first[0..4]
+      if query.to_s.length > 7
+        raggio = line.split("(").last.split(")").first[5..-1]
+      else
+        raggio = line.split("(").last.split(")").first[5..6]
+      end
+      
      
       stagione = row.css('p').text.strip.split("Stagione: ").last.split(",").first
       prezzo_netto = row.css(".price").text.strip.gsub(",",".").gsub(" €","").to_f.round(2)
@@ -241,6 +249,8 @@ private
       cod_vel = row.css('p').text.strip.split("LI: ").last.split(",").first + row.css('p').text.strip.split("SI: ").last.split(",").first 
       
        modello = misura[0..2]+"/"+misura[3..-1]+" "+"R"+raggio+" "+marca+" "+line.split(" ").second.strip+" "+cod_vel
+       
+       puts "PendinGomme: "+modello
       if stagione == "All Season"
         stagione = "4 Stagioni"
       end
@@ -248,7 +258,7 @@ private
         misura = misura[0..2]+"/"+misura[3..-1]
       end
       misura_totale = misura+raggio
-     
+      
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
         Pneumatico.create(nome_fornitore: "PendinGomme", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel)
       end
@@ -318,22 +328,25 @@ private
       table = browser.table(:id => 'price-list')
       File.open('pages/farnesepneus.html', 'w') {|f| f.write table.html }
    
-      puts "closing Watir"
+      puts "Farnese: closing Watir"
       browser.close
    
       file = File.open('pages/farnesepneus.html', 'r')
       document = Nokogiri::HTML(file)
       tmp = query.to_s[0..2]+"/"+query.to_s[3..-1]
-      puts tmp
       i = 0
       document.css('tbody tr').each do |row|
         if i < max_results
-          modello = row.css('.row-description').text.strip.gsub("-","R").gsub("CAM.","").gsub("COP.","")
+          modello = row.css('.row-description').text.strip.gsub("-","R").gsub("CAM.","").gsub("COP.","").gsub(",",".")
+          puts "FarnesePneus: "+ modello
           misura = modello.split("R",2).first.strip
           marca_tmp = row.css('td.row-manufacturer img').first['src'].split("/").last.split('.').first.to_i.to_s
           marca = marche_pneumatici[marca_tmp]
-
-          raggio = modello.split("R",2).second.split(" ").first
+          if marca.nil?
+            marca = modello.split("R",2).second.split(" ").second.split(" ").first
+          end
+         
+          raggio = modello.split("R",2).second.split(" ").first.gsub(".","")
           if row.css('.row-season img').first['src'] != ""
             stagione = row.css('.row-season img').first['src'].split("/").last.split(".").first
           else
@@ -348,13 +361,12 @@ private
             stagione_db = "4 Stagioni"
           end
             
-          p_netto = row.css('.row-net-price').text.strip.to_f.round(2)
+          p_netto = row.css('.row-net-price').text.strip.gsub(",",".").to_f.round(2)
                     
           stock = row.css('.row-stock-column-1').text.strip.to_i + row.css('.row-stock-column-4').text.to_i
           
           misura_totale = misura+raggio
-          puts misura_totale
-          puts tmp
+        
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
             Pneumatico.create(nome_fornitore: "FarnesePneus", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @farnesepneus, prezzo_netto: p_netto, giacenza: stock, stagione: stagione_db)
             i+=1
@@ -449,7 +461,7 @@ private
             modello = row.css('td.descrizione').text.strip
           end
           temp = '#id_listino'+i.to_s
-          prezzo_netto = row.css('.netnet').text.to_f.round(2)
+          prezzo_netto = row.css('.netnet').text.gsub(",",".").to_f.round(2)
           stock = 0
           if row.css('.dispCompleta').present?
             row.css('.dispCompleta').text.split("\n").each do |x|
@@ -460,9 +472,7 @@ private
               stock += x.strip.to_i
             end
           end
-          puts "Fintyre"
-          puts row.css('td.descrizione').text
-          puts modello
+          puts "Fintyre: "+modello
           if (modello[6] != "R" && modello[7] != "R")
             raggio = modello.split(" ").second.split(" ").first
             misura = modello[0..5]
@@ -481,8 +491,6 @@ private
         
           misura_totale = misura+raggio
           
-          puts misura_totale
-          puts tmp
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
             Pneumatico.create(nome_fornitore: "Fintyre",marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @fintyre, prezzo_netto: prezzo_netto, giacenza: stock, stagione: stagione)
             i+=1
@@ -575,7 +583,7 @@ private
           nome = row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c2').text.strip
           p_netto = row.at_css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c9').text[4..-1].strip.gsub(",",".").to_f
           stock = row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c10').text.strip.to_i + row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c11').text.strip.to_i + row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c12').text.strip.to_i + row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c13').text.strip.to_i
-          puts nome
+          puts "CentroGomme: "+nome
           tmp_stagione = row.css('img.pdImgstagione').first['src'].split("/").last.split(".").first
           
           if tmp_stagione == "I"
@@ -596,7 +604,7 @@ private
             raggio = nome.gsub("CAM.","").split("R").second.split(" ").first
           end
           
-          
+          raggio = raggio.gsub(".","")
           misura_totale = misura+raggio
           
           
@@ -695,16 +703,19 @@ private
           end
                     
           nome = row.css('div.DescrizioneArticolo').text
-          p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text.strip.to_f.round(2)
+          p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text.strip.gsub(",",".").to_f.round(2)
           stock = row.css('td.CatalogoDisp.allinea strong')[0].text.to_i + row.css('td.CatalogoDisp.allinea strong')[1].text.to_i + row.css('td.CatalogoDisp.allinea strong span').text.to_i
           misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip
           raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip
           
+          puts "MultiTires: "+nome
           # CONTROLLO SULLA VALIDITA' DEL CAMPO RAGGIO --- DA SISTEMARE PER ALCUNI VALORI
           
           if raggio.to_i.to_s != raggio
             raggio = nome.split(" ")[2]
           end
+          
+          raggio = raggio.gsub(".","")
           
           tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
           
@@ -716,6 +727,7 @@ private
           else
             stagione = "4 Stagioni"
           end
+          
           if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
             Pneumatico.create(nome_fornitore: "MultiTires", marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, giacenza: stock, stagione: stagione)
             j+=1
@@ -818,7 +830,7 @@ private
       
      
       
-      File.open('pages/maxtyre.html', 'w') {|f| table.each { |e| f.write(e.html) } }
+      File.open('pages/maxtyre.html', 'w') {|f| table.each { |e| f.write(e) } }
               
       browser.close
       browser.quit
@@ -836,7 +848,8 @@ private
        
         
         modello = row.css("td.x-grid-cell")[1].text
-       
+        
+        puts "MaxTyre: "+modello
         tmp_stagione = row.css("td.x-grid-cell")[10].css("img").first['src'].split("/").last.split(".").first
         if tmp_stagione == "sole"
           stagione = "Estate"
@@ -846,18 +859,18 @@ private
           stagione = "4 Stagioni"
         end
         
-        prezzo_netto = row.css("td.x-grid-cell")[13].text.strip.to_f.round(2)
+        prezzo_netto = row.css("td.x-grid-cell")[13].text.strip.gsub(",",".").to_f.round(2)
      
         
         giacenza = row.css("td.x-grid-cell")[15].text.strip.to_i + row.css("td.x-grid-cell")[16].text.strip.to_i 
         
        
-        misura = modello.split(" ").first+"/"+modello.split(" ").second
-        raggio = modello.split(" ")[2].gsub(/[^0-9]/, '')
-        
+        misura = modello.split(" ").first+"/"+modello.split(" ").second[0..1]
+        raggio = modello[6..-1].strip.split(" ").first.gsub(/[^0-9]/, '')
         
         
         misura_totale = misura + raggio
+       
         if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp)
             Pneumatico.create(nome_fornitore: "MaxTyre", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: stagione)
         end
@@ -876,26 +889,27 @@ private
     i=0
     table = []
     flag = false
-    while i<31
+    j = 0
+    browser.div(:class => "x-grid-item-container").tables.each do |item|
+      table.push item.html
+    end
+    puts 
+    while j<50
       puts flag
         if flag == true
           puts "Devo ritornaaa"
           break
         end
       begin
-        
-          
           container = browser.div(:class => "x-grid-item-container")
-             
-          puts container.tables.last.text
           if last_tmp == container.tables.last.text
             puts "no more results"
             break
-          end
-          container.tables.each do |item|
-            if !table.include? item
-              table.push item
-              i+=1
+          else
+            container.tables.each do |item|
+              if !(table.include? item)
+                table.push item.html
+              end
             end
           end
               
@@ -904,8 +918,7 @@ private
           container.tables.last.wd.location_once_scrolled_into_view
           sleep 0.20
          
-          puts i
-        
+          j+=1
       rescue Watir::Exception::UnknownObjectException
         puts "End"
         flag = true
