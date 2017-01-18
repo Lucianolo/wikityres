@@ -23,22 +23,22 @@ class Pneumatico < ActiveRecord::Base
           # PNEUSHOPPING.IT
           
           if fornitori.include? "PneuShopping"
+            threads << Thread.new {
               begin
                 Pneumatico.search_pneushopping(query,stagione,max_results)
               ensure
                 ActiveRecord::Base.connection_pool.release_connection
               end
+            }
           end
           
           # PENDINGOMME.IT
           if fornitori.include? "PendinGomme"
-            threads << Thread.new {
               begin
                 search_pendingomme(query,stagione,max_results)
               ensure
                 ActiveRecord::Base.connection_pool.release_connection
               end
-            }
           end
           
           
