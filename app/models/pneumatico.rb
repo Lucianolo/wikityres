@@ -110,7 +110,8 @@ class Pneumatico < ActiveRecord::Base
           @query = query.to_s
           
         end
-      Search.where(misura: @query).first.update(finished: true)
+        %x{for pid in $(ps -ef | awk '/phantomjs/ {print $2}'); do kill -9 $pid; done}
+        Search.where(misura: @query).first.update(finished: true)
     end
 
 private

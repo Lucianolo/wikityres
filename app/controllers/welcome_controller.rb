@@ -106,10 +106,10 @@ class WelcomeController < ApplicationController
         if stagione != "Tutte"
           if marca != ""
             
-            @res = Pneumatico.where("misura like ? AND raggio like ? AND (stagione like ?  OR stagione like ?) AND marca like ?", "%#{tmp_misura}%","%#{tmp_raggio}%", stagione, "4 Stagioni", marca).order(:prezzo_netto)
+            @res = Pneumatico.where("misura like ? AND raggio like ? AND (stagione like ? ) AND marca like ?", "%#{tmp_misura}%","%#{tmp_raggio}%", stagione, marca).order(:prezzo_netto)
           else
             
-            @res = Pneumatico.where("misura like ? AND raggio like ? AND (stagione like ?  OR stagione like ?)", "%#{tmp_misura}%","%#{tmp_raggio}%", stagione, "4 Stagioni").order(:prezzo_netto)
+            @res = Pneumatico.where("misura like ? AND raggio like ? AND (stagione like ? )", "%#{tmp_misura}%","%#{tmp_raggio}%", stagione).order(:prezzo_netto)
           end
         else
           if marca != ""

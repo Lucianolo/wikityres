@@ -12,17 +12,21 @@
 <% if @new %>
 
 
-$( window ).unload(function() {
-    console.log("Removing Autoupdater..");
-    document.getElementById('items_grid').children().off();
-});
+
 $( document ).ready(function() {
    
+
     var intervalId = setInterval(update, 5000);
     function update() {
-        var end = document.getElementById('fine').innerHTML;
+        var end = document.getElementById('fine');
         console.log(end);
-        if (end == 'true'){
+        if (end == null) {
+            console.log("leaving");
+            $('#spinner').hide();
+            clearInterval(intervalId);
+            return
+        }
+        if (end.innerHTML == 'true' || end == null){
             console.log("removing");
             $('#spinner').hide();
             clearInterval(intervalId);
