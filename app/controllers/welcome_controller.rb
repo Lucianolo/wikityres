@@ -196,7 +196,9 @@ class WelcomeController < ApplicationController
   def cron_job
     query_list = []
     Search.where(tag: "routine").each do |query|
-      query_list.push(query.misura)
+      if ( Time.now - query.updated_at )/60 > 10
+        query_list.push(query.misura)
+      end
     end
     Pneumatico.delete_all
     Search.where(tag: nil).delete_all
