@@ -209,6 +209,7 @@ class WelcomeController < ApplicationController
       end
     end
     puts query_list1
+    puts query_list2
     Pneumatico.delete_all
     Search.where(tag: nil).delete_all
     #Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
@@ -216,6 +217,7 @@ class WelcomeController < ApplicationController
     
     #populate(query_list, 300)
     Pneumatico.delay.add_to_db(query_list1, 300)
+    Pneumatico.delay.add_to_db(query_list2, 300)
     redirect_to :root
   end
   
