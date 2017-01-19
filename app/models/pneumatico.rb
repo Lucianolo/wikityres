@@ -17,7 +17,7 @@ class Pneumatico < ActiveRecord::Base
         end
         
         query_list.each do |query|
-          puts ( Time.now - query.updated_at )/60
+          puts ( Time.now - Search.where(misura: query).first.updated_at )/60
           if ( Time.now - query.updated_at )/60 > 10
               
             
