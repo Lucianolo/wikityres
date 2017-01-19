@@ -196,10 +196,12 @@ class WelcomeController < ApplicationController
   def cron_job
     query_list = []
     Search.where(tag: "routine").each do |query|
+      puts ( Time.now - query.updated_at )/60
       if ( Time.now - query.updated_at )/60 > 10
         query_list.push(query.misura)
       end
     end
+    puts query_list
     Pneumatico.delete_all
     Search.where(tag: nil).delete_all
     #Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s

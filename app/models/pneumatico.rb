@@ -17,98 +17,102 @@ class Pneumatico < ActiveRecord::Base
         end
         
         query_list.each do |query|
-          puts query
-          threads = []
-          
-          # PNEUSHOPPING.IT
-          
-          if fornitori.include? "PneuShopping"
+          puts ( Time.now - query.updated_at )/60
+          if ( Time.now - query.updated_at )/60 > 10
+              
             
-              begin
-                Pneumatico.search_pneushopping(query,stagione,max_results)
-              ensure
-                ActiveRecord::Base.connection_pool.release_connection
-              end
+            puts query
+            threads = []
             
-          end
-          
-          # PENDINGOMME.IT
-          if fornitori.include? "PendinGomme"
-            threads << Thread.new {
-              begin
-                search_pendingomme(query,stagione,max_results)
-              ensure
-                ActiveRecord::Base.connection_pool.release_connection
-              end
-            }
-          end
-          
-          
-          # FARNESEPNEUS.IT
-          if fornitori.include? "FarnesePneus"
-            threads << Thread.new {
-              begin
-                search_farnese(query,stagione,max_results)
-              ensure
-              #guarantee that the thread is releasing the DB connection after it is done
-                ActiveRecord::Base.connection_pool.release_connection
-              end
-            }
-          end
+            # PNEUSHOPPING.IT
             
-          # FINTYRE.IT
-          if fornitori.include? "Fintyre"
-            threads << Thread.new {
-              begin
-                search_fintyre(query,stagione,max_results)
-              ensure
-              #guarantee that the thread is releasing the DB connection after it is done
-                ActiveRecord::Base.connection_pool.release_connection
-              end
-            }
-          end
-          threads.each(&:join)
-          
-          threads2 = []
-          # CENTRO GOMME
-          if fornitori.include? "CentroGomme"
-            threads2 << Thread.new {
-              begin
-                search_centrogomme(query,stagione,max_results)
-              ensure
-              #guarantee that the thread is releasing the DB connection after it is done
-                ActiveRecord::Base.connection_pool.release_connection
-              end
-            }
-          end
-          
-          
-          # MULTITYRES
-          if fornitori.include? "MultiTyre"
-            threads2 << Thread.new {
-              begin
-                search_multityre(query, stagione, max_results)
-              ensure
-              #guarantee that the thread is releasing the DB connection after it is done
-                ActiveRecord::Base.connection_pool.release_connection
-              end
-            }
-          end
+            if fornitori.include? "PneuShopping"
+              
+                begin
+                  Pneumatico.search_pneushopping(query,stagione,max_results)
+                ensure
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+              
+            end
             
-          # MAXTYRE
-          if fornitori.include? "MaxTyre"
-            threads2 << Thread.new {
-              begin
-                search_maxtyre(query, stagione, max_results)
-              ensure
-              #guarantee that the thread is releasing the DB connection after it is done
-                ActiveRecord::Base.connection_pool.release_connection
-              end
-            }
+            # PENDINGOMME.IT
+            if fornitori.include? "PendinGomme"
+              threads << Thread.new {
+                begin
+                  search_pendingomme(query,stagione,max_results)
+                ensure
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+              }
+            end
+            
+            
+            # FARNESEPNEUS.IT
+            if fornitori.include? "FarnesePneus"
+              threads << Thread.new {
+                begin
+                  search_farnese(query,stagione,max_results)
+                ensure
+                #guarantee that the thread is releasing the DB connection after it is done
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+              }
+            end
+              
+            # FINTYRE.IT
+            if fornitori.include? "Fintyre"
+              threads << Thread.new {
+                begin
+                  search_fintyre(query,stagione,max_results)
+                ensure
+                #guarantee that the thread is releasing the DB connection after it is done
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+              }
+            end
+            threads.each(&:join)
+            
+            threads2 = []
+            # CENTRO GOMME
+            if fornitori.include? "CentroGomme"
+              threads2 << Thread.new {
+                begin
+                  search_centrogomme(query,stagione,max_results)
+                ensure
+                #guarantee that the thread is releasing the DB connection after it is done
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+              }
+            end
+            
+            
+            # MULTITYRES
+            if fornitori.include? "MultiTyre"
+              threads2 << Thread.new {
+                begin
+                  search_multityre(query, stagione, max_results)
+                ensure
+                #guarantee that the thread is releasing the DB connection after it is done
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+              }
+            end
+              
+            # MAXTYRE
+            if fornitori.include? "MaxTyre"
+              threads2 << Thread.new {
+                begin
+                  search_maxtyre(query, stagione, max_results)
+                ensure
+                #guarantee that the thread is releasing the DB connection after it is done
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+              }
+            end
+            threads2.each(&:join)
+            @query = query.to_s
           end
-          threads2.each(&:join)
-          @query = query.to_s
-          
         end
         %x{for pid in $(ps -ef | awk '/phantomjs/ {print $2}'); do kill -9 $pid; done}
         Search.where(misura: @query).first.update(finished: true)
