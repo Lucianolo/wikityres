@@ -202,23 +202,27 @@ class WelcomeController < ApplicationController
         query_list.push(query.misura)
     end
     tmp_list = []
-    
+    puts "LIST:"
+    puts query_list
     query_list.each do |item|
+      puts item
+      puts i
       if i<2
         tmp_list.push item
-        query_list.delete(item)
         i+=1
       else
-        Pneumatico.delay.add_to_db(tmp_list, 300)
+        Pneumatico.delay(run_at: 5.seconds.from_now).add_to_db(tmp_list, 300)
         
         puts "Added: "
         puts tmp_list
         tmp_list=[]
-        i = 0
+        tmp_list.push item
+        i = 1
       end
     end
-    
-    
+    if query_list.length > 2
+      Pneumatico.delay(run_at: 5.seconds.from_now).add_to_db(tmp_list, 300)
+    end
     #Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
 
     
