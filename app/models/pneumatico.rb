@@ -22,26 +22,27 @@ class Pneumatico < ActiveRecord::Base
             threads = []
             
             # PNEUSHOPPING.IT
-            
-            if fornitori.include? "PneuShopping"
-              
-                begin
-                  Pneumatico.search_pneushopping(query,stagione,max_results)
-                ensure
-                  ActiveRecord::Base.connection_pool.release_connection
-                end
-              
+            if query.to_s.length > 6
+              if fornitori.include? "PneuShopping"
+                threads << Thread.new {
+                  begin
+                    Pneumatico.search_pneushopping(query,stagione,max_results)
+                  ensure
+                    ActiveRecord::Base.connection_pool.release_connection
+                  end
+                }
+              end
             end
             
             # PENDINGOMME.IT
             if fornitori.include? "PendinGomme"
-              threads << Thread.new {
+              
                 begin
                   search_pendingomme(query,stagione,max_results)
                 ensure
                   ActiveRecord::Base.connection_pool.release_connection
                 end
-              }
+              
             end
             
             
@@ -183,6 +184,7 @@ private
     if table.td(:class => 'dataTables_empty').exists?
       puts "nessun risultato per PneuShopping"
       browser.close
+      return
     end
     File.open('pages/pneushopping.html', 'w') {|f| f.write table.html }
     
@@ -202,10 +204,10 @@ private
     
     file = File.open('pages/pneushopping.html', 'r')
     document = Nokogiri::HTML(file)
-    tmp = query_old.to_s[0..2]+"/"+query_old.to_s[3..-1]
+    tmp = query_old.to_s
     document.css('tr').each do |row|
       puts "PneuShopping:" + row.text
-      misura = row.css('td')[1].text + "/" + row.css('td')[2].text
+      misura = row.css('td')[1].text + row.css('td')[2].text
       if query.to_s.length > 7
         raggio = row.css('td')[3].text[0..1]+row.css('td')[3].text.last
       else
@@ -266,35 +268,43 @@ private
     
     file = File.open('pages/pendingomme.html', 'r')
     document = Nokogiri::HTML(file)
-    tmp = query.to_s[0..2]+"/"+query.to_s[3..-1]
-    puts tmp
+    tmp = query.to_s
+  
+    
     document.css('ul li').each do |row|
       line = row.css('h5').text.strip
-        
       marca = line.split(" ").first
-      misura = line.split("(").last.split(")").first[0..4]
-      if query.to_s.length > 7
+      
+      if query.to_s.length > 6
+      
+        misura = line.split("(").last.split(")").first[0..4].gsub(/[^0-9]/, '')
+      
         raggio = line.split("(").last.split(")").first[5..-1]
       else
-        raggio = line.split("(").last.split(")").first[5..6]
+
+        index = query.to_s.length - 3
+
+        misura = line.split("(").last.split(")").first[0..index-1].gsub(/[^0-9]/, '')
+
+        raggio = line.split("(").last.split(")").first[index..-1]
       end
       
-     
       stagione = row.css('p').text.strip.split("Stagione: ").last.split(",").first
       prezzo_netto = row.css(".price").text.strip.gsub(",",".").gsub(" €","").to_f.round(2)
       giacenza = row.css("#pQuantityAvailable").text.strip.split(" ").first.to_i
       
       cod_vel = row.css('p').text.strip.split("LI: ").last.split(",").first + row.css('p').text.strip.split("SI: ").last.split(",").first 
       
-       modello = misura[0..2]+"/"+misura[3..-1]+" "+"R"+raggio+" "+marca+" "+line.split(" ").second.strip+" "+cod_vel
-       
+      if query.to_s.length > 6
+        modello = misura[0..2]+"/"+misura[3..-1]+" "+"R"+raggio+" "+marca+" "+line.split(" ").second.strip+" "+cod_vel
+      else
+        modello = misura+" "+"R"+raggio+" "+marca+" "+line.split(" ").second.strip+" "+cod_vel
+      end
        puts "PendinGomme: "+modello
       if stagione == "All Season"
         stagione = "4 Stagioni"
       end
-      if misura[3]!="/"
-        misura = misura[0..2]+"/"+misura[3..-1]
-      end
+      
       misura_totale = misura+raggio
       
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
@@ -371,13 +381,14 @@ private
    
       file = File.open('pages/farnesepneus.html', 'r')
       document = Nokogiri::HTML(file)
-      tmp = query.to_s[0..2]+"/"+query.to_s[3..-1]
+      tmp = query.to_s
+     
       i = 0
       document.css('tbody tr').each do |row|
         if i < max_results
           modello = row.css('.row-description').text.strip.gsub("-","R").gsub("CAM.","").gsub("COP.","").gsub(",",".")
           puts "FarnesePneus: "+ modello
-          misura = modello.split("R",2).first.strip
+          misura = modello.split("R",2).first.strip.gsub(/[^0-9]/, '')
           marca_tmp = row.css('td.row-manufacturer img').first['src'].split("/").last.split('.').first.to_i.to_s
           marca = marche_pneumatici[marca_tmp]
           if marca.nil?
@@ -398,12 +409,15 @@ private
           else
             stagione_db = "4 Stagioni"
           end
-            
+          
+          
           p_netto = row.css('.row-net-price').text.strip.gsub(",",".").to_f.round(2)
                     
           stock = row.css('.row-stock-column-1').text.strip.to_i + row.css('.row-stock-column-4').text.to_i
           
           misura_totale = misura+raggio
+          puts misura_totale
+          puts tmp
         
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
             Pneumatico.create(nome_fornitore: "FarnesePneus", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @farnesepneus, prezzo_netto: p_netto, giacenza: stock, stagione: stagione_db)
@@ -484,7 +498,8 @@ private
               
       file = File.open('pages/fintyre.html', 'r')
       document = Nokogiri::HTML(file)
-      tmp = query.to_s[0..2]+"/"+query.to_s[3..-1]
+     
+      tmp = query.to_s
       i = 0
       document.css('tbody tr').each do |row|
         begin
@@ -511,12 +526,17 @@ private
             end
           end
           puts "Fintyre: "+modello
-          if (modello[6] != "R" && modello[7] != "R")
-            raggio = modello.split(" ").second.split(" ").first
-            misura = modello[0..5]
+          if query.to_s.length == 7
+            if (modello[6] != "R" && modello[7] != "R")
+              raggio = modello.split(" ").second.split(" ").first.gsub(/[^0-9]/, '')
+              misura = modello[0..5].gsub(/[^0-9]/, '')
+            else
+              raggio = modello.split("R").second.split(" ").first.gsub(/[^0-9]/, '')
+              misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
+            end
           else
-            raggio = modello.split("R").second.split(" ").first
-            misura = modello.split("R").first.strip.gsub("Z","")
+            raggio = modello.split("R").second.split(" ").first.gsub(/[^0-9]/, '')
+            misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
           end
           if row.css('span.eti._4stagioni').present?
             stagione = "4 Stagioni"
@@ -528,7 +548,8 @@ private
           
         
           misura_totale = misura+raggio
-          
+          puts misura_totale
+          puts tmp
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
             Pneumatico.create(nome_fornitore: "Fintyre",marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @fintyre, prezzo_netto: prezzo_netto, giacenza: stock, stagione: stagione)
             i+=1
@@ -605,7 +626,9 @@ private
                 
       file = File.open('pages/centrogomme.html', 'r')
       document = Nokogiri::HTML(file)
-      tmp = query.to_s[0..2]+"/"+query.to_s[3..-1]        
+ 
+      tmp = query.to_s
+    
       
       i = 0
       j = 0
@@ -632,20 +655,23 @@ private
             stagione = "4 Stagioni"
           end
             
-         
-          if nome[6] != "R" && nome[7] != "R"
-            misura = nome.gsub("CAM.", "").split(" ").first.strip
-            raggio = nome.gsub("CAM.", "").split(" ").second.strip
+          if query.to_s.length == 7
+            if nome[6] != "R" && nome[7] != "R"
+              misura = nome.gsub("CAM.", "").split(" ").first.strip.gsub(/[^0-9]/, '')
+              raggio = nome.gsub("CAM.", "").split(" ").second.strip.gsub(/[^0-9]/, '')
+            else
+            
+              misura = nome.gsub("CAM.","").split("R").first.strip.gsub(/[^0-9]/, '')
+              raggio = nome.gsub("CAM.","").split("R").second.split(" ").first
+            end
           else
-          
-            misura = nome.gsub("CAM.","").split("R").first.strip
-            raggio = nome.gsub("CAM.","").split("R").second.split(" ").first
+            raggio = nome.split("R").second.split(" ").first.strip
+            misura = nome.split("R").first.strip.gsub(/[^0-9]/, '')
           end
-          
           raggio = raggio.gsub(".","")
           misura_totale = misura+raggio
-          
-          
+          puts misura_totale
+          puts tmp
           if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp )
             Pneumatico.create(nome_fornitore: "CentroGomme" ,marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @centrogomme, prezzo_netto: p_netto, giacenza: stock, stagione: stagione)
             j+=1
@@ -727,7 +753,9 @@ private
                 
       file = File.open('pages/multitires.html', 'r')
       document = Nokogiri::HTML(file)
-      tmp = query.to_s[0..2]+"/"+query.to_s[3..-1]          
+   
+      tmp = query.to_s
+      
       i = 0
       j = 0
       table = document.css('table.gvTheGrid')
@@ -743,7 +771,7 @@ private
           nome = row.css('div.DescrizioneArticolo').text
           p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text.strip.gsub(",",".").to_f.round(2)
           stock = row.css('td.CatalogoDisp.allinea strong')[0].text.to_i + row.css('td.CatalogoDisp.allinea strong')[1].text.to_i + row.css('td.CatalogoDisp.allinea strong span').text.to_i
-          misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip
+          misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip.gsub(/[^0-9]/, '')
           raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip
           
           puts "MultiTires: "+nome
@@ -758,6 +786,8 @@ private
           tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
           
           misura_totale = misura+raggio
+          puts misura_totale
+          puts tmp
           if tmp_stagione == "sun"
             stagione = "Estate"
           elsif tmp_stagione == "snow"
@@ -765,7 +795,6 @@ private
           else
             stagione = "4 Stagioni"
           end
-          
           if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
             Pneumatico.create(nome_fornitore: "MultiTires", marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, giacenza: stock, stagione: stagione)
             j+=1
@@ -805,7 +834,7 @@ private
                    
         browser.link(:id => 'button-1017').click
           
-        sleep 3
+        sleep 2
         puts "login effettuato"
           
         browser.link(:id =>"button-1026").click
@@ -840,7 +869,7 @@ private
   
         puts "sleeeping"
         
-        sleep 5 
+        sleep 3
         if browser.div(:class => 'x-grid-item-container').text.strip == ""
           flag = false
           break
@@ -875,7 +904,9 @@ private
                 
       file = File.open('pages/maxtyre.html', 'r')
       document = Nokogiri::HTML(file)
-      tmp = query.to_s[0..2]+"/"+query.to_s[3..-1]          
+     
+      tmp = query.to_s
+      
       #table = document.css('table x-grid-item')
       document.css('table.x-grid-item tr').each do |row|
         if row.css('td.x-grid-cell img').first["title"] != ""
@@ -902,13 +933,21 @@ private
         
         giacenza = row.css("td.x-grid-cell")[15].text.strip.to_i + row.css("td.x-grid-cell")[16].text.strip.to_i 
         
+        if query.to_s.length > 6
        
-        misura = modello.split(" ").first+"/"+modello.split(" ").second[0..1]
-        raggio = modello[6..-1].strip.split(" ").first.gsub(/[^0-9]/, '')
+          misura = modello.split(" ").first+modello.split(" ").second[0..1].gsub(/[^0-9]/, '')
+          raggio = modello[6..-1].strip.split(" ").first.gsub(/[^0-9]/, '')
+          
+        else
+          
+          misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
+          raggio = modello.split("R").second.split(" ").first.strip.gsub(/[^0-9]/, '')
         
-        
+        end
         misura_totale = misura + raggio
-       
+        
+        puts misura_totale
+        puts tmp
         if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp)
             Pneumatico.create(nome_fornitore: "MaxTyre", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: stagione)
         end

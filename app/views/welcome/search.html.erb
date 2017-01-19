@@ -22,13 +22,16 @@
         <hr/>
         <div class="col-lg-6">
           <%= form_tag(search_path(:params), :method => "get", :class => "form", :id => "form") do %>
+            <div class="form-group" style="color:#FFF;">
+            <%= label_tag(:veicolo, "Settore:") %>
             <div id="radio" style="color:#FFF;">
               <label class="radio-inline" >
-                <input type="radio" name="veicolo" value="leggero" id="leggero" checked >Trasporto Leggero
+                <input type="radio" name="veicolo" value="leggero" id="leggero" checked >Automobili
               </label>
               <label class="radio-inline">
                 <input type="radio" name="veicolo" value="pesante" id="pesante">Trasporto Pesante
               </label>
+            </div>
             </div>
             <!--div id="radio" style="color:#FFF;">
               <label class="radio-inline" >

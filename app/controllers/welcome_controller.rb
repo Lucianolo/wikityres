@@ -25,10 +25,16 @@ class WelcomeController < ApplicationController
   end
   
   def update_results 
-    mis = Search.last.misura[0..4]
-    misura = mis[0..2]+"/"+mis[3..-1]
-    
-    raggio = Search.last.misura[5..-1]
+    if Search.last.misura.length == 7
+      mis = Search.last.misura[0..4]
+      misura = mis
+      
+      raggio = Search.last.misura[5..-1]
+    else
+      mis = Search.last.misura
+      raggio = mis[-3..-1]
+      misura = mis.gsub(raggio, "")
+    end
     #stagione = params[:stagione]
     puts "UPDATING"
     @res = Pneumatico.where(misura: misura, raggio: raggio).order(:prezzo_netto)
@@ -86,15 +92,23 @@ class WelcomeController < ApplicationController
     stagione = params[:stagione]
     @stagione = stagione
     # DA AGGIUNGERE SUPPORTO CAMION
-    if (params[:misura].to_i.to_s != params[:misura]) || (@veicolo == "leggero" && params[:misura].length != 7) || (@veicolo == "pesante" && params[:misura].length != 8) 
+    puts params[:misura].length
+    if (params[:misura].to_i.to_s != params[:misura]) || (@veicolo == "leggero" && params[:misura].length != 7) || (@veicolo == "pesante" && params[:misura].length > 8) || (@veicolo == "pesante" && params[:misura].length < 4) 
       flash[:alert] = "Ricerca non valida"
       redirect_to root_path
     else
       query_list = [query]
       
       puts query_list
-      tmp_misura = query.to_s[0..2]+"/"+query.to_s[3..4]
-      tmp_raggio = query.to_s[5..-1]
+      if query.to_s.length == 7
+        tmp_misura = query.to_s[0..4]
+        tmp_raggio = query.to_s[5..-1]
+      else
+        mis = query.to_s
+        tmp_raggio = mis[-3..-1]
+        tmp_misura = mis.gsub(tmp_raggio, "")
+      end
+      
       @misura = tmp_misura.gsub("/","")
       @raggio = tmp_raggio
       puts tmp_misura
