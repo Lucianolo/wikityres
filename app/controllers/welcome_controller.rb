@@ -194,30 +194,36 @@ class WelcomeController < ApplicationController
   end
   
   def cron_job
-    query_list1 = []
-    query_list2 = []
-    i = 0
-    while i<3
-      Search.where(tag: "routine").each do |query|
-          query_list1.push(query.misura)
-      end
-      i+=1
-    end
-    Search.where(tag: "routine").each do |query|
-      if !(query_list1.include? query)
-        query_list2.push(query.misura)
-      end
-    end
-    puts query_list1
-    puts query_list2
     Pneumatico.delete_all
     Search.where(tag: nil).delete_all
+    query_list = []
+    i = 0
+    Search.where(tag: "routine").each do |query|
+        query_list.push(query.misura)
+    end
+    tmp_list = []
+    
+    query_list.each do |item|
+      if i<2
+        tmp_list.push item
+        query_list.delete(item)
+        i+=1
+      else
+        Pneumatico.delay.add_to_db(tmp_list, 300)
+        
+        puts "Added: "
+        puts tmp_list
+        tmp_list=[]
+        i = 0
+      end
+    end
+    
+    
     #Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
 
     
     #populate(query_list, 300)
-    Pneumatico.delay.add_to_db(query_list1, 300)
-    Pneumatico.delay.add_to_db(query_list2, 300)
+    
     redirect_to :root
   end
   
