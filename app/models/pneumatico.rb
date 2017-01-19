@@ -17,9 +17,6 @@ class Pneumatico < ActiveRecord::Base
         end
         
         query_list.each do |query|
-          puts (( Time.now - Search.where(misura: query).first.updated_at )/60)
-          if ( ( Time.now - Search.where(misura: query).first.updated_at )/60 > 10)
-              
             
             puts query
             threads = []
@@ -113,7 +110,6 @@ class Pneumatico < ActiveRecord::Base
             threads2.each(&:join)
             @query = query.to_s
           end
-        end
         %x{for pid in $(ps -ef | awk '/phantomjs/ {print $2}'); do kill -9 $pid; done}
         Search.where(misura: @query).first.update(finished: true)
     end
