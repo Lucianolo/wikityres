@@ -1,6 +1,6 @@
 class ProfilesController < ApplicationController
     def index
-        @queries = Query.where(tag:"routine")
+        @queries = Search.where(tag:"routine")
         @fornitori = Fornitore.all
     end
     
@@ -11,8 +11,8 @@ class ProfilesController < ApplicationController
         if misura.length != 7 || misura.to_i.to_s != misura
             flash.now[:alert] = "Attenzione! Misura non valida. Esempio misura: 2055516"
         else
-            if !Query.exists?(misura: misura, stagione: stagione, tag: "routine")
-                Query.create(misura: misura, stagione: stagione, tag: "routine")
+            if !Search.exists?(misura: misura, stagione: stagione, tag: "routine")
+                Search.create(misura: misura, stagione: stagione, tag: "routine")
             end
             flash.now[:success] = "Ricerca inserita con successo!"
         end
@@ -20,7 +20,7 @@ class ProfilesController < ApplicationController
     end
     
     def remove_query
-        if Query.delete(Query.find(params[:id]))
+        if Search.delete(Search.find(params[:id]))
             flash[:success] = "Ricerca rimossa con successo!"
             redirect_to profile_path
         else
