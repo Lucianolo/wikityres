@@ -21,12 +21,12 @@
                             <td class="text-left p_netto" style="padding-left:1.5em !important;"><%= number_with_precision(item.prezzo_netto, precision: 2) %>€</td>
                             <td class="text-left giacenza" ><%= item.giacenza %></td>
                                 <% if item.stagione == "4 Stagioni" %>
-                                    <td class="text-center stagione"><%= image_tag "4S.png", :class => 'logo-stagione' %></td>
+                                    <td class="text-center stagione" style="background: #1b1e24 "><%= image_tag "4S.png", :class => 'logo-stagione' %></td>
                                 <% elsif item.stagione == "" %>
-                                    <td class="text-center stagione"></td>
+                                    <td class="text-center stagione" style="background: #1b1e24 "></td>
                                  
                                 <% else %>
-                                    <td class="text-center stagione"><%= image_tag item.stagione+".png", :class => 'logo-stagione' %></td>
+                                    <td class="text-center stagione" style="background: #1b1e24 "><%= image_tag item.stagione+".png", :class => 'logo-stagione' %></td>
                                 <% end %>
                           
                         </tr>
