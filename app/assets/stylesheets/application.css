@@ -273,4 +273,22 @@ hr {
 
 #spinner{
   display: block;
+  
+}
+.centered{
+  width: 100%;
+  left: 0;
+  margin: auto;
+  margin-left: 48%;
+}
+#fine {
+  color:#ededed;
+}
+
+.pagination{
+  width: 100%;
+  text-align: right;
+  margin:0;
+  padding: 0;
+  
 }
