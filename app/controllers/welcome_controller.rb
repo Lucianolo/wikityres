@@ -32,8 +32,14 @@ class WelcomeController < ApplicationController
       raggio = Search.last.misura[5..-1]
     else
       mis = Search.last.misura
-      raggio = mis[-3..-1]
-      misura = mis.gsub(raggio, "")
+      if mis.length == 5 && mis[2] == '0'
+          raggio = mis[-2..-1]
+          misura = mis.gsub(raggio, "")
+        else
+          raggio = mis[-3..-1]
+          misura = mis.gsub(raggio, "")
+      end
+      
     end
     #stagione = params[:stagione]
     puts "UPDATING"
@@ -105,8 +111,14 @@ class WelcomeController < ApplicationController
         tmp_raggio = query.to_s[5..-1]
       else
         mis = query.to_s
-        tmp_raggio = mis[-3..-1]
-        tmp_misura = mis.gsub(tmp_raggio, "")
+        if mis.length == 5 && mis[2] == '0'
+          tmp_raggio = mis[-2..-1]
+          tmp_misura = mis.gsub(tmp_raggio, "")
+
+        else
+          tmp_raggio = mis[-3..-1]
+          tmp_misura = mis.gsub(tmp_raggio, "")
+        end
       end
       
       @misura = tmp_misura.gsub("/","")

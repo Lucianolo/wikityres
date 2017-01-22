@@ -24,25 +24,25 @@ class Pneumatico < ActiveRecord::Base
             # PNEUSHOPPING.IT
             if query.to_s.length > 6
               if fornitori.include? "PneuShopping"
-                threads << Thread.new {
+                
                   begin
                     Pneumatico.search_pneushopping(query,stagione,max_results)
                   ensure
                     ActiveRecord::Base.connection_pool.release_connection
                   end
-                }
+                
               end
             end
             
             # PENDINGOMME.IT
             if fornitori.include? "PendinGomme"
-              
+              threads << Thread.new {
                 begin
                   search_pendingomme(query,stagione,max_results)
                 ensure
                   ActiveRecord::Base.connection_pool.release_connection
                 end
-              
+              }
             end
             
             
@@ -535,8 +535,14 @@ private
               misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
             end
           else
-            raggio = modello.split("R").second.split(" ").first.gsub(/[^0-9]/, '')
-            misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
+            if (modello[4] != "R" && modello[5] != "R")
+              modello = modello[0..4]+"R"+modello[5..-1]
+              raggio = modello.split("R").second.split(" ").first.gsub(/[^0-9]/, '')
+              misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
+            else
+              raggio = modello.split("R").second.split(" ").first.gsub(/[^0-9]/, '')
+              misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
+            end
           end
           if row.css('span.eti._4stagioni').present?
             stagione = "4 Stagioni"
@@ -772,7 +778,11 @@ private
           p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text.strip.gsub(",",".").to_f.round(2)
           stock = row.css('td.CatalogoDisp.allinea strong')[0].text.to_i + row.css('td.CatalogoDisp.allinea strong')[1].text.to_i + row.css('td.CatalogoDisp.allinea strong span').text.to_i
           misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip.gsub(/[^0-9]/, '')
-          raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip
+          if query.to_s.length == 5
+            raggio = nome.gsub('-','R').split('R').second.split(" ").first.strip
+          else
+            raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip
+          end
           
           puts "MultiTires: "+nome
           # CONTROLLO SULLA VALIDITA' DEL CAMPO RAGGIO --- DA SISTEMARE PER ALCUNI VALORI
@@ -933,6 +943,7 @@ private
         
         giacenza = row.css("td.x-grid-cell")[15].text.strip.to_i + row.css("td.x-grid-cell")[16].text.strip.to_i 
         
+        
         if query.to_s.length > 6
        
           misura = modello.split(" ").first+modello.split(" ").second[0..1].gsub(/[^0-9]/, '')
@@ -940,8 +951,8 @@ private
           
         else
           
-          misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
-          raggio = modello.split("R").second.split(" ").first.strip.gsub(/[^0-9]/, '')
+          misura = modello.gsub("-","R").split("R").first.strip.gsub(/[^0-9]/, '')
+          raggio = modello.gsub("-","R").split("R").second.split(" ").first.strip.gsub(/[^0-9]/, '')
         
         end
         misura_totale = misura + raggio

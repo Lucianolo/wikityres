@@ -181,6 +181,10 @@ td.p_netto{
   background:#4E5066 !important;
   color:#FFFFFF !important;
 }
+
+td.stagione{
+  background: #1b1e24 !important;
+}
 th.text-left {
   text-align: center;
 }
