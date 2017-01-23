@@ -24,7 +24,7 @@
                             <% if item.nome_fornitore == "PneuShopping" %>
                                 <% p_finale = item.prezzo_netto %>
                             <% else %>
-                                <% p_finale = item.prezzo_netto + ((item.prezzo_netto + 2.30 )/100)*22 %>
+                                <% p_finale = item.prezzo_netto + 2.30 + ((item.prezzo_netto + 2.30 )/100)*22 %>
                             <% end %>
                             <td class="text-center p_netto"><%= p_finale.round(2) %>€</td>
                                 <% if item.stagione == "4 Stagioni" %>
