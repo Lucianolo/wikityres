@@ -54,16 +54,28 @@ class Pneumatico < ActiveRecord::Base
             puts query
             threads = []
             
+            # FARNESEPNEUS.IT
+            if fornitori.include? "FarnesePneus"
+              
+                begin
+                  search_farnese(query,stagione,max_results)
+                ensure
+                #guarantee that the thread is releasing the DB connection after it is done
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+                @pfu = Pneumatico.where(nome_fornitore: "FarnesePneus").last.pfu
+            end
+            
             # PNEUSHOPPING.IT
             if query.to_s.length > 6
               if fornitori.include? "PneuShopping"
-                
+                threads << Thread.new {
                   begin
                     Pneumatico.search_pneushopping(query,stagione,max_results)
                   ensure
                     ActiveRecord::Base.connection_pool.release_connection
                   end
-                
+                }
               end
             end
             
@@ -79,17 +91,7 @@ class Pneumatico < ActiveRecord::Base
             end
             
             
-            # FARNESEPNEUS.IT
-            if fornitori.include? "FarnesePneus"
-              threads << Thread.new {
-                begin
-                  search_farnese(query,stagione,max_results)
-                ensure
-                #guarantee that the thread is releasing the DB connection after it is done
-                  ActiveRecord::Base.connection_pool.release_connection
-                end
-              }
-            end
+            
               
             # FINTYRE.IT
             if fornitori.include? "Fintyre"
@@ -143,9 +145,13 @@ class Pneumatico < ActiveRecord::Base
             end
             threads2.each(&:join)
             @query = query.to_s
+            
+            value = system( " pkill -f 'phantomjs' ")
+            puts value
+            Search.where(misura: @query).first.update(finished: true)
           end
-        %x{for pid in $(ps -ef | awk '/phantomjs/ {print $2}'); do kill -9 $pid; done}
-        Search.where(misura: @query).first.update(finished: true)
+        
+        
     end
 
 private
@@ -260,7 +266,7 @@ private
       puts misura_totale
       puts tmp
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-          Pneumatico.create(nome_fornitore: "PneuShopping", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pneushopping, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel)
+          Pneumatico.create(nome_fornitore: "PneuShopping", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pneushopping, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel, pfu: @pfu)
       end
     end
     
@@ -341,7 +347,7 @@ private
       misura_totale = misura+raggio
       
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-        Pneumatico.create(nome_fornitore: "PendinGomme", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel)
+        Pneumatico.create(nome_fornitore: "PendinGomme", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel, pfu: @pfu)
       end
         
     end
@@ -442,7 +448,7 @@ private
           else
             stagione_db = "4 Stagioni"
           end
-          
+          pfu = row.css('.row-pfu').text.strip
           
           p_netto = row.css('.row-net-price').text.strip.gsub(",",".").to_f.round(2)
                     
@@ -453,7 +459,7 @@ private
           puts tmp
         
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-            Pneumatico.create(nome_fornitore: "FarnesePneus", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @farnesepneus, prezzo_netto: p_netto, giacenza: stock, stagione: stagione_db)
+            Pneumatico.create(nome_fornitore: "FarnesePneus", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @farnesepneus, prezzo_netto: p_netto, giacenza: stock, stagione: stagione_db, pfu: pfu)
             i+=1
           end
         end
@@ -590,7 +596,7 @@ private
           puts misura_totale
           puts tmp
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-            Pneumatico.create(nome_fornitore: "Fintyre",marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @fintyre, prezzo_netto: prezzo_netto, giacenza: stock, stagione: stagione)
+            Pneumatico.create(nome_fornitore: "Fintyre",marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @fintyre, prezzo_netto: prezzo_netto, giacenza: stock, stagione: stagione, pfu: @pfu)
             i+=1
           end
         end
@@ -712,7 +718,7 @@ private
           puts misura_totale
           puts tmp
           if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp )
-            Pneumatico.create(nome_fornitore: "CentroGomme" ,marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @centrogomme, prezzo_netto: p_netto, giacenza: stock, stagione: stagione)
+            Pneumatico.create(nome_fornitore: "CentroGomme" ,marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @centrogomme, prezzo_netto: p_netto, giacenza: stock, stagione: stagione, pfu: @pfu)
             j+=1
           end
         end
@@ -839,7 +845,7 @@ private
             stagione = "4 Stagioni"
           end
           if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
-            Pneumatico.create(nome_fornitore: "MultiTires", marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, giacenza: stock, stagione: stagione)
+            Pneumatico.create(nome_fornitore: "MultiTires", marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, giacenza: stock, stagione: stagione, pfu: @pfu)
             j+=1
           end
         end 
@@ -993,7 +999,7 @@ private
         puts misura_totale
         puts tmp
         if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp)
-            Pneumatico.create(nome_fornitore: "MaxTyre", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: stagione)
+            Pneumatico.create(nome_fornitore: "MaxTyre", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: stagione, pfu: @pfu)
         end
       end
       file.close

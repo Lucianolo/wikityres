@@ -21,10 +21,19 @@
                             <td class="text-center p_netto" ><%= number_with_precision(item.prezzo_netto, precision: 2) %>€</td>
                             
                             <td class="text-center giacenza" ><%= item.giacenza %></td>
+                            
+                            <% if item.pfu == "C2" %>
+                                <% pfu = 17.60 %>
+                            <% elsif item.pfu == "C1" %>
+                                <% pfu = 8.10 %>
+                            <% else %>
+                                <% pfu = 2.30 %>
+                            <% end %>
+                            
                             <% if item.nome_fornitore == "PneuShopping" %>
                                 <% p_finale = item.prezzo_netto %>
                             <% else %>
-                                <% p_finale = item.prezzo_netto + 2.30 + ((item.prezzo_netto + 2.30 )/100)*22 %>
+                                <% p_finale = item.prezzo_netto + pfu + ((item.prezzo_netto + pfu )/100)*22 %>
                             <% end %>
                             <td class="text-center p_netto"><%= p_finale.round(2) %>€</td>
                                 <% if item.stagione == "4 Stagioni" %>
