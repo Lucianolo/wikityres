@@ -573,6 +573,15 @@ private
               raggio = modello.split("R").second.split(" ").first.gsub(/[^0-9]/, '')
               misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
             end
+          elsif query.to_s.length == 8
+            if (modello[6] != "R" && modello[7] != "R")
+              modello = modello[0..5]+"R"+modello[6..-1]
+              raggio = modello.split("R").second.split(" ").first.gsub(/[^0-9]/, '')
+              misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
+            else
+              raggio = modello.split("R").second.split(" ").first.gsub(/[^0-9]/, '')
+              misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
+            end
           else
             if (modello[4] != "R" && modello[5] != "R")
               modello = modello[0..4]+"R"+modello[5..-1]
