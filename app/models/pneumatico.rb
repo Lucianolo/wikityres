@@ -44,6 +44,8 @@ class Pneumatico < ActiveRecord::Base
         @maxtyre = "http://web.maxtyre.it/"
         @pendingomme = "http://www.pendingomme.it/login"
         @pneushopping = "http://www.pneushopping.it/"
+        @carlinigomme = "http://carlinigomme.nuovo.diffusori.it/interna.asp"
+        
         fornitori = []
         Fornitore.where(status: "Attivo").each do |f|
           fornitori.push(f.nome)
@@ -65,6 +67,19 @@ class Pneumatico < ActiveRecord::Base
                 end
                 @pfu = Pneumatico.where(nome_fornitore: "FarnesePneus").last.pfu
             end
+            
+            
+            # CARLINIGOMME.IT
+            if fornitori.include? "CarliniGomme"
+              threads << Thread.new {
+                begin
+                  Pneumatico.search_carlini(query, stagione, max_results)
+                ensure
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+              }
+            end
+            
             
             # PNEUSHOPPING.IT
             if query.to_s.length > 6
@@ -179,7 +194,160 @@ private
         end
     end
     
+  def self.search_carlini(query, stagione, max_results)
+    switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs, :args => switches
+    browser.window.maximize
+    Pneumatico.sureLoadLink(10){ browser.goto @carlinigomme }
     
+    fornitore_carlini = Fornitore.where(nome: "CarliniGomme").first
+    browser.text_field(:name => 'username').set fornitore_carlini.user_name
+    browser.text_field(:name => 'password').set fornitore_carlini.password
+    browser.button(:id => 'butEntra').click  
+    
+    puts "CarliniGomme: Login effettuato"
+    search_page = "http://carlinigomme.nuovo.diffusori.it/interna.asp"
+    element = browser.iframe(:id => 'search1').table(:class => 'gvTheGrid')
+    
+    flag = Pneumatico.try_until(browser,search_page, element) {
+      browser.iframe.text_field(:id => 'ContenutoPagina_ucRicerca1_txtMisura').wait_until_present
+              
+      browser.iframe.text_field(:id => 'ContenutoPagina_ucRicerca1_txtMisura').set query
+      
+      if stagione == "Tutte"
+        id = "ContenutoPagina_ucRicerca1_cbTutti"
+      elsif stagione == "Estate"
+        id = "ContenutoPagina_ucRicerca1_cbEstivo"
+      elsif stagione == "Inverno"
+        id = "ContenutoPagina_ucRicerca1_cbInvernale"
+      elsif stagione == "4 Stagioni"
+        id = "ContenutoPagina_ucRicerca1_cbQuattroStagioni"
+      end
+              
+     
+      browser.iframe.checkbox(:id => id).set
+              
+      browser.iframe.button(:name => 'ctl00$ContenutoPagina$ucRicerca1$butCercaA').click
+      
+      sleep 0.25
+      while browser.div(:id=>"divwait").visible? do 
+        sleep 1 
+      end
+      
+      if browser.iframe(:id => 'search1').span(:class => 'NessunArticolo').text.strip == "Articoli Trovati 0"
+        puts "no results for multitires"
+        browser.close
+        return false
+      end
+      
+      browser.iframe(:id => 'search1').table(:class => 'gvTheGrid').wait_until_present(timeout: 5)
+            
+      
+    }
+    puts flag 
+    if flag
+          
+      table = browser.iframe(:id => 'search1').table(:class => 'gvTheGrid')
+      File.open('pages/carlinigomme.html', 'w') {|f| f.write table.html }
+              
+      browser.close
+      browser.quit
+                
+      file = File.open('pages/carlinigomme.html', 'r')
+      document = Nokogiri::HTML(file)
+   
+      tmp = query.to_s
+      
+      i = 0
+      j = 0
+      
+      table = document.css('table.gvTheGrid')
+      
+      table.search('tr.Consigliato').each do |anchor|
+        anchor['class']="Riga"
+      end
+      
+      table.search('tr.RigaOfferta').each do |anchor|
+        anchor['class']="Riga"
+      end
+      table.css('tbody tr.Riga').each do |row|
+        #puts row
+        if i.even? &&  j<max_results
+          
+         
+          if row.css('td.Catalogo.allinea div').text != ""
+            marca = row.css('td.Catalogo.allinea div').text
+          else
+            marca = row.at_css('td.Catalogo img').attr("title")
+          end
+          
+          
+          nome = row.css('div.DescrizioneArticolo').text.gsub("CAM."," ").gsub("SET.","SET").gsub("SET","").strip
+          p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text.strip.gsub(",",".").to_f.round(2)
+          stock = row.css('td.CatalogoDisp.allinea strong')[0].text.to_i + row.css('td.CatalogoDisp.allinea strong')[1].text.to_i + row.css('td.CatalogoDisp.allinea strong span').text.to_i
+          
+          misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip.gsub(/[^0-9]/, '')
+          if query.to_s.length == 5
+            raggio = nome.gsub('-','R').split('R').second.split(" ").first.strip.gsub(/[^0-9]/, '')
+          else
+            raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip.gsub(/[^0-9]/, '')
+          end
+          
+          
+          puts "CarliniGomme: "+nome
+          # CONTROLLO SULLA VALIDITA' DEL CAMPO RAGGIO --- DA SISTEMARE PER ALCUNI VALORI
+          puts nome
+          puts misura
+          puts raggio
+          if raggio.to_i.to_s != raggio
+            raggio = nome.split(" ")[2]
+          end
+          
+          
+          
+          tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
+          
+          
+          if @pfu == 'C2'
+            add = 17.60
+          elsif @pfu == 'C1'
+            add = 8.10
+          else
+            add = 2.30
+          end
+              
+          p_finale = p_netto + add + ((p_netto + add )/100)*22          
+          
+          misura_totale = misura+raggio
+          puts misura_totale
+          puts tmp
+          if tmp_stagione == "sun"
+            stagione = "Estate"
+          elsif tmp_stagione == "snow"
+            stagione = "Inverno"
+          else
+            stagione = "4 Stagioni"
+          end
+          if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
+            Pneumatico.create(nome_fornitore: "CarliniGomme", marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @carlinigomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+            j+=1
+          end
+        end 
+        i+=1
+      end
+        
+      file.close
+    
+    else
+      browser.close
+      puts "no results for carlinigomme"
+    end    
+  end    
+    
+    
+  
+  
+  
   def self.search_pneushopping(query, stagione, max_results)
     switches = ['--load-images=no']
     browser = Watir::Browser.new :phantomjs, :args => switches

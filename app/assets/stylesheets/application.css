@@ -84,7 +84,7 @@ div.table-title {
   border-collapse: collapse;
   max-height: 600px;
   margin: auto;
-  max-width: 1200px;
+  max-width: 1280px;
   padding:5px;
   width: 100%;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
@@ -270,10 +270,14 @@ hr {
 }
 
 #main {
+  
   margin: 0 auto;
   padding: 0 0;
 }
 
+.container{
+  width: 1280px !important;
+}
 #spinner{
   display: block;
   

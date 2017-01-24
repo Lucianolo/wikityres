@@ -68,6 +68,8 @@ class WelcomeController < ApplicationController
           @fornitori.push "Farnese"
         elsif r.nome_fornitore == "PendinGomme"
           @fornitori.push "Pendin"
+        elsif r.nome_fornitore == "CarliniGomme"
+          @fornitori.push "Carlini"
         else
           @fornitori.push r.nome_fornitore
         end
