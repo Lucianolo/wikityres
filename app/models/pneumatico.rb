@@ -266,7 +266,7 @@ private
       puts misura_totale
       puts tmp
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-          Pneumatico.create(nome_fornitore: "PneuShopping", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pneushopping, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel, pfu: @pfu)
+          Pneumatico.create(nome_fornitore: "PneuShopping", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pneushopping, prezzo_netto: prezzo_netto, prezzo_finale: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel, pfu: @pfu)
       end
     end
     
@@ -344,10 +344,20 @@ private
         stagione = "4 Stagioni"
       end
       
+      
+      if @pfu == 'C2'
+        add = 17.60
+      elsif @pfu == 'C1'
+        add = 8.10
+      else
+        add = 2.30
+      end
+          
+      p_finale = prezzo_netto + add + ((prezzo_netto + add )/100)*22
       misura_totale = misura+raggio
       
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-        Pneumatico.create(nome_fornitore: "PendinGomme", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel, pfu: @pfu)
+        Pneumatico.create(nome_fornitore: "PendinGomme", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel, pfu: @pfu)
       end
         
     end
@@ -454,12 +464,23 @@ private
                     
           stock = row.css('.row-stock-column-1').text.strip.to_i + row.css('.row-stock-column-4').text.to_i
           
+          
+          if pfu == 'C2'
+            add = 17.60
+          elsif pfu == 'C1'
+            add = 8.10
+          else
+            add = 2.30
+          end
+          
+          p_finale = p_netto + add + ((p_netto + add )/100)*22
+          
           misura_totale = misura+raggio
           puts misura_totale
           puts tmp
         
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-            Pneumatico.create(nome_fornitore: "FarnesePneus", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @farnesepneus, prezzo_netto: p_netto, giacenza: stock, stagione: stagione_db, pfu: pfu)
+            Pneumatico.create(nome_fornitore: "FarnesePneus", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @farnesepneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione_db, pfu: pfu)
             i+=1
           end
         end
@@ -600,12 +621,21 @@ private
             stagione = "Estate"
           end
           
+          if @pfu == 'C2'
+            add = 17.60
+          elsif @pfu == 'C1'
+            add = 8.10
+          else
+            add = 2.30
+          end
+              
+          p_finale = prezzo_netto + add + ((prezzo_netto + add )/100)*22          
         
           misura_totale = misura+raggio
           puts misura_totale
           puts tmp
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-            Pneumatico.create(nome_fornitore: "Fintyre",marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @fintyre, prezzo_netto: prezzo_netto, giacenza: stock, stagione: stagione, pfu: @pfu)
+            Pneumatico.create(nome_fornitore: "Fintyre",marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @fintyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             i+=1
           end
         end
@@ -722,12 +752,22 @@ private
             raggio = nome.split("R").second.split(" ").first.strip.gsub(/[^0-9]/, '')
             misura = nome.split("R").first.strip.gsub(/[^0-9]/, '')
           end
+
+          if @pfu == 'C2'
+            add = 17.60
+          elsif @pfu == 'C1'
+            add = 8.10
+          else
+            add = 2.30
+          end
+              
+          p_finale = p_netto + add + ((p_netto + add )/100)*22       
           
           misura_totale = misura+raggio
           puts misura_totale
           puts tmp
           if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp )
-            Pneumatico.create(nome_fornitore: "CentroGomme" ,marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @centrogomme, prezzo_netto: p_netto, giacenza: stock, stagione: stagione, pfu: @pfu)
+            Pneumatico.create(nome_fornitore: "CentroGomme" ,marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @centrogomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             j+=1
           end
         end
@@ -843,6 +883,17 @@ private
           
           tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
           
+          
+          if @pfu == 'C2'
+            add = 17.60
+          elsif @pfu == 'C1'
+            add = 8.10
+          else
+            add = 2.30
+          end
+              
+          p_finale = p_netto + add + ((p_netto + add )/100)*22          
+          
           misura_totale = misura+raggio
           puts misura_totale
           puts tmp
@@ -854,7 +905,7 @@ private
             stagione = "4 Stagioni"
           end
           if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
-            Pneumatico.create(nome_fornitore: "MultiTires", marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, giacenza: stock, stagione: stagione, pfu: @pfu)
+            Pneumatico.create(nome_fornitore: "MultiTires", marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             j+=1
           end
         end 
@@ -1003,12 +1054,24 @@ private
           raggio = modello.gsub("-","R").split("R").second.split(" ").first.strip.gsub(/[^0-9]/, '')
         
         end
+        
+        if @pfu == 'C2'
+          add = 17.60
+        elsif @pfu == 'C1'
+          add = 8.10
+        else
+          add = 2.30
+        end
+            
+        p_finale = prezzo_netto + add + ((prezzo_netto + add )/100)*22        
+        
+        
         misura_totale = misura + raggio
         
         puts misura_totale
         puts tmp
         if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp)
-            Pneumatico.create(nome_fornitore: "MaxTyre", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, giacenza: giacenza, stagione: stagione, pfu: @pfu)
+            Pneumatico.create(nome_fornitore: "MaxTyre", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, pfu: @pfu)
         end
       end
       file.close
@@ -1021,7 +1084,6 @@ private
     
   def self.maxtyre_create_table(browser)
     last_tmp = ""
-    i=0
     table = []
     flag = false
     j = 0

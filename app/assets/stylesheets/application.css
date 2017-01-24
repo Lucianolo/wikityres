@@ -181,6 +181,11 @@ td.p_netto{
   background:#4E5066 !important;
   color:#FFFFFF !important;
 }
+td.p_finale{
+  text-decoration:none;
+  background:#4E5066 !important;
+  color:#FFFFFF !important;
+}
 
 
 th.text-left {

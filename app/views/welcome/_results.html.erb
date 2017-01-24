@@ -30,12 +30,8 @@
                                 <% pfu = 2.30 %>
                             <% end %>
                             
-                            <% if item.nome_fornitore == "PneuShopping" %>
-                                <% p_finale = item.prezzo_netto %>
-                            <% else %>
-                                <% p_finale = item.prezzo_netto + pfu + ((item.prezzo_netto + pfu )/100)*22 %>
-                            <% end %>
-                            <td class="text-center p_netto"><%= p_finale.round(2) %>€</td>
+                            
+                            <td class="text-center p_finale"><%= number_with_precision(item.prezzo_finale, precision: 2) %>€</td>
                                 <% if item.stagione == "4 Stagioni" %>
                                     <td class="text-center stagione" style="background: #1b1e24 "><%= image_tag "4S.png", :class => 'logo-stagione' %></td>
                                 <% elsif item.stagione == "" %>
