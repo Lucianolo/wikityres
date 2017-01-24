@@ -716,13 +716,13 @@ private
             else
             
               misura = nome.gsub("CAM.","").split("R").first.strip.gsub(/[^0-9]/, '')
-              raggio = nome.gsub("CAM.","").split("R").second.split(" ").first
+              raggio = nome.gsub("CAM.","").split("R").second.split(" ").first.gsub(/[^0-9]/, '')
             end
           else
-            raggio = nome.split("R").second.split(" ").first.strip
+            raggio = nome.split("R").second.split(" ").first.strip.gsub(/[^0-9]/, '')
             misura = nome.split("R").first.strip.gsub(/[^0-9]/, '')
           end
-          raggio = raggio.gsub(".","")
+          
           misura_totale = misura+raggio
           puts misura_totale
           puts tmp
