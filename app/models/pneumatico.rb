@@ -94,9 +94,12 @@ class Pneumatico < ActiveRecord::Base
               end
             end
             
+            threads.each(&:join)
+            
+            threads2 = []
             # PENDINGOMME.IT
             if fornitori.include? "PendinGomme"
-              threads << Thread.new {
+              threads2 << Thread.new {
                 begin
                   search_pendingomme(query,stagione,max_results)
                 ensure
@@ -105,12 +108,10 @@ class Pneumatico < ActiveRecord::Base
               }
             end
             
-            
-            
               
             # FINTYRE.IT
             if fornitori.include? "Fintyre"
-              threads << Thread.new {
+              threads2 << Thread.new {
                 begin
                   search_fintyre(query,stagione,max_results)
                 ensure
@@ -119,12 +120,12 @@ class Pneumatico < ActiveRecord::Base
                 end
               }
             end
-            threads.each(&:join)
+            threads2.each(&:join)
             
-            threads2 = []
+            threads3 = []
             # CENTRO GOMME
             if fornitori.include? "CentroGomme"
-              threads2 << Thread.new {
+              threads3 << Thread.new {
                 begin
                   search_centrogomme(query,stagione,max_results)
                 ensure
@@ -137,7 +138,7 @@ class Pneumatico < ActiveRecord::Base
             
             # MULTITYRES
             if fornitori.include? "MultiTyre"
-              threads2 << Thread.new {
+              threads3 << Thread.new {
                 begin
                   search_multityre(query, stagione, max_results)
                 ensure
@@ -146,19 +147,18 @@ class Pneumatico < ActiveRecord::Base
                 end
               }
             end
-              
+            threads3.each(&:join)
+            
             # MAXTYRE
             if fornitori.include? "MaxTyre"
-              threads2 << Thread.new {
                 begin
                   search_maxtyre(query, stagione, max_results)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
                 end
-              }
             end
-            threads2.each(&:join)
+            
             @query = query.to_s
             
             value = system( " pkill -f 'phantomjs' ")
