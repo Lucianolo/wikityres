@@ -183,6 +183,7 @@ GEM
       sprockets-rails (>= 2.0, < 4.0)
     webrobots (0.1.2)
     websocket (1.2.3)
+    whacamole (1.2.0)
 
 PLATFORMS
   ruby
@@ -209,6 +210,7 @@ DEPENDENCIES
   watir
   watir-scroll
   web-console (~> 2.0)
+  whacamole
 
 BUNDLED WITH
    1.13.6
