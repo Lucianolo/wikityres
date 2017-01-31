@@ -1021,11 +1021,21 @@ private
       i = 0
       j = 0
       table = document.css('table.gvTheGrid')
+      
+      table.search('tr.Consigliato').each do |anchor|
+        anchor['class']="Riga"
+      end
+      
+      table.search('tr.RigaOfferta').each do |anchor|
+        anchor['class']="Riga"
+      end
+      
+      
       table.css('tbody tr.Riga').each do |row|
         if i.even? && j<max_results*2
           
-          if row.css('td.Catalogo.allinea div').text != ""
-            marca = row.css('td.Catalogo.allinea div').text
+          if row.at_css('td.Catalogo.allinea').text.strip != ""
+            marca = row.at_css('td.Catalogo.allinea').text
           else
             marca = row.at_css('td.Catalogo.allinea img').attr("title")
           end
@@ -1072,9 +1082,11 @@ private
           else
             stagione = "4 Stagioni"
           end
-          if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
-            Pneumatico.create(nome_fornitore: "MultiTires", marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
-            j+=1
+          if p_netto.to_i != 0
+            if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
+              Pneumatico.create(nome_fornitore: "MultiTires", marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+              j+=1
+            end
           end
         end 
         i+=1
