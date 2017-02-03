@@ -51,7 +51,7 @@ class Pneumatico < ActiveRecord::Base
         Fornitore.where(status: "Attivo").each do |f|
           fornitori.push(f.nome)
         end
-        
+        puts fornitori
         query_list.each do |query|
             
             puts query
@@ -167,6 +167,7 @@ class Pneumatico < ActiveRecord::Base
             end
             
             if fornitori.include? "MaxiTyre"
+              puts "Loading Maxityre"
               threads4 << Thread.new {
                 begin
                   search_maxityre(query,stagione,max_results)
