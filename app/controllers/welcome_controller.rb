@@ -30,6 +30,7 @@ class WelcomeController < ApplicationController
       misura = mis
       
       raggio = Search.last.misura[5..-1]
+      
     else
       mis = Search.last.misura
       if mis.length == 5 && mis[2] == '0'
@@ -90,8 +91,8 @@ class WelcomeController < ApplicationController
     query = params[:misura].to_i
     @query = query
     @veicolo = params[:veicolo]
-    puts @veicolo
     
+  
     # Per ora tolgo la marca
     
     #marca = params[:marca]

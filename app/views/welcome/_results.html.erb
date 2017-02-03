@@ -20,7 +20,13 @@
                             </td-->
                             <td class="text-center p_netto" ><%= number_with_precision(item.prezzo_netto, precision: 2) %>€</td>
                             
-                            <td class="text-center giacenza" ><%= item.giacenza %></td>
+                            <td class="text-center giacenza" >
+                                <% if item.nome_fornitore == "MaxiTyre" %>
+                                    <%= "?" %>
+                                <% else %>
+                                    <%= item.giacenza %>
+                                <% end %>
+                            </td>
                             
                             <% if item.pfu == "C2" %>
                                 <% pfu = 17.60 %>

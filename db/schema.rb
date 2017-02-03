@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170124174922) do
+ActiveRecord::Schema.define(version: 20170202201759) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 20170124174922) do
     t.float    "prezzo_finale"
   end
 
-  add_index "pneumaticos", ["modello"], name: "index_pneumaticos_on_modello", unique: true, using: :btree
+  add_index "pneumaticos", ["modello"], name: "index_pneumaticos_on_modello", using: :btree
 
   create_table "searches", force: :cascade do |t|
     t.string   "misura"

@@ -34,7 +34,7 @@ gem 'jquery-ui-rails', '~> 6.0.0'
 gem 'watir-scroll'
 # Use Unicorn as the app server
 # gem 'unicorn'
-gem 'whacamole'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 

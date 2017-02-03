@@ -45,6 +45,7 @@ class Pneumatico < ActiveRecord::Base
         @pendingomme = "http://www.pendingomme.it/login"
         @pneushopping = "http://www.pneushopping.it/"
         @carlinigomme = "http://carlinigomme.nuovo.diffusori.it/interna.asp"
+        @maxityre = "https://www.maxityre.it/"
         
         fornitori = []
         Fornitore.where(status: "Attivo").each do |f|
@@ -67,6 +68,8 @@ class Pneumatico < ActiveRecord::Base
                 end
                 @pfu = Pneumatico.where(nome_fornitore: "FarnesePneus").last.pfu
             end
+            
+            
             
             
             # CARLINIGOMME.IT
@@ -149,16 +152,31 @@ class Pneumatico < ActiveRecord::Base
             end
             threads3.each(&:join)
             
+            threads4=[]
+            
             # MAXTYRE
             if fornitori.include? "MaxTyre"
+              threads4 << Thread.new {
                 begin
                   search_maxtyre(query, stagione, max_results)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
                 end
+              }
             end
             
+            if fornitori.include? "MaxiTyre"
+              threads4 << Thread.new {
+                begin
+                  search_maxityre(query,stagione,max_results)
+                ensure
+                #guarantee that the thread is releasing the DB connection after it is done
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+              }
+            end
+            threads4.each(&:join)
             @query = query.to_s
             
             value = system( " pkill -f 'phantomjs' ")
@@ -194,6 +212,169 @@ private
         end
     end
     
+    
+  
+  def self.search_maxityre(query, stagione, max_results)
+    switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs, :args => switches
+    browser.window.maximize
+    Pneumatico.sureLoadLink(10){ browser.goto @maxityre }
+    
+    fornitore_maxityre = Fornitore.where(nome: "MaxiTyre").first
+    browser.text_field(:name => 'login').set fornitore_maxityre.user_name
+    browser.text_field(:name => 'password').set fornitore_maxityre.password
+    browser.button(:id => 'submit-form').click  
+    
+    puts "MaxiTyre: Login effettuato"
+    search_page="https://www.maxityre.it"
+    element = browser.table(:id => 'result-table')
+    
+    flag = Pneumatico.try_until(browser,search_page, element) {
+      browser.text_field(:id => 'input-match').wait_until_present
+      
+      puts browser.text_field(:id => 'input-match').value
+      browser.text_field(:id => 'input-match').set query
+      puts browser.text_field(:id => 'input-match').value
+      browser.div(:id => 'btnSearch').button.click
+              
+      browser.table(:id => 'result-table').wait_until_present(timeout: 15)
+      
+      if browser.table(:id => 'result-table').text.strip == "Siamo spiacenti, ma nessun risultato corrisponde alla vostra ricerca."
+        puts "no results for maxityre"
+        browser.close
+        return false
+      end
+            
+    }
+    puts flag 
+    if flag
+      
+      browser.button(:text => /Vedere ulteriori risultati/).click
+      #browser.link(:text => " Vedere ulteriori risultati ").click
+      sleep 0.25
+      browser.select_list(:id => "order-prix").select("Prezzo (crescente)")
+
+      sleep 1
+      tables = []
+      rows = ""
+      i = 1
+      while i < 5
+        puts i
+        table = browser.table(:id => 'result-table')
+        table.tbody.rows.each do |row|
+          rows = rows+row.html
+        end
+        if browser.ul(:class => "pagination").present?
+          if i > 1
+            puts "I > 1"
+            url = url.gsub!("&p="+i.to_s+"&season", "&p="+(i+1).to_s+"&season")
+          else
+            puts "I = 1"
+            url = browser.url.gsub("&season", "&p=2&season").gsub("me=order-by","me=page")
+          end
+          
+          browser.goto url
+          if browser.url != url
+            break
+          end
+          sleep 0.5
+          i+=1
+        else
+          break
+        end
+
+      end
+      
+      
+      File.open('pages/maxityre.html', 'w') {|f| f.write rows }
+              
+      browser.close
+      browser.quit
+                
+      file = File.open('pages/maxityre.html', 'r')
+      document = Nokogiri::HTML(file)
+   
+      tmp = query.to_s
+      
+      rows = document.css('tr')
+      if @pfu == 'C2'
+        add = 17.60
+      elsif @pfu == 'C1'
+        add = 8.10
+      else
+        add = 2.30
+      end
+      
+      rows.each do |row|
+        #puts row
+        marca = row.css('td img.block').attr('alt')
+        
+        puts marca
+        descrizione = row.css('td a.block').first.text + row.css('td span.block').first.text
+        seconda_riga = row.css('td span.block').last
+        puts descrizione
+        
+        misura_tmp = descrizione.split(" ").first.strip.gsub("-","R")
+        puts misura_tmp
+        if misura_tmp.split("R").second != nil
+          puts "c'è la R"
+          misura = misura_tmp.split("R").first.gsub(/[^0-9]/, '')
+          puts "a"
+          raggio = misura_tmp.split("R").second.strip.gsub(/[^0-9]/, '')
+          puts "b"
+          cod_vel = descrizione.split(" ").second.strip
+        else
+          puts "non c'è la R"
+          misura = misura_tmp.gsub(/[^0-9]/, '')
+          raggio = descrizione.split(" ").second.strip.gsub(/[^0-9]/, '')
+          cod_vel = descrizione.split(" ")[2].strip.gsub(/[^0-9]/, '')
+        end
+        puts misura
+        puts raggio
+        puts cod_vel
+        if misura == "75"
+          misura += "0"
+        end
+        if seconda_riga.text == row.css('td span.block').first.text
+          descrizione = descrizione + " "+marca
+        else
+          descrizione = descrizione + " " + marca + " " + seconda_riga.text
+        end
+        puts descrizione
+        p_netto = row.css("td b.green").text.gsub("€","").strip.gsub(",",".").to_f.round(2)
+        puts p_netto
+        stagione = row.css("td span.weather").first["data-content"]
+        if stagione == "4 stagioni" 
+          stagione = "4 Stagioni"
+        end
+        
+        
+        
+        
+        p_finale = p_netto + add + ((p_netto + add )/100)*22    
+        
+        misura_totale = misura + raggio
+        
+        puts misura_totale
+        puts tmp
+        if (misura_totale == tmp)
+          Pneumatico.create(nome_fornitore: "MaxiTyre", marca: marca, misura: misura, raggio: raggio, modello: descrizione, cod_vel: cod_vel, fornitore: @maxityre, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: 25, stagione: stagione, pfu: @pfu)
+
+        end
+      end
+    file.close
+    
+    else
+      browser.close
+      puts "no results for MaxiTyre"
+    end    
+    
+  end
+  
+  
+    
+    
+  
   def self.search_carlini(query, stagione, max_results)
     switches = ['--load-images=no']
     browser = Watir::Browser.new :phantomjs, :args => switches
@@ -487,21 +668,26 @@ private
         misura = line.split("(").last.split(")").first[0..4].gsub(/[^0-9]/, '')
       
         raggio = line.split("(").last.split(")").first[5..-1]
-      else
+      elsif query.to_s.length == 5
+        
+        index = query.to_s.length - 2
 
+        misura = line.split("(").last.split(")").first[0..index-1].gsub(/[^0-9]/, '')
+
+        raggio = line.split("(").last.split(")").first[index..-1]
+      else
         index = query.to_s.length - 3
 
         misura = line.split("(").last.split(")").first[0..index-1].gsub(/[^0-9]/, '')
 
         raggio = line.split("(").last.split(")").first[index..-1]
+        
       end
       
       stagione = row.css('p').text.strip.split("Stagione: ").last.split(",").first
       prezzo_netto = row.css(".price").text.strip.gsub(",",".").gsub(" €","").to_f.round(2)
       giacenza = row.css("#pQuantityAvailable").text.strip.split(" ").first.to_i
-      
       cod_vel = row.css('p').text.strip.split("LI: ").last.split(",").first + row.css('p').text.strip.split("SI: ").last.split(",").first 
-      
       if query.to_s.length > 6
         modello = misura[0..2]+"/"+misura[3..-1]+" "+"R"+raggio+" "+marca+" "+line.split(" ").second.strip+" "+cod_vel
       else
@@ -523,7 +709,8 @@ private
           
       p_finale = prezzo_netto + add + ((prezzo_netto + add )/100)*22
       misura_totale = misura+raggio
-      
+      puts misura_totale
+      puts tmp
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
         Pneumatico.create(nome_fornitore: "PendinGomme", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel, pfu: @pfu)
       end
