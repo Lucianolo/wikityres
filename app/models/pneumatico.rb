@@ -83,20 +83,19 @@ class Pneumatico < ActiveRecord::Base
               }
             end
             
-            puts fornitori.include? "MaxiTyre"
             
-            if fornitori.include? "MaxiTyre"
-              puts "Loading Maxityre"
-              threads << Thread.new {
-                begin
-                  search_maxityre(query,stagione,max_results)
-                ensure
-                #guarantee that the thread is releasing the DB connection after it is done
-                  ActiveRecord::Base.connection_pool.release_connection
-                end
-              }
+            # PNEUSHOPPING.IT
+            if query.to_s.length > 6
+              if fornitori.include? "PneuShopping"
+                threads << Thread.new {
+                  begin
+                    Pneumatico.search_pneushopping(query,stagione,max_results)
+                  ensure
+                    ActiveRecord::Base.connection_pool.release_connection
+                  end
+                }
+              end
             end
-
             
             threads.each(&:join)
             
@@ -167,16 +166,15 @@ class Pneumatico < ActiveRecord::Base
               }
             end
             
-            if query.to_s.length > 6
-              if fornitori.include? "PneuShopping"
-                threads4 << Thread.new {
-                  begin
-                    Pneumatico.search_pneushopping(query,stagione,max_results)
-                  ensure
-                    ActiveRecord::Base.connection_pool.release_connection
-                  end
-                }
-              end
+            if fornitori.include? "MaxiTyre"
+              threads4 << Thread.new {
+                begin
+                  search_maxityre(query,stagione,max_results)
+                ensure
+                #guarantee that the thread is releasing the DB connection after it is done
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+              }
             end
             threads4.each(&:join)
             @query = query.to_s
@@ -234,9 +232,9 @@ private
     flag = Pneumatico.try_until(browser,search_page, element) {
       browser.text_field(:id => 'input-match').wait_until_present
       
-      puts browser.text_field(:id => 'input-match').value
+      
       browser.text_field(:id => 'input-match').set query
-      puts browser.text_field(:id => 'input-match').value
+      
       browser.div(:id => 'btnSearch').button.click
               
       browser.table(:id => 'result-table').wait_until_present(timeout: 15)
@@ -268,10 +266,8 @@ private
         end
         if browser.ul(:class => "pagination").present?
           if i > 1
-            puts "I > 1"
             url = url.gsub!("&p="+i.to_s+"&season", "&p="+(i+1).to_s+"&season")
           else
-            puts "I = 1"
             url = browser.url.gsub("&season", "&p=2&season").gsub("me=order-by","me=page")
           end
           
@@ -311,29 +307,26 @@ private
         #puts row
         marca = row.css('td img.block').attr('alt')
         
-        puts marca
+       
         descrizione = row.css('td a.block').first.text + row.css('td span.block').first.text
         seconda_riga = row.css('td span.block').last
-        puts descrizione
         
         misura_tmp = descrizione.split(" ").first.strip.gsub("-","R")
-        puts misura_tmp
+        
         if misura_tmp.split("R").second != nil
-          puts "c'è la R"
+          
           misura = misura_tmp.split("R").first.gsub(/[^0-9]/, '')
-          puts "a"
+         
           raggio = misura_tmp.split("R").second.strip.gsub(/[^0-9]/, '')
-          puts "b"
+          
           cod_vel = descrizione.split(" ").second.strip
         else
-          puts "non c'è la R"
+         
           misura = misura_tmp.gsub(/[^0-9]/, '')
           raggio = descrizione.split(" ").second.strip.gsub(/[^0-9]/, '')
           cod_vel = descrizione.split(" ")[2].strip.gsub(/[^0-9]/, '')
         end
-        puts misura
-        puts raggio
-        puts cod_vel
+       
         if misura == "75"
           misura += "0"
         end
@@ -342,9 +335,10 @@ private
         else
           descrizione = descrizione + " " + marca + " " + seconda_riga.text
         end
-        puts descrizione
+        puts "MaxTyre: "+descrizione
+        
         p_netto = row.css("td b.green").text.gsub("€","").strip.gsub(",",".").to_f.round(2)
-        puts p_netto
+        
         stagione = row.css("td span.weather").first["data-content"]
         if stagione == "4 stagioni" 
           stagione = "4 Stagioni"
@@ -357,8 +351,7 @@ private
         
         misura_totale = misura + raggio
         
-        puts misura_totale
-        puts tmp
+        
         if (misura_totale == tmp)
           Pneumatico.create(nome_fornitore: "MaxiTyre", marca: marca, misura: misura, raggio: raggio, modello: descrizione, cod_vel: cod_vel, fornitore: @maxityre, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: 25, stagione: stagione, pfu: @pfu)
 
@@ -479,9 +472,7 @@ private
           
           puts "CarliniGomme: "+nome
           # CONTROLLO SULLA VALIDITA' DEL CAMPO RAGGIO --- DA SISTEMARE PER ALCUNI VALORI
-          puts nome
-          puts misura
-          puts raggio
+         
           if raggio.to_i.to_s != raggio
             raggio = nome.split(" ")[2]
           end
@@ -502,8 +493,7 @@ private
           p_finale = p_netto + add + ((p_netto + add )/100)*22          
           
           misura_totale = misura+raggio
-          puts misura_totale
-          puts tmp
+          
           if tmp_stagione == "sun"
             stagione = "Estate"
           elsif tmp_stagione == "snow"
@@ -537,7 +527,7 @@ private
     browser.window.maximize
     Pneumatico.sureLoadLink(10){ browser.goto 'http://www.pneushopping.it/login?_next=/' }
     query_old = query           
-    puts "page loaded"
+    #puts "page loaded"
     if query.to_s.length > 7
       query = query.to_s[0..-2]+"."+query.to_s.last
     end
@@ -545,10 +535,10 @@ private
     browser.text_field(:name => 'username').set fornitore_pneushopping.user_name
     browser.text_field(:name => 'password').set fornitore_pneushopping.password
     browser.button(:class => 'btn').click           
-    puts "login effettuato"
+
     #browser.link(:href => '/catalogo').click
     browser.goto "http://www.pneushopping.it/catalogo"
-    puts "pagina risultati"
+    #puts "pagina risultati"
     
     sleep 1
     
@@ -584,12 +574,12 @@ private
       if link.text == '2'
         link.click
         sleep 0.5
-        puts "Second Page"
+        #puts "Second Page"
         table2 = browser.table(:id => 'Grid').tbody
         File.open('pages/pneushopping.html', 'a') {|f| f.write table2.html }
       end
     end
-    puts "closing Watir"
+    #puts "closing Watir"
     browser.close
     
     file = File.open('pages/pneushopping.html', 'r')
@@ -614,8 +604,7 @@ private
         stag = "4 Stagioni"
       end
       misura_totale = misura+raggio
-      puts misura_totale
-      puts tmp
+      
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
           Pneumatico.create(nome_fornitore: "PneuShopping", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pneushopping, prezzo_netto: prezzo_netto, prezzo_finale: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel, pfu: @pfu)
       end
@@ -631,7 +620,7 @@ private
     browser.window.maximize
     Pneumatico.sureLoadLink(10){ browser.goto 'http://www.pendingomme.it/login' }
                
-    puts "page loaded"
+    #puts "page loaded"
     
     fornitore_pendingomme = Fornitore.where(nome: "PendinGomme").first
     browser.text_field(:name => 'email').set fornitore_pendingomme.user_name
@@ -642,7 +631,7 @@ private
       
     sleep 1
       
-    puts "logged in"
+    puts "Pendin logged in"
     Pneumatico.sureLoadLink(10) { browser.goto('http://www.pendingomme.it/ricerca?controller=search&orderby=position&orderway=desc&search_query='+query.to_s+'&submit_search=') }
 
     if browser.element(:class => 'alert-warning').present?
@@ -653,7 +642,7 @@ private
       
     File.open('pages/pendingomme.html', 'w') {|f| f.write browser.ul(:class => 'product_list').html }
    
-    puts "PendinGomme: closing Watir"
+    #puts "PendinGomme: closing Watir"
     browser.close
     
     file = File.open('pages/pendingomme.html', 'r')
@@ -711,8 +700,7 @@ private
           
       p_finale = prezzo_netto + add + ((prezzo_netto + add )/100)*22
       misura_totale = misura+raggio
-      puts misura_totale
-      puts tmp
+      
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
         Pneumatico.create(nome_fornitore: "PendinGomme", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel, pfu: @pfu)
       end
@@ -737,7 +725,7 @@ private
     browser.window.maximize
     Pneumatico.sureLoadLink(10){ browser.goto 'http://www.b2b.farnesepneus.it/' }
              
-    puts "page loaded"
+    #puts "page loaded"
     fornitore_farnese = Fornitore.where(nome: "FarnesePneus").first
     browser.text_field(:name => '_username').set fornitore_farnese.user_name
               
@@ -746,7 +734,7 @@ private
     browser.button(:name => '_submit').click
     browser.link(:text =>"Ricerca").click
       
-      puts "login effettuato"
+      puts "Farnese login effettuato"
       #browser.select_list(:name => 'price-list_length').select 100
     
     element = browser.tr(:class => 'even')
@@ -777,12 +765,12 @@ private
       
       
     }
-    puts flag 
+    
     if flag 
       table = browser.table(:id => 'price-list')
       File.open('pages/farnesepneus.html', 'w') {|f| f.write table.html }
    
-      puts "Farnese: closing Watir"
+      #puts "Farnese: closing Watir"
       browser.close
    
       file = File.open('pages/farnesepneus.html', 'r')
@@ -833,8 +821,7 @@ private
           p_finale = p_netto + add + ((p_netto + add )/100)*22
           
           misura_totale = misura+raggio
-          puts misura_totale
-          puts tmp
+          
         
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
             Pneumatico.create(nome_fornitore: "FarnesePneus", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @farnesepneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione_db, pfu: pfu)
@@ -989,15 +976,14 @@ private
           p_finale = prezzo_netto + add + ((prezzo_netto + add )/100)*22          
         
           misura_totale = misura+raggio
-          puts misura_totale
-          puts tmp
+          
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
             Pneumatico.create(nome_fornitore: "Fintyre",marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @fintyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             i+=1
           end
         end
         rescue NoMethodError
-          puts "error"
+          puts "error Fintyre"
           next
         end
       end
@@ -1057,7 +1043,7 @@ private
       #condition = browser.table(:id => 'searchartico_WT_39019_mt_data').exists? 
       
     }
-    puts flag 
+    
     if flag 
             
       File.open('pages/centrogomme.html', 'w') {|f| f.write browser.table(:id => 'searchartico_WT_39019_mt_data').html }
@@ -1121,8 +1107,7 @@ private
           p_finale = p_netto + add + ((p_netto + add )/100)*22       
           
           misura_totale = misura+raggio
-          puts misura_totale
-          puts tmp
+          
           if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp )
             Pneumatico.create(nome_fornitore: "CentroGomme" ,marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @centrogomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             j+=1
@@ -1193,7 +1178,7 @@ private
             
       
     }
-    puts flag 
+    
     if flag
           
       table = browser.iframe(:id => 'search1').table(:class => 'gvTheGrid')
@@ -1262,8 +1247,7 @@ private
           p_finale = p_netto + add + ((p_netto + add )/100)*22          
           
           misura_totale = misura+raggio
-          puts misura_totale
-          puts tmp
+          
           if tmp_stagione == "sun"
             stagione = "Estate"
           elsif tmp_stagione == "snow"
@@ -1303,7 +1287,7 @@ private
           
         Pneumatico.sureLoadLink(10){ browser.goto 'http://web.maxtyre.it/' }
                    
-        puts "page loaded"
+        #puts "page loaded"
         
         fornitore_maxtyre = Fornitore.where(nome: "MaxTyre").first
         browser.text_field(:name => 'username').set fornitore_maxtyre.user_name
@@ -1313,14 +1297,14 @@ private
         browser.link(:id => 'button-1017').click
           
         sleep 2
-        puts "login effettuato"
+        puts "MaxTyre login effettuato"
           
         browser.link(:id =>"button-1026").click
             
-        puts "Bottone ricerca premuto" 
+        #puts "Bottone ricerca premuto" 
           
         browser.text_field(:name => 'codRic').set query
-        puts "query settata"
+        #puts "query settata"
         
        
         index = 0
@@ -1437,8 +1421,7 @@ private
         
         misura_totale = misura + raggio
         
-        puts misura_totale
-        puts tmp
+        
         if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp)
             Pneumatico.create(nome_fornitore: "MaxTyre", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, pfu: @pfu)
         end
@@ -1479,7 +1462,7 @@ private
             end
           end
               
-          puts "scrolling"
+          #puts "scrolling"
           last_tmp = container.tables.last.text
           container.tables.last.wd.location_once_scrolled_into_view
           sleep 0.20
