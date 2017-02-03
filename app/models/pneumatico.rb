@@ -83,19 +83,20 @@ class Pneumatico < ActiveRecord::Base
               }
             end
             
+            puts fornitori.include? "MaxiTyre"
             
-            # PNEUSHOPPING.IT
-            if query.to_s.length > 6
-              if fornitori.include? "PneuShopping"
-                threads << Thread.new {
-                  begin
-                    Pneumatico.search_pneushopping(query,stagione,max_results)
-                  ensure
-                    ActiveRecord::Base.connection_pool.release_connection
-                  end
-                }
-              end
+            if fornitori.include? "MaxiTyre"
+              puts "Loading Maxityre"
+              threads << Thread.new {
+                begin
+                  search_maxityre(query,stagione,max_results)
+                ensure
+                #guarantee that the thread is releasing the DB connection after it is done
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+              }
             end
+
             
             threads.each(&:join)
             
@@ -166,16 +167,16 @@ class Pneumatico < ActiveRecord::Base
               }
             end
             
-            if fornitori.include? "MaxiTyre"
-              puts "Loading Maxityre"
-              threads4 << Thread.new {
-                begin
-                  search_maxityre(query,stagione,max_results)
-                ensure
-                #guarantee that the thread is releasing the DB connection after it is done
-                  ActiveRecord::Base.connection_pool.release_connection
-                end
-              }
+            if query.to_s.length > 6
+              if fornitori.include? "PneuShopping"
+                threads4 << Thread.new {
+                  begin
+                    Pneumatico.search_pneushopping(query,stagione,max_results)
+                  ensure
+                    ActiveRecord::Base.connection_pool.release_connection
+                  end
+                }
+              end
             end
             threads4.each(&:join)
             @query = query.to_s
