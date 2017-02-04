@@ -222,7 +222,7 @@ private
     
     fornitore_maxityre = Fornitore.where(nome: "MaxiTyre").first
     
-    if browser.text_field(:name => 'login').present?
+    if browser.text_field(:name => 'login').exists?
       browser.text_field(:name => 'login').set fornitore_maxityre.user_name
       browser.text_field(:name => 'password').set fornitore_maxityre.password
       browser.button(:id => 'submit-form').click  
@@ -261,7 +261,6 @@ private
       browser.select_list(:id => "order-prix").select("Prezzo (crescente)")
 
       sleep 1
-      tables = []
       rows = ""
       i = 1
       while i < 5
@@ -341,7 +340,7 @@ private
         else
           descrizione = descrizione + " " + marca + " " + seconda_riga.text
         end
-        puts "MaxTyre: "+descrizione
+        puts "MaxiTyre: "+descrizione
         
         p_netto = row.css("td b.green").text.gsub("€","").strip.gsub(",",".").to_f.round(2)
         
@@ -383,7 +382,7 @@ private
     Pneumatico.sureLoadLink(10){ browser.goto @carlinigomme }
     
     fornitore_carlini = Fornitore.where(nome: "CarliniGomme").first
-    if browser.text_field(:name => 'username').present?
+    if browser.text_field(:name => 'username').exists?
       browser.text_field(:name => 'username').set fornitore_carlini.user_name
       browser.text_field(:name => 'password').set fornitore_carlini.password
       browser.button(:id => 'butEntra').click  
@@ -543,7 +542,7 @@ private
       query = query.to_s[0..-2]+"."+query.to_s.last
     end
     fornitore_pneushopping = Fornitore.where(nome: "PneuShopping").first
-    if browser.text_field(:name => 'username').present?
+    if browser.text_field(:name => 'username').exists?
       browser.text_field(:name => 'username').set fornitore_pneushopping.user_name
       browser.text_field(:name => 'password').set fornitore_pneushopping.password
       browser.button(:class => 'btn').click   
@@ -639,7 +638,7 @@ private
     #puts "page loaded"
     
     fornitore_pendingomme = Fornitore.where(nome: "PendinGomme").first
-    if browser.text_field(:name => 'email').present?
+    if browser.text_field(:name => 'email').exists?
       browser.text_field(:name => 'email').set fornitore_pendingomme.user_name
                   
       browser.text_field(:name => 'passwd').set fornitore_pendingomme.password
@@ -748,7 +747,7 @@ private
              
     #puts "page loaded"
     fornitore_farnese = Fornitore.where(nome: "FarnesePneus").first
-    if browser.text_field(:name => '_username').present?
+    if browser.text_field(:name => '_username').exists?
       browser.text_field(:name => '_username').set fornitore_farnese.user_name
                 
       browser.text_field(:name => '_password').set fornitore_farnese.password
@@ -877,7 +876,7 @@ private
       browser.goto 'http://b2b.fintyre.it'
     }
     fornitore_fintyre = Fornitore.where(nome: "Fintyre").first
-    if browser.text_field(:id => 'username').present?
+    if browser.text_field(:id => 'username').exists?
       browser.text_field(:id => 'username').set fornitore_fintyre.user_name
               
       browser.text_field(:id => 'password').set fornitore_fintyre.password
@@ -1039,7 +1038,7 @@ private
            
     fornitore_centrogomme = Fornitore.where(nome: "CentroGomme").first
     
-    if browser.iframe.text_field(:id => 't_username').present?
+    if browser.iframe.text_field(:id => 't_username').exists?
       browser.iframe.text_field(:id => 't_username').set fornitore_centrogomme.user_name
               
       browser.iframe.text_field(:id => 't_pwd').set fornitore_centrogomme.password
@@ -1176,7 +1175,7 @@ private
     
     fornitore_multityre = Fornitore.where(nome: "MultiTyre").first
     
-    if browser.text_field(:name => 'username').present?
+    if browser.text_field(:name => 'username').exists?
       browser.text_field(:name => 'username').set fornitore_multityre.user_name
               
       browser.text_field(:name => 'password').set fornitore_multityre.password
@@ -1337,16 +1336,16 @@ private
         #puts "page loaded"
         
         fornitore_maxtyre = Fornitore.where(nome: "MaxTyre").first
-        if browser.text_field(:name => 'username').present?
+        #if browser.text_field(:name => 'username').exists?
           browser.text_field(:name => 'username').set fornitore_maxtyre.user_name
                       
           browser.text_field(:name => 'password').set fornitore_maxtyre.password
                      
           browser.link(:id => 'button-1017').click
-        else
-          puts "MaxTyre non disponibile"
-          return 
-        end  
+        #else
+        #  puts "MaxTyre non disponibile"
+        #  return 
+        #end  
         sleep 2
         puts "MaxTyre login effettuato"
           
