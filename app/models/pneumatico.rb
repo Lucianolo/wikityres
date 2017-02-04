@@ -221,9 +221,15 @@ private
     Pneumatico.sureLoadLink(10){ browser.goto @maxityre }
     
     fornitore_maxityre = Fornitore.where(nome: "MaxiTyre").first
-    browser.text_field(:name => 'login').set fornitore_maxityre.user_name
-    browser.text_field(:name => 'password').set fornitore_maxityre.password
-    browser.button(:id => 'submit-form').click  
+    
+    if browser.text_field(:name => 'login').present?
+      browser.text_field(:name => 'login').set fornitore_maxityre.user_name
+      browser.text_field(:name => 'password').set fornitore_maxityre.password
+      browser.button(:id => 'submit-form').click  
+    else
+      puts "MaxiTyre non disponibile"
+      return
+    end
     
     puts "MaxiTyre: Login effettuato"
     search_page="https://www.maxityre.it"
@@ -377,9 +383,14 @@ private
     Pneumatico.sureLoadLink(10){ browser.goto @carlinigomme }
     
     fornitore_carlini = Fornitore.where(nome: "CarliniGomme").first
-    browser.text_field(:name => 'username').set fornitore_carlini.user_name
-    browser.text_field(:name => 'password').set fornitore_carlini.password
-    browser.button(:id => 'butEntra').click  
+    if browser.text_field(:name => 'username').present?
+      browser.text_field(:name => 'username').set fornitore_carlini.user_name
+      browser.text_field(:name => 'password').set fornitore_carlini.password
+      browser.button(:id => 'butEntra').click  
+    else
+      puts "CarliniGomme non disponibile"
+      return
+    end
     
     puts "CarliniGomme: Login effettuato"
     search_page = "http://carlinigomme.nuovo.diffusori.it/interna.asp"
@@ -532,9 +543,14 @@ private
       query = query.to_s[0..-2]+"."+query.to_s.last
     end
     fornitore_pneushopping = Fornitore.where(nome: "PneuShopping").first
-    browser.text_field(:name => 'username').set fornitore_pneushopping.user_name
-    browser.text_field(:name => 'password').set fornitore_pneushopping.password
-    browser.button(:class => 'btn').click           
+    if browser.text_field(:name => 'username').present?
+      browser.text_field(:name => 'username').set fornitore_pneushopping.user_name
+      browser.text_field(:name => 'password').set fornitore_pneushopping.password
+      browser.button(:class => 'btn').click   
+    else
+      puts "Pneushopping non disponibile"
+      return
+    end
 
     #browser.link(:href => '/catalogo').click
     browser.goto "http://www.pneushopping.it/catalogo"
@@ -623,11 +639,16 @@ private
     #puts "page loaded"
     
     fornitore_pendingomme = Fornitore.where(nome: "PendinGomme").first
-    browser.text_field(:name => 'email').set fornitore_pendingomme.user_name
-                
-    browser.text_field(:name => 'passwd').set fornitore_pendingomme.password
-               
-    browser.button(:name => 'SubmitLogin').click
+    if browser.text_field(:name => 'email').present?
+      browser.text_field(:name => 'email').set fornitore_pendingomme.user_name
+                  
+      browser.text_field(:name => 'passwd').set fornitore_pendingomme.password
+                 
+      browser.button(:name => 'SubmitLogin').click
+    else
+      puts "Pendin non disponibile"
+      return
+    end
       
     sleep 1
       
@@ -727,11 +748,18 @@ private
              
     #puts "page loaded"
     fornitore_farnese = Fornitore.where(nome: "FarnesePneus").first
-    browser.text_field(:name => '_username').set fornitore_farnese.user_name
-              
-    browser.text_field(:name => '_password').set fornitore_farnese.password
-             
-    browser.button(:name => '_submit').click
+    if browser.text_field(:name => '_username').present?
+      browser.text_field(:name => '_username').set fornitore_farnese.user_name
+                
+      browser.text_field(:name => '_password').set fornitore_farnese.password
+               
+      browser.button(:name => '_submit').click
+    else
+      puts "Farnese non disponibile"
+      @pfu = 2.30
+      return
+    end
+    
     browser.link(:text =>"Ricerca").click
       
       puts "Farnese login effettuato"
@@ -759,6 +787,7 @@ private
       
       if browser.td(:class => 'dataTables_empty').exists?
         puts "no results for farnese"
+        @pfu = 2.30
         browser.close
         return false
       end
@@ -832,6 +861,7 @@ private
       file.close
     else
       browser.close
+      @pfu = 2.30
       puts "No results for Farnese"
     end
   end
@@ -847,12 +877,17 @@ private
       browser.goto 'http://b2b.fintyre.it'
     }
     fornitore_fintyre = Fornitore.where(nome: "Fintyre").first
-    browser.text_field(:id => 'username').set fornitore_fintyre.user_name
-            
-    browser.text_field(:id => 'password').set fornitore_fintyre.password
-            
-           
-    browser.button(:id => 'id_submit').click
+    if browser.text_field(:id => 'username').present?
+      browser.text_field(:id => 'username').set fornitore_fintyre.user_name
+              
+      browser.text_field(:id => 'password').set fornitore_fintyre.password
+              
+             
+      browser.button(:id => 'id_submit').click
+    else
+      puts "Fintyre non disponibile"
+      return
+    end
           
     search_page = 'http://b2b.fintyre.it/fintyre2/main?TASK=Precercaarticoli&OUTPAGE=/ordini/ricerche/ricercaArticoli.jsp&ERRPAGE=/common/error.jsp'  
             
@@ -1003,11 +1038,17 @@ private
     Pneumatico.sureLoadLink(10){ browser.goto 'http://www.centrogomme.com/' }
            
     fornitore_centrogomme = Fornitore.where(nome: "CentroGomme").first
-    browser.iframe.text_field(:id => 't_username').set fornitore_centrogomme.user_name
-            
-    browser.iframe.text_field(:id => 't_pwd').set fornitore_centrogomme.password
-           
-    browser.iframe.button(:type => 'submit').click
+    
+    if browser.iframe.text_field(:id => 't_username').present?
+      browser.iframe.text_field(:id => 't_username').set fornitore_centrogomme.user_name
+              
+      browser.iframe.text_field(:id => 't_pwd').set fornitore_centrogomme.password
+             
+      browser.iframe.button(:type => 'submit').click
+    else
+      puts "CentroGomme Non Disponibile"
+      return
+    end
             
     search_page = "http://ordini.centrogomme.com/views/B2BCG/BB.view.php?page=ricerca"
     Pneumatico.sureLoadLink(10){ browser.goto search_page }
@@ -1134,11 +1175,17 @@ private
     Pneumatico.sureLoadLink(10){ browser.goto 'http://multitires.autotua.it/' }
     
     fornitore_multityre = Fornitore.where(nome: "MultiTyre").first
-    browser.text_field(:name => 'username').set fornitore_multityre.user_name
-            
-    browser.text_field(:name => 'password').set fornitore_multityre.password
-           
-    browser.button(:type => 'submit').click
+    
+    if browser.text_field(:name => 'username').present?
+      browser.text_field(:name => 'username').set fornitore_multityre.user_name
+              
+      browser.text_field(:name => 'password').set fornitore_multityre.password
+             
+      browser.button(:type => 'submit').click
+    else
+      puts "MultiTires non disponibile"
+      return 
+    end
            
     search_page = 'http://multitires.autotua.it/interna.asp'
     element = browser.iframe(:id => 'search1').table(:class => 'gvTheGrid')
@@ -1290,12 +1337,16 @@ private
         #puts "page loaded"
         
         fornitore_maxtyre = Fornitore.where(nome: "MaxTyre").first
-        browser.text_field(:name => 'username').set fornitore_maxtyre.user_name
-                    
-        browser.text_field(:name => 'password').set fornitore_maxtyre.password
-                   
-        browser.link(:id => 'button-1017').click
-          
+        if browser.text_field(:name => 'username').present?
+          browser.text_field(:name => 'username').set fornitore_maxtyre.user_name
+                      
+          browser.text_field(:name => 'password').set fornitore_maxtyre.password
+                     
+          browser.link(:id => 'button-1017').click
+        else
+          puts "MaxTyre non disponibile"
+          return 
+        end  
         sleep 2
         puts "MaxTyre login effettuato"
           
