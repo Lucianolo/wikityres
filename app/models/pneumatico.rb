@@ -254,8 +254,9 @@ private
     }
     puts flag 
     if flag
-      
-      browser.button(:text => /Vedere ulteriori risultati/).click
+      if browser.button(:text => /Vedere ulteriori risultati/).exists?
+        browser.button(:text => /Vedere ulteriori risultati/).click
+      end
       #browser.link(:text => " Vedere ulteriori risultati ").click
       sleep 0.25
       browser.select_list(:id => "order-prix").select("Prezzo (crescente)")
@@ -1037,7 +1038,7 @@ private
     Pneumatico.sureLoadLink(10){ browser.goto 'http://www.centrogomme.com/' }
            
     fornitore_centrogomme = Fornitore.where(nome: "CentroGomme").first
-    
+    puts browser.iframe.text_field(:id => 't_username').exists?
     if browser.iframe.text_field(:id => 't_username').exists?
       browser.iframe.text_field(:id => 't_username').set fornitore_centrogomme.user_name
               
@@ -1048,37 +1049,38 @@ private
       puts "CentroGomme Non Disponibile"
       return
     end
-            
-    search_page = "http://ordini.centrogomme.com/views/B2BCG/BB.view.php?page=ricerca"
+    puts "login effettuato"
+    search_page = "http://ordini.centrogomme.com/index.php?item=search"
     Pneumatico.sureLoadLink(10){ browser.goto search_page }
-    element = browser.table(:id => 'searchartico_WT_39019_mt_data')
+    element = browser.table(:id => 'result-table')
+    
+    browser.goto search_page
     
     flag = Pneumatico.try_until(browser, search_page, element) {
     
-      browser.text_field(:id => 'misura').set query
+      browser.text_field(:id => 'search_criteria').set query
       
+      # DA SISTEMARE STAGIONE 
       
-      browser.execute_script(%{jQuery("select[name|='stagione']").show();})
+      #browser.execute_script(%{jQuery("select[name|='stagione']").show();})
       
-      browser.select_list(:name => 'stagione').select stagione
-              
-      
-       
-      browser.button(:id => 'bottone_cerca').click
+      #browser.select_list(:name => 'stagione').select stagione
+      browser.send_keys :enter
       
       sleep 0.25
-      while browser.div(:id=>"tmp_loading").visible? do 
+      puts browser.div(:class=>"loader-wrapper").visible?
+      while browser.div(:class=>"loader-wrapper").visible? do 
         sleep 1 
       end
       
       
-      if browser.div(:id => 'tmp_noresult').present?
+      if browser.table(:id => 'result-table').td(:class => 'no-records-found').present?
         puts "no results for centrogomme"
         browser.close
         return false
       end
        
-      browser.table(:id => 'searchartico_WT_39019_mt_data').wait_until_present(timeout: 5)
+      #browser.table(:id => 'searchartico_WT_39019_mt_data').wait_until_present(timeout: 5)
       
       #condition = browser.table(:id => 'searchartico_WT_39019_mt_data').exists? 
       
@@ -1086,7 +1088,7 @@ private
     
     if flag 
             
-      File.open('pages/centrogomme.html', 'w') {|f| f.write browser.table(:id => 'searchartico_WT_39019_mt_data').html }
+      File.open('pages/centrogomme.html', 'w') {|f| f.write browser.table(:id => 'result-table').html }
                 
       browser.close
       browser.quit
@@ -1102,16 +1104,16 @@ private
       document.css('tbody tr').each do |row|
         if j<max_results
           
-          if row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c2').text.strip.split(" ").first == "CATENE"
-            i+=1
-            next
-          end
-          
+          #if row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c2').text.strip.split(" ").first == "CATENE"
+          #  i+=1
+          #  next
+          #end
+=begin
           marca = row.at_css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c1 img').attr('src').split("/").last[0..-5].gsub("%20"," ").upcase
           nome = row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c2').text.strip
           p_netto = row.at_css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c9').text[4..-1].strip.gsub(",",".").to_f
           stock = row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c10').text.strip.to_i + row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c11').text.strip.to_i + row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c12').text.strip.to_i + row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c13').text.strip.to_i
-          puts "CentroGomme: "+nome
+          
           tmp_stagione = row.css('img.pdImgstagione').first['src'].split("/").last.split(".").first
           
           if tmp_stagione == "I"
@@ -1122,6 +1124,24 @@ private
             stagione = "4 Stagioni"
           end
             
+          
+=end
+          puts row.css('td')[1].html
+          
+          marca = row.search('td')[1].attr('src').split("/").last[0..-5].gsub("%20"," ").upcase
+          nome = row.search('td')[2].text.strip
+          puts "CentroGomme: "+nome
+          
+          p_netto = row.search('td')[9].text[4..-1].strip.gsub(",",".").to_f
+          stock = row.search('td')[10].text.strip.to_i + row.search('td')[11].text.strip.to_i + row.search('td')[12].text.strip.to_i + row.search('td')[13].text.strip.to_i 
+          tmp_stagione = row.search('td')[4].css('img').attr('src').split('/').last.split('.').first
+          if tmp_stagione == "winter"
+            stagione = "Inverno"
+          elsif tmp_stagione == "summer"
+            stagione = "Estate"
+          else
+            stagione = "4 Stagioni"
+          end
           if query.to_s.length == 7
             if nome[6] != "R" && nome[7] != "R"
               misura = nome.gsub("CAM.", "").split(" ").first.strip.gsub(/[^0-9]/, '')
@@ -1135,7 +1155,7 @@ private
             raggio = nome.split("R").second.split(" ").first.strip.gsub(/[^0-9]/, '')
             misura = nome.split("R").first.strip.gsub(/[^0-9]/, '')
           end
-
+          
           if @pfu == 'C2'
             add = 17.60
           elsif @pfu == 'C1'
@@ -1143,11 +1163,14 @@ private
           else
             add = 2.30
           end
-              
+          
+          puts misura
+          puts raggio
           p_finale = p_netto + add + ((p_netto + add )/100)*22       
-          
+          puts p_finale
           misura_totale = misura+raggio
-          
+          puts misura_totale
+          puts tmp
           if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp )
             Pneumatico.create(nome_fornitore: "CentroGomme" ,marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @centrogomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             j+=1
