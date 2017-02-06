@@ -66,7 +66,7 @@ class Pneumatico < ActiveRecord::Base
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
                 end
-                @pfu = Pneumatico.where(nome_fornitore: "FarnesePneus").last.pfu
+                
             end
             
             
@@ -858,6 +858,7 @@ private
           end
         end
       end
+      @pfu = Pneumatico.where(nome_fornitore: "FarnesePneus").last.pfu
       file.close
     else
       browser.close
@@ -1126,15 +1127,21 @@ private
             
           
 =end
-          puts row.css('td')[1].html
-          
-          marca = row.search('td')[1].attr('src').split("/").last[0..-5].gsub("%20"," ").upcase
-          nome = row.search('td')[2].text.strip
+          puts row.search('td:nth-child(2)').to_html
+          if row.search('td:nth-child(2)').search('img').first.nil?
+            marca = row.search('td:nth-child(2)').text.strip
+          else
+            marca = row.search('td:nth-child(2)').search('img').first.attr('src').split("/").last[0..-5].gsub("%20"," ").upcase
+          end
+          nome = row.search('td:nth-child(3)').text.strip
           puts "CentroGomme: "+nome
           
-          p_netto = row.search('td')[9].text[4..-1].strip.gsub(",",".").to_f
-          stock = row.search('td')[10].text.strip.to_i + row.search('td')[11].text.strip.to_i + row.search('td')[12].text.strip.to_i + row.search('td')[13].text.strip.to_i 
-          tmp_stagione = row.search('td')[4].css('img').attr('src').split('/').last.split('.').first
+          p_netto = row.search('td:nth-child(10)').text[4..-1].strip.gsub(",",".").to_f
+          puts p_netto
+          stock = row.search('td:nth-child(11)').text.strip.to_i + row.search('td:nth-child(12)').text.strip.to_i + row.search('td:nth-child(13)').text.strip.to_i + row.search('td:nth-child(14)').text.strip.to_i 
+          puts stock
+          tmp_stagione = row.search('td:nth-child(5)').search('img').first.attr('src').split('/').last.split('.').first
+          puts tmp_stagione
           if tmp_stagione == "winter"
             stagione = "Inverno"
           elsif tmp_stagione == "summer"
