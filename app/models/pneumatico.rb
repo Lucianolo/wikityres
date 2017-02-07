@@ -245,7 +245,7 @@ private
               
       browser.table(:id => 'result-table').wait_until_present(timeout: 15)
       
-      if browser.table(:id => 'result-table').text.strip == "Siamo spiacenti, ma nessun risultato corrisponde alla vostra ricerca."
+      if browser.div(:class => 'alert-warning').present? 
         puts "no results for maxityre"
         browser.close
         return false
