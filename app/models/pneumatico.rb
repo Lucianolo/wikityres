@@ -974,15 +974,24 @@ private
               raggio = modello.split("R").second.split(" ").first.gsub(/[^0-9]/, '')
               misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
             end
+            
           elsif query.to_s.length == 8
+  
             if (modello[6] != "R" && modello[7] != "R")
-              modello = modello[0..5]+"R"+modello[6..-1]
-              raggio = modello.split("R").second.split(" ").first.gsub(/[^0-9]/, '')
-              misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
+              if modello[6] == " "
+                modello = modello[0..5]+"R"+modello[6..-1]
+                raggio = modello.split("R").second.split(" ").first.gsub(/[^0-9]/, '')
+                misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
+              else
+                modello = modello[0..6]+"R"+modello[7..-1]
+                raggio = modello.split("R").second.split(" ").first.gsub(/[^0-9]/, '')
+                misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
+              end
             else
               raggio = modello.split("R").second.split(" ").first.gsub(/[^0-9]/, '')
               misura = modello.split("R").first.strip.gsub(/[^0-9]/, '')
             end
+            
           else
             if (modello[4] != "R" && modello[5] != "R")
               modello = modello[0..4]+"R"+modello[5..-1]
@@ -1012,7 +1021,8 @@ private
           p_finale = prezzo_netto + add + ((prezzo_netto + add )/100)*22          
         
           misura_totale = misura+raggio
-          
+          puts misura_totale
+          puts tmp
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
             Pneumatico.create(nome_fornitore: "Fintyre",marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @fintyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             i+=1
