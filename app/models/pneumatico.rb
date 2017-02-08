@@ -313,8 +313,11 @@ private
         #puts row
         marca = row.css('td img.block').attr('alt')
         
-       
-        descrizione = row.css('td a.block').first.text + row.css('td span.block').first.text
+        first_row = row.at_css('td a.block').text 
+        if first_row.strip == ""
+          first_row = row.css('td a.block')[1].text 
+        end
+        descrizione =row.css('td span.block').first.text + " " + first_row
         seconda_riga = row.css('td span.block').last
         
         misura_tmp = descrizione.split(" ").first.strip.gsub("-","R")
@@ -330,26 +333,27 @@ private
          
           misura = misura_tmp.gsub(/[^0-9]/, '')
           raggio = descrizione.split(" ").second.strip.gsub(/[^0-9]/, '')
+          
           cod_vel = descrizione.split(" ")[2].strip.gsub(/[^0-9]/, '')
         end
        
         if misura == "75"
           misura += "0"
         end
-        if seconda_riga.text == row.css('td span.block').first.text
-          descrizione = descrizione + " "+marca
-        else
-          descrizione = descrizione + " " + marca + " " + seconda_riga.text
+        if seconda_riga.text != row.css('td span.block').first.text
+          descrizione = descrizione + " "  + seconda_riga.text
         end
         puts "MaxiTyre: "+descrizione
         
         p_netto = row.css("td b.green").text.gsub("€","").strip.gsub(",",".").to_f.round(2)
-        
-        stagione = row.css("td span.weather").first["data-content"]
-        if stagione == "4 stagioni" 
-          stagione = "4 Stagioni"
+        if row.css("td span.weather").first.nil? 
+          stagione = "Estate"
+        else
+          stagione = row.css("td span.weather").first["data-content"]
+          if stagione == "4 stagioni" 
+            stagione = "4 Stagioni"
+          end
         end
-        
         
         
         
