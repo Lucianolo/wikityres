@@ -724,8 +724,7 @@ private
           
       p_finale = prezzo_netto + add + ((prezzo_netto + add )/100)*22
       misura_totale = misura+raggio
-      puts misura_totale
-      puts tmp
+      
       
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
         Pneumatico.create(nome_fornitore: "PendinGomme", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel, pfu: @pfu)
@@ -1083,7 +1082,7 @@ private
       browser.send_keys :enter
       
       sleep 0.25
-      puts browser.div(:class=>"loader-wrapper").visible?
+      
       while browser.div(:class=>"loader-wrapper").visible? do 
         sleep 1 
       end
@@ -1141,7 +1140,7 @@ private
             
           
 =end
-          puts row.search('td:nth-child(2)').to_html
+          
           if row.search('td:nth-child(2)').search('img').first.nil?
             marca = row.search('td:nth-child(2)').text.strip
           else
@@ -1151,11 +1150,11 @@ private
           puts "CentroGomme: "+nome
           
           p_netto = row.search('td:nth-child(10)').text[4..-1].strip.gsub(",",".").to_f
-          puts p_netto
+          
           stock = row.search('td:nth-child(11)').text.strip.to_i + row.search('td:nth-child(12)').text.strip.to_i + row.search('td:nth-child(13)').text.strip.to_i + row.search('td:nth-child(14)').text.strip.to_i 
-          puts stock
+          
           tmp_stagione = row.search('td:nth-child(5)').search('img').first.attr('src').split('/').last.split('.').first
-          puts tmp_stagione
+          
           if tmp_stagione == "winter"
             stagione = "Inverno"
           elsif tmp_stagione == "summer"
@@ -1185,13 +1184,10 @@ private
             add = 2.30
           end
           
-          puts misura
-          puts raggio
           p_finale = p_netto + add + ((p_netto + add )/100)*22       
-          puts p_finale
+          
           misura_totale = misura+raggio
-          puts misura_totale
-          puts tmp
+          
           if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp )
             Pneumatico.create(nome_fornitore: "CentroGomme" ,marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @centrogomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             j+=1
