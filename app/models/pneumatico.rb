@@ -673,6 +673,7 @@ private
     
     document.css('ul li').each do |row|
       line = row.css('h5').text.strip
+      
       marca = line.split(" ").first
       
       if query.to_s.length > 6
@@ -695,7 +696,9 @@ private
         raggio = line.split("(").last.split(")").first[index..-1]
         
       end
-      
+      if (misura.length != query.to_s.length - raggio.length)
+        next
+      end
       stagione = row.css('p').text.strip.split("Stagione: ").last.split(",").first
       prezzo_netto = row.css(".price").text.strip.gsub(",",".").gsub(" €","").to_f.round(2)
       giacenza = row.css("#pQuantityAvailable").text.strip.split(" ").first.to_i
@@ -721,6 +724,8 @@ private
           
       p_finale = prezzo_netto + add + ((prezzo_netto + add )/100)*22
       misura_totale = misura+raggio
+      puts misura_totale
+      puts tmp
       
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
         Pneumatico.create(nome_fornitore: "PendinGomme", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel, pfu: @pfu)
@@ -1021,8 +1026,7 @@ private
           p_finale = prezzo_netto + add + ((prezzo_netto + add )/100)*22          
         
           misura_totale = misura+raggio
-          puts misura_totale
-          puts tmp
+          
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
             Pneumatico.create(nome_fornitore: "Fintyre",marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @fintyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             i+=1
