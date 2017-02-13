@@ -44,7 +44,11 @@ class WelcomeController < ApplicationController
     end
     #stagione = params[:stagione]
     puts "UPDATING"
-    @res = Pneumatico.where(misura: misura, raggio: raggio, stagione: stagione).order(:prezzo_finale)
+    if stagione != "Tutte"
+      @res = Pneumatico.where(misura: misura, raggio: raggio, stagione: stagione).order(:prezzo_finale)
+    else
+      @res = Pneumatico.where(misura: misura, raggio: raggio).order(:prezzo_finale)
+    end
     @results = []
     inactives = []
     Fornitore.where(status: "Disattivato").each do |el|
