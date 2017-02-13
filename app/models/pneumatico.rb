@@ -1092,7 +1092,7 @@ private
       end
       
       
-      if browser.table(:id => 'result-table').td(:class => 'no-records-found').present?
+      if browser.table(:id => 'result-table').tr(:class => 'no-records-found').exists?
         puts "no results for centrogomme"
         browser.close
         return false

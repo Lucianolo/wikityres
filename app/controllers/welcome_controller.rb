@@ -30,7 +30,7 @@ class WelcomeController < ApplicationController
       misura = mis
       
       raggio = Search.last.misura[5..-1]
-      
+      stagione = Search.last.stagione
     else
       mis = Search.last.misura
       if mis.length == 5 && mis[2] == '0'
@@ -44,7 +44,7 @@ class WelcomeController < ApplicationController
     end
     #stagione = params[:stagione]
     puts "UPDATING"
-    @res = Pneumatico.where(misura: misura, raggio: raggio).order(:prezzo_finale)
+    @res = Pneumatico.where(misura: misura, raggio: raggio, stagione: stagione).order(:prezzo_finale)
     @results = []
     inactives = []
     Fornitore.where(status: "Disattivato").each do |el|
