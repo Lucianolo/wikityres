@@ -25,6 +25,21 @@ class WelcomeController < ApplicationController
   end
   
   def update_results 
+    
+    stringa = Search.last.misura
+    stringa2 = Pneumatico.last.misura + Pneumatico.last.raggio
+    stagione = Search.last.stagione
+    if stringa == stringa2
+      misura = Pneumatico.last.misura
+      raggio = Pneumatico.last.raggio
+      if stagione != "Tutte"
+        @res = Pneumatico.where(misura: misura, raggio: raggio, stagione: stagione).order(:prezzo_finale)
+      else
+        @res = Pneumatico.where(misura: misura, raggio: raggio).order(:prezzo_finale)
+      end
+    end
+=begin
+      
     if Search.last.misura.length == 7
       mis = Search.last.misura[0..4]
       misura = mis
@@ -49,6 +64,7 @@ class WelcomeController < ApplicationController
     else
       @res = Pneumatico.where(misura: misura, raggio: raggio).order(:prezzo_finale)
     end
+=end
     @results = []
     inactives = []
     Fornitore.where(status: "Disattivato").each do |el|
