@@ -123,7 +123,7 @@ class WelcomeController < ApplicationController
     # DA AGGIUNGERE SUPPORTO CAMION
     puts params[:misura].length
     if (params[:misura].to_i.to_s != params[:misura]) || (@veicolo == "leggero" && params[:misura].length != 7) || (@veicolo == "pesante" && params[:misura].length > 8) || (@veicolo == "pesante" && params[:misura].length < 4) 
-      flash[:alert] = "Ricerca non valida"
+      flash.now[:alert] = "Ricerca non valida"
       redirect_to root_path
     else
       query_list = [query]

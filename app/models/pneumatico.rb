@@ -45,6 +45,7 @@ class Pneumatico < ActiveRecord::Base
         @pendingomme = "http://www.pendingomme.it/login"
         @pneushopping = "http://www.pneushopping.it/"
         @carlinigomme = "http://carlinigomme.nuovo.diffusori.it/interna.asp"
+        @olpneus = "http://olpneus.ct.diffusori.it/default.asp"
         @maxityre = "https://www.maxityre.it/"
         
         fornitori = []
@@ -59,22 +60,33 @@ class Pneumatico < ActiveRecord::Base
             
             # FARNESEPNEUS.IT
             if fornitori.include? "FarnesePneus"
-              
+              threads << Thread.new {
                 begin
                   search_farnese(query,stagione,max_results)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
                 end
-                
+              }
             end
             
+            # OLPNEUS
+            if fornitori.include? "OLPneus"
+              threads << Thread.new {
+                begin
+                  Pneumatico.search_olpneus(query, stagione, max_results)
+                ensure
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+              }
+            end
             
-            
+            threads.each(&:join)
+            threads1 = []
             
             # CARLINIGOMME.IT
             if fornitori.include? "CarliniGomme"
-              threads << Thread.new {
+              threads1 << Thread.new {
                 begin
                   Pneumatico.search_carlini(query, stagione, max_results)
                 ensure
@@ -84,10 +96,12 @@ class Pneumatico < ActiveRecord::Base
             end
             
             
+            
+            
             # PNEUSHOPPING.IT
             if query.to_s.length > 6
               if fornitori.include? "PneuShopping"
-                threads << Thread.new {
+                threads1 << Thread.new {
                   begin
                     Pneumatico.search_pneushopping(query,stagione,max_results)
                   ensure
@@ -97,7 +111,7 @@ class Pneumatico < ActiveRecord::Base
               end
             end
             
-            threads.each(&:join)
+            threads1.each(&:join)
             
             threads2 = []
             # PENDINGOMME.IT
@@ -139,17 +153,17 @@ class Pneumatico < ActiveRecord::Base
             end
             
             
-            # MULTITYRES
-            if fornitori.include? "MultiTyre"
+            if fornitori.include? "MaxiTyre"
               threads3 << Thread.new {
                 begin
-                  search_multityre(query, stagione, max_results)
+                  search_maxityre(query,stagione,max_results)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
                 end
               }
             end
+            
             threads3.each(&:join)
             
             threads4=[]
@@ -166,10 +180,12 @@ class Pneumatico < ActiveRecord::Base
               }
             end
             
-            if fornitori.include? "MaxiTyre"
+            
+            # MULTITYRES
+            if fornitori.include? "MultiTyre"
               threads4 << Thread.new {
                 begin
-                  search_maxityre(query,stagione,max_results)
+                  search_multityre(query, stagione, max_results)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -264,7 +280,7 @@ private
       sleep 1
       rows = ""
       i = 1
-      while i < 5
+      while i < 3
         puts i
         table = browser.table(:id => 'result-table')
         table.tbody.rows.each do |row|
@@ -377,9 +393,6 @@ private
   end
   
   
-    
-    
-  
   def self.search_carlini(query, stagione, max_results)
     switches = ['--load-images=no']
     browser = Watir::Browser.new :phantomjs, :args => switches
@@ -426,7 +439,7 @@ private
       end
       
       if browser.iframe(:id => 'search1').span(:class => 'NessunArticolo').text.strip == "Articoli Trovati 0"
-        puts "no results for multitires"
+        puts "no results for carlinigomme"
         browser.close
         return false
       end
@@ -531,6 +544,173 @@ private
       puts "no results for carlinigomme"
     end    
   end    
+  
+  
+  # OLPNEUS
+  
+  
+  def self.search_olpneus(query, stagione, max_results)
+    
+
+    switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs, :args => switches
+    browser.window.maximize
+    Pneumatico.sureLoadLink(10){ browser.goto @olpneus }
+    
+    fornitore_olpneus = Fornitore.where(nome: "OLPneus").first
+    if browser.text_field(:name => 'username').exists?
+      browser.text_field(:name => 'username').set fornitore_olpneus.user_name
+      browser.text_field(:name => 'password').set fornitore_olpneus.password
+      browser.button(:id => 'butEntra').click  
+    else
+      puts "OLPneus non disponibile"
+      return
+    end
+    
+    puts "OLPneus: Login effettuato"
+    search_page = "http://olpneus.ct.diffusori.it/interna.asp"
+    element = browser.iframe(:id => 'search1').table(:class => 'gvTheGrid')
+    
+    flag = Pneumatico.try_until(browser,search_page, element) {
+      browser.iframe.text_field(:id => 'ContenutoPagina_ucRicerca1_txtMisura').wait_until_present
+              
+      browser.iframe.text_field(:id => 'ContenutoPagina_ucRicerca1_txtMisura').set query
+      
+      if stagione == "Tutte"
+        id = "ContenutoPagina_ucRicerca1_cbTutti"
+      elsif stagione == "Estate"
+        id = "ContenutoPagina_ucRicerca1_cbEstivo"
+      elsif stagione == "Inverno"
+        id = "ContenutoPagina_ucRicerca1_cbInvernale"
+      elsif stagione == "4 Stagioni"
+        id = "ContenutoPagina_ucRicerca1_cbQuattroStagioni"
+      end
+              
+     
+      browser.iframe.checkbox(:id => id).set
+      
+      browser.iframe.select_list(:id => "ContenutoPagina_ucRicerca1_ddlOrd").select "PREZZO"
+      
+      browser.iframe.button(:name => 'ctl00$ContenutoPagina$ucRicerca1$butCercaA').click
+      
+      sleep 0.25
+      while browser.div(:id=>"divwait").visible? do 
+        sleep 1 
+      end
+      
+      if browser.iframe(:id => 'search1').span(:class => 'NessunArticolo').text.strip == "Articoli Trovati 0"
+        puts "no results for OLPneus"
+        browser.close
+        return false
+      end
+      
+      browser.iframe(:id => 'search1').table(:class => 'gvTheGrid').wait_until_present(timeout: 5)
+            
+      
+    }
+    puts flag 
+    if flag
+          
+      table = browser.iframe(:id => 'search1').table(:class => 'gvTheGrid')
+      File.open('pages/olpneus.html', 'w') {|f| f.write table.html }
+              
+      browser.close
+      browser.quit
+
+  
+      file = File.open('pages/olpneus.html', 'r')
+      document = Nokogiri::HTML(file)
+   
+      tmp = query.to_s
+      
+      i = 0
+      j = 0
+      
+      table = document.css('table.gvTheGrid')
+      
+     
+      table.search('tr.GIALLO-2').each do |anchor|
+        anchor['class']="Riga"
+      end
+      
+      table.search('tr.BIANCO').each do |anchor|
+        anchor['class']="Riga"
+      end
+      
+      table.search('tr.GIALLO-2').each do |anchor|
+        anchor['class']="Riga"
+      end
+      
+      table.search('tr.ARANCIO').each do |anchor|
+        anchor['class']="Riga"
+      end
+     
+      table.css('tbody tr.Riga').each do |row|
+        #puts row
+        if  i.even? && j<max_results
+          
+          
+          if row.css('td.Catalogo.allinea div').text != ""
+            marca = row.css('td.Catalogo.allinea div').text
+          else
+            marca = row.css('td')[6].css('img').attr("title")
+          end
+          
+         
+          nome = row.css('div.DescrizioneArticolo').text.gsub("CAM."," ").gsub("SET.","SET").gsub("SET","").gsub("CH.","").strip
+          p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text[3..-1].gsub(",",".").strip.to_f.round(2)
+          stock = row.css('td.CatalogoDisp.allinea strong')[1].text.gsub(/[^0-9]/, '').to_i 
+         
+          misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip.gsub(/[^0-9]/, '')
+          if query.to_s.length == 5
+            raggio = nome.gsub('-','R').split('R').second.split(" ").first.strip.gsub(/[^0-9]/, '')
+          else
+            raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip.gsub(/[^0-9]/, '')
+          end
+          
+          
+          puts "OLPneus: "+nome
+          # CONTROLLO SULLA VALIDITA' DEL CAMPO RAGGIO --- DA SISTEMARE PER ALCUNI VALORI
+         
+          if raggio.to_i.to_s != raggio
+            raggio = nome.split(" ")[2]
+          end
+          
+          
+          
+          tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
+          
+          local_pfu = row.css('td.CatalogoDisp.allinea i').first.text.strip.to_f
+          
+              
+          p_finale = p_netto + local_pfu + ((p_netto + local_pfu )/100)*22          
+          
+          misura_totale = misura+raggio
+         
+          if tmp_stagione == "sun"
+            stagione = "Estate"
+          elsif tmp_stagione == "snow"
+            stagione = "Inverno"
+          else
+            stagione = "4 Stagioni"
+          end
+          if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
+            Pneumatico.create(nome_fornitore: "OLPneus", marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @olpneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+            j+=1
+          end
+        end 
+        i+=1
+      end
+        
+      file.close
+    
+    else
+      browser.close
+      puts "no results for olpneus"
+    end    
+  end    
+  
+  
     
     
   
@@ -1537,7 +1717,7 @@ private
       table.push item.html
     end
     puts 
-    while j<50
+    while j<15
       puts flag
         if flag == true
           puts "Devo ritornaaa"
@@ -1559,7 +1739,7 @@ private
           #puts "scrolling"
           last_tmp = container.tables.last.text
           container.tables.last.wd.location_once_scrolled_into_view
-          sleep 0.20
+          sleep 0.1
          
           j+=1
       rescue Watir::Exception::UnknownObjectException
