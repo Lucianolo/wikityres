@@ -1,139 +1,159 @@
         <div id="filters">
             <!-- panel -->
-            <div class="jplist-panel">
-                <div class="row full-line">
-                <!-- filter by title -->
-                    <div class="text-filter-box">
-                       <i class="fa fa-search  jplist-icon"></i>
-                       <input 
-                          data-path=".marca" 
-                          type="text" 
-                          value="" 
-                          placeholder="Marca" 
-                          data-control-type="textbox" 
-                          data-control-name="marca-filter" 
-                          data-control-action="filter"
-                       />
-                    </div>
-                    
-                    <div class="text-filter-box">
-                       <i class="fa fa-search  jplist-icon"></i>
-                       <input 
-                          data-path=".descrizione" 
-                          type="text" 
-                          value="" 
-                          placeholder="Descrizione" 
-                          data-control-type="textbox" 
-                          data-control-name="descrizione-filter" 
-                          data-control-action="filter"
-                       />
-                    </div>
-                
-                    <select 
-                        class="jplist-select pull-right" 
-                        data-control-type="sort-select" 
-                        data-control-name="sort" 
-                        data-control-action="sort">
-             
-                        <option data-path="default">Ordina per</option>
-                        <option data-path=".p_finale" data-order="asc" data-type="number">Prezzo Finale Crescente</option>
-                        <option data-path=".p_finale" data-order="desc" data-type="number">Prezzo Finale Decrescente</option>
-                        <option data-path=".p_netto" data-order="asc" data-type="number">Prezzo Netto Crescente</option>
-                        <option data-path=".p_netto" data-order="desc" data-type="number">Prezzo Netto Decrescente</option>
-                        <option data-path=".giacenza" data-order="desc" data-type="number">Giacenza</option>
-                    </select>		
-                    <select 
-                        class="jplist-select" 
-                        style="display:none"
-                        data-control-type="sort-select" 
-                        data-control-name="sort2" 
-                        data-control-action="sort">
-             
-                        <option data-path="default">Ordina per</option>
-                        <option data-path=".p_finale" data-order="asc" data-type="number">Prezzo Crescente</option>
-                        <option data-path=".p_finale" data-order="desc" data-type="number">Prezzo Decrescente</option>
-                        <option data-path=".giacenza" data-order="desc" data-type="number">Giacenza</option>
-                    </select>
-                    
-                    <div
-                        class="jplist-group small"
-                        data-control-type="checkbox-text-filter"
-                        data-control-action="filter"
-                        data-control-name="fornitori"
-                        data-path=".fornitore"
-                        data-logic="or">
-                        <% purged = [] %>
-                        <% fornitori.each do |forn| %>
-                        <%     if !purged.include? forn %>
-                        <%         purged.push forn %>
-                        <%     end %>
-                        <% end %>
-                        <% purged.each do |f| %>
-                            <input
-                               value="<%= f %>"
-                               id="<%= f %>"
-                               type="checkbox"
-                            />
-                            <label for="<%= f %>" style="font-size: 88% !important"><%= f %></label>
-                        <% end %>
+            <div class="row row-mobile full-line">
+                <div class="col-lg-12 col-md-12 col-xs-12" style="padding: 0 0;">
+                    <div class="jplist-panel">
+                        <!-- filter by title -->
+                        <div class="col-md-2 text-filter" style="padding: 0 0;">
+                            <div class="text-filter-box">
+                               <i class="fa fa-search  jplist-icon"></i>
+                               <input 
+                                  data-path=".marca" 
+                                  type="text" 
+                                  value="" 
+                                  style= "max-width: 130px;"
+                                  placeholder="Marca" 
+                                  data-control-type="textbox" 
+                                  data-control-name="marca-filter" 
+                                  data-control-action="filter"
+                               />
+                            </div>
+                        </div>
+                        <div class="col-md-2 text-filter" style="padding: 0 0;">
+                            <div class="text-filter-box">
+                               <i class="fa fa-search  jplist-icon"></i>
+                               <input 
+                                  data-path=".descrizione" 
+                                  type="text" 
+                                  value="" 
+                                  style= "max-width: 130px;"
+                                  placeholder="Descrizione" 
+                                  data-control-type="textbox" 
+                                  data-control-name="descrizione-filter" 
+                                  data-control-action="filter"
+                               />
+                            </div>
+                        </div>   
+                        <div class="col-md-6 checkboxes" style="padding: 0 0;">
+                            <div
+                            class="jplist-group small"
+                            data-control-type="checkbox-text-filter"
+                            data-control-action="filter"
+                            data-control-name="fornitori"
+                            data-path=".fornitore"
+                            data-logic="or">
+                            <% purged = [] %>
+                            <% fornitori.each do |forn| %>
+                            <%     if !purged.include? forn %>
+                            <%         purged.push forn %>
+                            <%     end %>
+                            <% end %>
+                            <% purged.each do |f| %>
+                                <input
+                                   value="<%= f %>"
+                                   id="<%= f %>"
+                                   type="checkbox"
+                                />
+                                <label for="<%= f %>" style="font-size: 88% !important"><%= f %></label>
+                            <% end %>
+                        </div>
+                        </div>
+                        <div class="col-md-2 text-right" style="padding: 0 0;">
+                            <select 
+                                class="jplist-select pull-right" 
+                                data-control-type="sort-select" 
+                                data-control-name="sort" 
+                                data-control-action="sort"
+                                style= "max-width: 130px; margin-right: 0;">
+                                
+                                <option data-path="default">Ordina per</option>
+                                <option data-path=".p_finale" data-order="asc" data-type="number">Prezzo Finale Crescente</option>
+                                <option data-path=".p_finale" data-order="desc" data-type="number">Prezzo Finale Decrescente</option>
+                                <option data-path=".p_netto" data-order="asc" data-type="number">Prezzo Netto Crescente</option>
+                                <option data-path=".p_netto" data-order="desc" data-type="number">Prezzo Netto Decrescente</option>
+                                <option data-path=".giacenza" data-order="desc" data-type="number">Giacenza</option>
+                            </select>		
+                            <select 
+                                class="jplist-select" 
+                                style="display:none"
+                                data-control-type="sort-select" 
+                                data-control-name="sort2" 
+                                data-control-action="sort"
+                                style= "max-width: 130px;">
+                     
+                                <option data-path="default">Ordina per</option>
+                                <option data-path=".p_finale" data-order="asc" data-type="number">Prezzo Crescente</option>
+                                <option data-path=".p_finale" data-order="desc" data-type="number">Prezzo Decrescente</option>
+                                <option data-path=".giacenza" data-order="desc" data-type="number">Giacenza</option>
+                            </select>
+                        </div>
+                        
+                        
                     </div>
                 </div>
             </div>
             
-            <hr>            
-                
-            <table class="table-fill">
-                <thead>
-                    <tr>
-                        <th class="text-left">FORNITORE</th>
-                        <th class="text-left">MARCA</th>
-                        <th class="text-left">DESCRIZIONE</th>
-                        <!--th class="text-left">LISTINO</th-->
-                        <th class="text-left">€ IVA ESCL.</th>
-                        
-                        <th class="text-left">GIACENZA</th>
-                        <th class="text-left">PREZZO FINALE</th>
-                        <th class="text-left">STAGIONE</th>
-                    </tr>
-                </thead>
-                <tbody class="table-hover">
-                <%= render partial: 'results', locals: { res: res}  %>
-                </tbody>
-            </table>    
-            <div class="jplist-no-results">
-                <table class="table-fill">
-                    <thead>
-                        <tr>
-                            <th class="text-center">Nessun Risultato</th>
-                        </tr>
-                    </thead>
                     
-                </table>
-            </div>
-            <div class="jplist-panel">
-                <!-- pagination control -->
-                <div class="pagination">
-                    <div 
-                        class="jplist-label" 
-                        style="text-align:center;"
-                        data-type="Pagina {current} di {pages}" 
-                        data-control-type="pagination-info" 
-                        data-control-name="paging" 
-                        data-control-action="paging">
-                    </div>	
-                    <div 
-                        class="jplist-pagination" 
-                        data-control-type="pagination" 
-                        data-control-name="paging" 
-                        data-control-action="paging"
-                        data-items-per-page="100"
-                        data-range="1"
-                        data-mode="google-like">
+            <div class="row row-mobile full-line">
+                <div class="col-lg-12 col-md-12 col-xs-12" style="padding: 0 0;">    
+                    <table class="table-fill">
+                        <thead>
+                            <tr>
+                                <th class="text-left">FORNITORE</th>
+                                <th class="text-left">MARCA</th>
+                                <th class="text-left">DESCRIZIONE</th>
+                                <!--th class="text-left">LISTINO</th-->
+                                <th class="text-left">€ IVA ESCL.</th>
+                                
+                                <th class="text-left">GIACENZA</th>
+                                <th class="text-left">PREZZO FINALE</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody class="table-hover">
+                        <%= render partial: 'results', locals: { res: res}  %>
+                        </tbody>
+                    </table>    
+                    <div class="jplist-no-results">
+                        <table class="table-fill">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Nessun Risultato</th>
+                                </tr>
+                            </thead>
+                            
+                        </table>
                     </div>
                 </div>
-                
-                
-            </div>		
+            </div>
+            <div class="row row-mobile full-line">
+                <div class="col-lg-12 col-md-12 col-xs-12" style="padding: 0 0;">    
+                    <div class="jplist-panel">
+                        <!-- pagination control -->
+                        <div class="pagination ">
+                            <div 
+                                class="jplist-label" 
+                                style="text-align:center;"
+                                data-type="Pagina {current} di {pages}" 
+                                data-control-type="pagination-info" 
+                                data-control-name="paging" 
+                                data-control-action="paging">
+                            </div>	
+                            <div 
+                                class="jplist-pagination" 
+                                data-control-type="pagination" 
+                                data-control-name="paging" 
+                                data-control-action="paging"
+                                data-items-per-page="100"
+                                data-range="1"
+                                data-mode="google-like">
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+            </div>
         </div>
         <p id="fine"><%= finished %></p>
         

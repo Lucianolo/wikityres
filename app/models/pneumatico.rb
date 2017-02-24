@@ -653,7 +653,7 @@ private
         #puts row
         if  i.even? && j<max_results
           
-          
+          #puts row.text
           if row.css('td.Catalogo.allinea div').text != ""
             marca = row.css('td.Catalogo.allinea div').text
           else
@@ -662,7 +662,7 @@ private
           
           puts marca
          
-          nome = row.css('div.DescrizioneArticolo').text.gsub("CAM."," ").gsub("SET.","SET").gsub("SET","").gsub("CH.","").strip
+          nome = row.css('div.DescrizioneArticolo').text.gsub("CAM."," ").gsub("SET.","SET").gsub("SET","").gsub("RIC.","").gsub("CH.","").strip
           p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text[3..-1].gsub(",",".").strip.to_f.round(2)
           stock = row.css('td.CatalogoDisp.allinea strong')[1].text.gsub(/[^0-9]/, '').to_i 
          

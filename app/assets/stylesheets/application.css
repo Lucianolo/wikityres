@@ -52,6 +52,7 @@ body {
   font-size: 16px;
   font-weight: 400;
   text-rendering: optimizeLegibility;
+  padding-top: 60px !important;
 }
 
 #form-div{
@@ -183,7 +184,7 @@ td.p_netto{
 }
 td.p_finale{
   text-decoration:none;
-  background:#4E5066 !important;
+  background:#1b1e24 !important;
   color:#FFFFFF !important;
 }
 

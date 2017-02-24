@@ -10,7 +10,18 @@
                                 <% end %>
                             </td>
                             <td class="text-left marca" ><%= item.marca %></td>
-                            <td class="text-left descrizione"><%= item.modello.to_s.force_encoding("UTF-8") %></td>
+                            <td class="text-left descrizione"><%= item.modello.to_s.force_encoding("UTF-8") %>
+                                <div class="pull-right" style="padding-right: 1em;">
+                                    <% if item.stagione == "4 Stagioni" %>
+                                        <%= image_tag "4S.png", :class => 'logo-stagione' %>
+                                    <% elsif item.stagione == "" %>
+                
+                                    <% else %>
+                                        <%= image_tag item.stagione+".png", :class => 'logo-stagione' %>
+                                    <% end %>
+                                </div>
+                                
+                            </td>
                             <!--td class="text-left">
                                 % if item.prezzo_listino.to_i == 0 %>
                                     -
@@ -38,14 +49,7 @@
                             
                             
                             <td class="text-center p_finale"><%= number_with_precision(item.prezzo_finale, precision: 2) %>€</td>
-                                <% if item.stagione == "4 Stagioni" %>
-                                    <td class="text-center stagione" style="background: #1b1e24 "><%= image_tag "4S.png", :class => 'logo-stagione' %></td>
-                                <% elsif item.stagione == "" %>
-                                    <td class="text-center stagione" style="background: #1b1e24 "></td>
-                                 
-                                <% else %>
-                                    <td class="text-center stagione" style="background: #1b1e24 "><%= image_tag item.stagione+".png", :class => 'logo-stagione' %></td>
-                                <% end %>
+                                
                           
                         </tr>
                     <% end %>
