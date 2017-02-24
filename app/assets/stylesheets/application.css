@@ -17,17 +17,23 @@
     font-family: "Roboto";
     background-color: #cb213f;
     color: white;
+    text-align: center;
 }
 .success{
     font-family: "Roboto";
     background-color: #5cb85c;
     color: white;
+    text-align: center;
 }
-.nav-container {
+.navbar-collapse {
   margin: 0 auto;
-  font-family: "Raleway" !important;
+  /*font-family: "Raleway" !important;*/
+  font-size: 1.188em;
+ 
 }
-
+.navbar-brand {
+  font-size: 1.813em !important;
+}
 .full-width {
   width: 100% !important;
 }
@@ -55,8 +61,9 @@ body {
   padding-top: 60px !important;
 }
 
-#form-div{
+#form input{
   /*color: white !important;*/
+  padding: 6px 12px !important;
 }
 div.table-title {
    display: block;
@@ -71,7 +78,7 @@ div.table-title {
    font-size: 30px;
    font-weight: 400;
    font-style:normal;
-   font-family: "Roboto", helvetica, arial, sans-serif;
+   font-family: "Roboto", serif;
    text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
    text-transform:uppercase;
 }
@@ -91,6 +98,7 @@ div.table-title {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   animation: float 5s infinite;
   margin-bottom: 1em;
+  color: #27252a;;
 }
  
 th {
@@ -98,7 +106,7 @@ th {
   background:#1b1e24;
   border-bottom:4px solid #9ea7af;
   border-right: 1px solid #343a45;
-  font-size:23px;
+  font-size: 1.3em;
   font-weight: 100;
   padding:24px;
   text-align:left;
@@ -119,7 +127,7 @@ tr {
   height: 27px;
   border-top: 1px solid #C1C3D1;
   border-bottom-: 1px solid #C1C3D1;
-  color:#666B85;
+  /*color:#666B85;*/
   font-size:16px;
   font-weight:normal;
   text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
@@ -167,8 +175,10 @@ td {
   margin-left: 1em;
   vertical-align:middle;
   font-weight:300;
-  font-size:18px;
-  font-family: "Roboto", helvetica, arial, sans-serif;
+  font-size: 1.125em;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-stretch: ultra-expanded;
   text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
   border-right: 1px solid #C1C3D1;
 }
@@ -215,7 +225,8 @@ td.text-right {
 }
 
 .input {
-  font-family: "Roboto", helvetica, arial, sans-serif;
+  font-family: "Roboto", serif ;
+  
 }
 div#radio {
     padding-bottom: 1em;

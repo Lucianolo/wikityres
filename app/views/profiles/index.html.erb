@@ -148,7 +148,7 @@ $(document).ready(function () {
 
     $('#query_form').validate({ // initialize the plugin
         rules: {
-            misura: 
+            misura: {
                 required: true,
                 minlength: 7,
                 maxlength: 8
@@ -158,12 +158,13 @@ $(document).ready(function () {
     
     $('#password_form').validate({ // initialize the plugin
         rules: {
-            password: 
+            password: {
                 required: true,
                 minlength: 8,
                 maxlength: 20
+            
             },
-            password_confirmation: 
+            password_confirmation: {
                 required: true,
                 minlength: 8,
                 maxlength: 20
