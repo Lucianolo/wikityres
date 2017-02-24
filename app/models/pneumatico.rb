@@ -641,6 +641,10 @@ private
         anchor['class']="Riga"
       end
       
+      table.search('tr.GIALLO-3').each do |anchor|
+        anchor['class']="Riga"
+      end
+      
       table.search('tr.ARANCIO').each do |anchor|
         anchor['class']="Riga"
       end
@@ -656,6 +660,7 @@ private
             marca = row.css('td')[6].css('img').attr("title")
           end
           
+          puts marca
          
           nome = row.css('div.DescrizioneArticolo').text.gsub("CAM."," ").gsub("SET.","SET").gsub("SET","").gsub("CH.","").strip
           p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text[3..-1].gsub(",",".").strip.to_f.round(2)
