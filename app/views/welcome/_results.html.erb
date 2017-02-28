@@ -10,7 +10,10 @@
                                 <% end %>
                             </td>
                             <td class="text-left marca" ><%= item.marca %></td>
-                            <td class="text-left descrizione"><%= item.modello.to_s.force_encoding("UTF-8") %>
+                            <td class="text-left descrizione"><%= item.modello.to_s.force_encoding("UTF-8")[0..40] %>
+                                <% if item.modello.to_s.length > 39 %>
+                                    ..
+                                <% end %>
                                 <div class="pull-right" style="padding-right: 1em;">
                                     <% if item.stagione == "4 Stagioni" %>
                                         <%= image_tag "4S.png", :class => 'logo-stagione' %>

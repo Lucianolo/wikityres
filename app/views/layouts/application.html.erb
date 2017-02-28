@@ -21,10 +21,10 @@
   <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Neuton" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Playfair+Display|Raleway" rel="stylesheet">
+  
  
 </head>
-<body>
+<body data-no-turbolink="true"  >
 <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container nav-container">
         <div class="navbar-header">
@@ -60,7 +60,7 @@
       </div>
 </nav>
 
-<div class="container" id="main">
+<div>
   <% flash.each do |key, value| %>
     <%= content_tag :div, value, class: "flash #{key}" %>
   <% end %>

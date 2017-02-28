@@ -13,6 +13,24 @@
  *= require_tree .
  *= require_self
  */
+
+.container {
+  padding: 0 0;
+  margin: 0 0;
+}
+#items_grid {
+  
+}
+#form_section{
+  /*background-image: url("tire.jpg");*/
+  padding-top: 2em;
+  padding-bottom: 3.5em;
+  height: 100%;
+}
+
+#form_section label {
+  font-size: 1.188em;
+}
 .alert {
     font-family: "Roboto";
     background-color: #cb213f;
@@ -29,7 +47,12 @@
   margin: 0 auto;
   /*font-family: "Raleway" !important;*/
   font-size: 1.188em;
- 
+}
+
+.navbar-inverse {
+  background-image: none !important;
+  background-color: #190600 !important;
+  border-color: #190600 !important;
 }
 .navbar-brand {
   font-size: 1.813em !important;
@@ -39,14 +62,8 @@
 }
 
 #loading {
-    text-align: center;
-   width:400px;
-    height:400px;
-    position:absolute;
-    top:50%;
-    left:50%;
-    margin-left:-200px; /* width / -2 */
-    margin-top:-200px; /* height / -2 */
+  display: none;
+  height: 300px;
 }
 
 
@@ -54,11 +71,16 @@
 body {
   /*color: white !important;
   background-image: url("pneu.jpg");*/
-  background-color: #3e94ec;
+  background-color: #180602 !important;/*#3e94ec;*/
   font-size: 16px;
   font-weight: 400;
   text-rendering: optimizeLegibility;
-  padding-top: 60px !important;
+  padding-top: 50px !important;
+}
+
+.login-form
+{
+  color: white;
 }
 
 #form input{
@@ -72,6 +94,8 @@ div.table-title {
   padding:5px;
   width: 100%;
 }
+
+
 
 .table-title h3 {
    color: #337ab7;
@@ -92,15 +116,23 @@ div.table-title {
   border-collapse: collapse;
   max-height: 600px;
   margin: auto;
-  max-width: 1280px;
-  padding:5px;
   width: 100%;
+  
+  padding:5px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   animation: float 5s infinite;
   margin-bottom: 1em;
   color: #27252a;;
 }
- 
+
+.table-container {
+  position:relative;
+  max-height: 470px;
+  width: 100%;
+  overflow: auto;
+}
+
+
 th {
   color:#D5DDE5;;
   background:#1b1e24;
@@ -283,13 +315,14 @@ hr {
 
 #main {
   
-  margin: 0 auto;
+  margin: 0 0;
+  
   padding: 0 0;
 }
 
-.container{
+/*.container{
   width: 1280px !important;
-}
+}*/
 #spinner{
   display: block;
   
@@ -301,6 +334,7 @@ hr {
   margin-left: 48%;
 }
 #fine {
+  font-size: 1px;
   color:#ededed;
 }
 
@@ -310,4 +344,258 @@ hr {
   margin:0;
   padding: 0;
   
+}
+@media only screen and (max-width: 350px){
+  .table-container{
+    max-height: 300px ;
+  }
+}
+
+@media only screen and (min-width: 360px) and (max-width: 400px){
+  .table-container{
+    max-height: 380px ;
+  }
+}
+
+@media only screen and (min-width: 1260px) and (max-width: 1440px){
+  .table-container{
+    max-height: 500px ;
+  }
+  .container {
+    max-width: 1200px ;
+  }
+  #main {
+    max-width: 1200px ;
+  }
+  .jplist-panel .text-filter {
+    width: 12% ;
+    margin-right: .6em;
+  }
+  
+  .jplist-panel .col-md-6 {
+    width: 60% !important;
+    font-size: 12px !important;
+  }
+  
+}
+
+@media only screen and (min-width: 1440px) and (max-width: 1660px){
+  .table-container {
+    max-height: 700px !important;
+  }
+  .container {
+    width: 1400px !important;
+  }
+  #main {
+    height: 900px !important;
+    width: 1520px !important;
+  }
+  #form_section{
+    padding-top: 10em !important;
+  }
+  
+}
+@media only screen and (max-width: 600px){
+  .jplist-panel {
+      display: block;
+      width: 100% !important;
+      
+  }
+  .text-filter-box {
+    
+    float: none !important;
+    
+    padding-right: 0 !important;
+    margin-right: 0 !important;
+  }
+  .text-filter-box input {
+    display: block;
+    max-width: 90% !important;
+    width: 80% important;
+    padding: 0 0 !important;
+  }
+  .text-filter {
+    width: 100% !important;
+    float: none !important; 
+    
+    padding-right: 0 !important;
+    
+  }
+  .select {
+    display: block;
+    width: 100% !important;
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+    float: right !important;
+    
+  }
+  select .pull-right{
+    margin-right: 0 !important;
+    padding-right: 0;
+    float: right !important;
+  }
+  .jplist-panel input[type=text] {
+    width: 88% !important;
+    
+  }
+  .table-fill thead {
+    max-height: 20px !important;
+  }
+  tr {
+    max-height: 20px !important;
+  }
+  th {
+    font-size: .8em !important;
+    font-weight: 700 !important;
+  }
+  .table-item {
+    height: 20px !important;
+    font-size: .7em !important;
+    font-weight: 700 !important;
+  }
+  .table-container{
+    
+  }
+  .table-fill {
+    
+    overflow-x: visible !important;
+    width: 800px !important;
+  }
+  .marca {
+    width: 100px !important;
+  }
+  .fornitore {
+    width: 120px !important;
+  }
+  td.p_netto{
+    width: 80px !important;
+  }
+  td.p_finale{
+    width: 80px !important;
+  }
+  td.giacenza {
+    width: 80px !important;
+  }
+  .jplist-panel br {
+    display: inline !important;
+  }
+  .cerca {
+    text-align: center !important;
+  }
+  body {
+    padding-bottom: 0 !important;
+    zoom: 100%;
+  }
+  
+}
+
+.select select{
+  max-width: 60% !important; 
+  margin-right: 0;
+  padding-top: 2px;
+}
+
+.checkboxes,
+.text-filter {
+  padding: 0 0 !important;
+}
+.text-filter-box input{
+  max-width: 70% ;
+}
+html,
+body,
+.full-height,
+#background {
+  height: 100% !important;
+  min-height: 100% ;
+  
+}
+
+body,
+div {
+  margin: 0;
+  border: 0 none;
+  padding: 0;
+}
+
+.form-header {
+  color:#FFF;
+  padding-left: 3em;
+  width:100%
+}
+
+.form-misura {
+  color:#FFF; 
+  padding-left: 9em;
+}
+
+
+.form-marca {
+  color:#FFF; 
+  padding-left: 12em;
+}
+
+.form-stagione {
+  color:#FFF; 
+  padding-left: 15em;
+}
+
+@media (max-width: 767px) {
+  .form-header,
+  .form-marca,
+  .form-misura,
+  .form-stagione,
+  .form-header hr
+  {
+    padding: 0 1em ;
+    margin: 0 0 !important;
+  }
+}
+
+@media only screen and (min-width: 1670px)  {
+  .table-container {
+    max-height: 850px !important;
+  }
+  .container {
+    width: 1400px !important;
+  }
+  #main {
+    height: 900px !important;
+    width: 1520px !important;
+  }
+  #form_section{
+    padding-top: 10em !important;
+  }
+  
+}
+
+@media only screen and (max-width: 1260px) and (min-width: 800px) {
+  .table-container {
+    max-height: 450px ;
+  }
+  .container {
+    max-width: 1200px !important;
+  }
+  #main {
+    max-width: 1200px !important;
+  }
+  .jplist-panel .text-filter {
+    width: 12% ;
+    margin-right: .6em;
+  }
+  
+  .jplist-panel .col-md-6 {
+    width: 60% !important;
+    font-size: 12px !important;
+  }
+  
+  
+}
+
+#background { 
+  background: url("tire.jpg") no-repeat left fixed !important; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }

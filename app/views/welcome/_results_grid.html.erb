@@ -1,17 +1,16 @@
         <div id="filters">
             <!-- panel -->
             <div class="row row-mobile full-line">
-                <div class="col-lg-12 col-md-12 col-xs-12" style="padding: 0 0;">
                     <div class="jplist-panel">
                         <!-- filter by title -->
-                        <div class="col-md-2 text-filter" style="padding: 0 0;">
+                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 text-filter" >
                             <div class="text-filter-box">
                                <i class="fa fa-search  jplist-icon"></i>
                                <input 
                                   data-path=".marca" 
                                   type="text" 
                                   value="" 
-                                  style= "max-width: 130px;"
+                                  
                                   placeholder="Marca" 
                                   data-control-type="textbox" 
                                   data-control-name="marca-filter" 
@@ -19,14 +18,15 @@
                                />
                             </div>
                         </div>
-                        <div class="col-md-2 text-filter" style="padding: 0 0;">
+                        <br style="display: none;">
+                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12  text-filter">
                             <div class="text-filter-box">
                                <i class="fa fa-search  jplist-icon"></i>
                                <input 
                                   data-path=".descrizione" 
                                   type="text" 
                                   value="" 
-                                  style= "max-width: 130px;"
+                                  
                                   placeholder="Descrizione" 
                                   data-control-type="textbox" 
                                   data-control-name="descrizione-filter" 
@@ -34,7 +34,7 @@
                                />
                             </div>
                         </div>   
-                        <div class="col-md-6 checkboxes" style="padding: 0 0;">
+                        <div class="col-lg-6 col-md-6 checkboxes">
                             <div
                             class="jplist-group small"
                             data-control-type="checkbox-text-filter"
@@ -58,15 +58,15 @@
                             <% end %>
                         </div>
                         </div>
-                        <div class="col-md-2 text-right" style="padding: 0 0; padding-top: 2px">
+                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12  text-right select">
                             <select 
-                                class="jplist-select pull-right" 
+                                class="jplist-select pull-right text-right" 
                                 data-control-type="sort-select" 
                                 data-control-name="sort" 
                                 data-control-action="sort"
-                                style= "max-width: 130px; margin-right: 0;">
+                                >
                                 
-                                <option data-path="default">Ordina per</option>
+                                <option data-path="default">Ordina</option>
                                 <option data-path=".p_finale" data-order="asc" data-type="number">Prezzo Finale Crescente</option>
                                 <option data-path=".p_finale" data-order="desc" data-type="number">Prezzo Finale Decrescente</option>
                                 <option data-path=".p_netto" data-order="asc" data-type="number">Prezzo Netto Crescente</option>
@@ -81,21 +81,20 @@
                                 data-control-action="sort"
                                 style= "max-width: 130px;">
                      
-                                <option data-path="default">Ordina per</option>
+                                <option data-path="default">Ordina</option>
                                 <option data-path=".p_finale" data-order="asc" data-type="number">Prezzo Crescente</option>
                                 <option data-path=".p_finale" data-order="desc" data-type="number">Prezzo Decrescente</option>
                                 <option data-path=".giacenza" data-order="desc" data-type="number">Giacenza</option>
                             </select>
                         </div>
                         
-                        
-                    </div>
+                  
                 </div>
             </div>
             
                     
-            <div class="row row-mobile full-line">
-                <div class="col-lg-12 col-md-12 col-xs-12" style="padding: 0 0;">    
+            <div class="row row-mobile full-line table-container">
+                
                     <table class="table-fill">
                         <thead>
                             <tr>
@@ -111,7 +110,7 @@
                             </tr>
                         </thead>
                         <tbody class="table-hover">
-                        <%= render partial: 'results', locals: { res: res}  %>
+                            <%= render partial: 'results', locals: { res: res}  %>
                         </tbody>
                     </table>    
                     <div class="jplist-no-results">
@@ -124,11 +123,13 @@
                             
                         </table>
                     </div>
-                </div>
+               
             </div>
-            <div class="row row-mobile full-line">
-                <div class="col-lg-12 col-md-12 col-xs-12" style="padding: 0 0;">    
-                    <div class="jplist-panel">
+            <div class="row row-mobile full-line ">
+                    <div class="col-lg-5 col-md-4 col-sm-1 col-xs-1">
+                        
+                    </div>
+                    <div class="col-lg-7 col-md-8 col-sm-11 col-xs-11 jplist-panel">
                         <!-- pagination control -->
                         <div class="pagination ">
                             <div 
@@ -152,7 +153,7 @@
                         
                         
                     </div>
-                </div>
+                    
             </div>
         </div>
         <p id="fine"><%= finished %></p>

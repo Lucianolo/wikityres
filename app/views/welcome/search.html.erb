@@ -4,79 +4,106 @@
 <%= content_tag :div, class: "temp_information", data: {temp: @marche_pneumatici} do %>
 <% end %>          
 
+<div class="container" id="main">
+  
 
     
-    <div id="loading">
-        <%= image_tag("load2.gif") %> 
-        <h3 style="text-align:center;">Caricamento in corso...</h3>
-    </div>
+    
   
 
   </br>
-<section class="advanced-search advance-search-header" id="form_section">
-  <div class="container">
-    <div class="row" id="form_div">
-      <div class="col-lg-12 col-md-12 col-xs-12" style="padding: 0 0;">
-        <label class="title" style="font-size:25px;color:#FFF;"> RICERCA </label>
-   
-        <hr/>
-        <div class="col-xs-6">
+<div class="row" id="background">
+  
+
+
+  
+
+  <div class="col-xl-7 col-lg-8 full-height">
+    
+  </div>
+  <div class="col-xl-5 col-lg-4 full-height" id="colonna-destra">
+    
+    <section class="full-height" id="form_section">
           <%= form_tag(search_path(:params), :method => "get", :class => "form", :id => "form") do %>
-          
-            <div class="form-group" style="color:#FFF;">
-              <%= label_tag(:veicolo, "Settore") %>
-              <div id="radio" style="color:#FFF;">
-                <label class="radio-inline" >
-                  <input type="radio" name="veicolo" value="leggero" id="leggero" checked >Automobili
-                </label>
-                <label class="radio-inline">
-                  <input type="radio" name="veicolo" value="pesante" id="pesante">Trasporto Pesante
-                </label>
-              </div>
-            </div>
-            <!--div id="radio" style="color:#FFF;">
-              <label class="radio-inline" >
-                <input type="radio" name="options" id="veloce" checked >Ricerca Veloce
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="options" id="avanzata">Ricerca Avanzata
-              </label>
-            </div-->
-            <div class="form-group" style="color:#FFF;">
-              <%= label_tag(:misura, "Misura") %>
-              <%= text_field_tag(:misura, '', :class => "form-control  input") %>
-            </div>
-            <!--div class="form-group">
-              %= label_tag(:accoppiata, "Accoppiata:") %>
-              %= text_field_tag(:accoppiata, 'es: 16', :class => "form-control  input") %>
-            </div-->
-            <div class="form-group" id="id_marca" style="color:#FFF;">
-            <%= label_tag(:marca, "Marca") %>
-            <%= select_tag :marca, options_for_select(@marche_pneumatici) , :class => "form-control  input"  %>
-            <!--  text_field_tag(:marca,"", :class => "form-control") %-->
-            </div>
-            <div class="form-group" style="color:#FFF;">
-              <%= label_tag(:stagione, "Stagione") %>
-              <%= select_tag "stagione", "<option>Tutte</option><option>Estate</option><option>Inverno</option><option>4 Stagioni</option>".html_safe, :class => "form-control  input"  %>
+        
+            <div class="form-group form-header">
+            <div clas="row" style="text-align: center !important;">
+              <label style="font-size:2.5em;color:#FFF;"> RICERCA </label>
             </div>
             
-            <%= submit_tag("CERCA", :class => 'btn btn-primary', :style =>"font-weight:700;color:#FFF;") %>
-          <% end %>
-        </div>
-      </div>
-    </div>
+            
+            <hr style="margin-right: 0;"/>
+              <div class="text-center " id="loading">
+                    <%= image_tag("17.gif") %> 
+                    <h3 style="color:white">Caricamento in corso...</h3>
+              </div>
+              
+              
+                
+                  <%= label_tag(:veicolo, "SETTORE", :id => 'radio_label') %>
+                  <div id="radio" style="color:#FFF;">
+                    <label class="radio-inline" >
+                      <input type="radio" name="veicolo" value="leggero" id="leggero" checked >Automobili
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" name="veicolo" value="pesante" id="pesante">Trasporto Pesante
+                    </label>
+                  </div>
+                </div>
+                <!--div id="radio" style="color:#FFF;">
+                  <label class="radio-inline" >
+                    <input type="radio" name="options" id="veloce" checked >Ricerca Veloce
+                  </label>
+                  <label class="radio-inline">
+                    <input type="radio" name="options" id="avanzata">Ricerca Avanzata
+                  </label>
+                </div-->
+                <div class="form-group form-misura" id="mis">
+                  <%= label_tag(:misura, "MISURA") %>
+                  <%= text_field_tag(:misura, '', :class => "form-control  input") %>
+                </div>
+                
+                
+                <!--div class="form-group">
+                  <= label_tag(:accoppiata, "Accoppiata:") %>
+                  <= text_field_tag(:accoppiata, 'es: 16', :class => "form-control  input") %>
+                </div-->
+                
+                <div class="form-group form-marca" id="id_marca" >
+                <%= label_tag(:marca, "MARCA") %>
+                <%= select_tag :marca, options_for_select(@marche_pneumatici) , :class => "form-control  input"  %>
+                <!--  text_field_tag(:marca,"", :class => "form-control") %-->
+                </div>
+                <div class="form-group form-stagione" id="id_stag" >
+                  <%= label_tag(:stagione, "STAGIONE") %>
+                  <%= select_tag "stagione", "<option>Tutte</option><option>Estate</option><option>Inverno</option><option>4 Stagioni</option>".html_safe, :class => "form-control  input"  %>
+                </div>
+                <br>
+                <div class="form-group text-right cerca">
+                  
+                  <div id="button">
+                    <%= submit_tag("CERCA", :class => 'btn btn-primary btn-lg', :style =>"font-weight:700;color:#FFF; ") %>
+                  </div>
+                  
+                  
+                </div>
+                
+              <% end %>
+              
+            
+            
+         
+    </section>
+    
+
   </div>
-</section>
 
-
-
-
-
-
+</div>
+</div>
 <script>
 
 $(document).ready(function() {
-    $('#loading').css('display', 'none');
+    
     $('.form-control').focus(function(){
        $(this).data('value',$(this).attr('value'))
               .attr('value','');
@@ -85,7 +112,12 @@ $(document).ready(function() {
     });
 });
   $('#form').submit(function() {
-    $('#form_section').css('display', 'none');
+    $('#button').css('display', 'none');
+    $('#id_stag').css('display', 'none');
+    $('#id_marca').css('display', 'none');
+    $('#mis').css('display', 'none');
+    $('#radio').css('display', 'none');
+    $('#radio_label').css('display', 'none');
     $('#loading').css('display', 'block');
     return true;
   });
@@ -100,7 +132,7 @@ $(document).ready(function() {
 <script>
   $(document).ready(function(){
     $('#leggero').check;
-    $('#id_marca').css('display', 'none');
+    
     $('#veloce').change(function(){
         if(this.checked)
             $('#id_marca').fadeOut('slow');

@@ -1,13 +1,12 @@
 
-
-<div id = "items_grid">
-    <%= render partial: 'results_grid', locals: { res: @res , fornitori: @fornitori, finished: @finished}  %>
-</div>
-<hr/>
-<div class="row" style="height: 20px;">
+<div class="container" id = "items_grid">
     
-</div>
 
+
+    <%= render partial: 'results_grid', locals: { res: @res , fornitori: @fornitori, finished: @finished}  %>
+
+
+</div>
 <script type="text/javascript">
     
         
@@ -24,7 +23,7 @@ $( document ).ready(function() {
     var intervalId = setInterval(update, 8000);
     function update() {
         var end = document.getElementById('fine');
-        console.log(end);
+        //console.log(end);
         if (end == null) {
             console.log("leaving");
             $('#spinner').hide();
@@ -39,6 +38,9 @@ $( document ).ready(function() {
         else{
          $.ajax({
             url: '/welcome/update_results/',
+            data: { 
+                marca: "<%= @marca_query %>"
+            },
             success: function(data) { 
             }
           });

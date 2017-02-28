@@ -329,6 +329,7 @@ private
         #puts row
         marca = row.css('td img.block').attr('alt')
         
+        marca = marca.to_s.upcase
         first_row = row.at_css('td a.block').text 
         if first_row.strip == ""
           first_row = row.css('td a.block')[1].text 
@@ -379,7 +380,7 @@ private
         
         
         if (misura_totale == tmp)
-          Pneumatico.create(nome_fornitore: "MaxiTyre", marca: marca, misura: misura, raggio: raggio, modello: descrizione, cod_vel: cod_vel, fornitore: @maxityre, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: 25, stagione: stagione, pfu: @pfu)
+          Pneumatico.create(nome_fornitore: "MaxiTyre", marca: marca.upcase , misura: misura, raggio: raggio, modello: descrizione, cod_vel: cod_vel, fornitore: @maxityre, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: 25, stagione: stagione, pfu: @pfu)
 
         end
       end
@@ -530,7 +531,7 @@ private
             stagione = "4 Stagioni"
           end
           if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
-            Pneumatico.create(nome_fornitore: "CarliniGomme", marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @carlinigomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+            Pneumatico.create(nome_fornitore: "CarliniGomme", marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @carlinigomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             j+=1
           end
         end 
@@ -633,6 +634,10 @@ private
         anchor['class']="Riga"
       end
       
+      table.search('tr.ROSSO-3').each do |anchor|
+        anchor['class']="Riga"
+      end
+      
       table.search('tr.BIANCO').each do |anchor|
         anchor['class']="Riga"
       end
@@ -660,7 +665,7 @@ private
             marca = row.css('td')[6].css('img').attr("title")
           end
           
-          puts marca
+          puts marca.to_s.upcase
          
           nome = row.css('div.DescrizioneArticolo').text.gsub("CAM."," ").gsub("SET.","SET").gsub("SET","").gsub("RIC.","").gsub("CH.","").strip
           p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text[3..-1].gsub(",",".").strip.to_f.round(2)
@@ -700,7 +705,7 @@ private
             stagione = "4 Stagioni"
           end
           if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
-            Pneumatico.create(nome_fornitore: "OLPneus", marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @olpneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+            Pneumatico.create(nome_fornitore: "OLPneus", marca: marca , misura: misura, raggio: raggio, modello: nome, fornitore: @olpneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             j+=1
           end
         end 
@@ -811,7 +816,7 @@ private
       misura_totale = misura+raggio
       
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-          Pneumatico.create(nome_fornitore: "PneuShopping", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pneushopping, prezzo_netto: prezzo_netto, prezzo_finale: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel, pfu: @pfu)
+          Pneumatico.create(nome_fornitore: "PneuShopping", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @pneushopping, prezzo_netto: prezzo_netto, prezzo_finale: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel, pfu: @pfu)
       end
     end
     
@@ -916,7 +921,7 @@ private
       
       
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-        Pneumatico.create(nome_fornitore: "PendinGomme", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel, pfu: @pfu)
+        Pneumatico.create(nome_fornitore: "PendinGomme", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel, pfu: @pfu)
       end
         
     end
@@ -1046,7 +1051,7 @@ private
           
         
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-            Pneumatico.create(nome_fornitore: "FarnesePneus", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @farnesepneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione_db, pfu: pfu)
+            Pneumatico.create(nome_fornitore: "FarnesePneus", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @farnesepneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione_db, pfu: pfu)
             i+=1
           end
         end
@@ -1216,7 +1221,7 @@ private
           misura_totale = misura+raggio
           
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-            Pneumatico.create(nome_fornitore: "Fintyre",marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @fintyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+            Pneumatico.create(nome_fornitore: "Fintyre",marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @fintyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             i+=1
           end
         end
@@ -1378,7 +1383,7 @@ private
           misura_totale = misura+raggio
           
           if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp )
-            Pneumatico.create(nome_fornitore: "CentroGomme" ,marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @centrogomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+            Pneumatico.create(nome_fornitore: "CentroGomme" ,marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @centrogomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             j+=1
           end
         end
@@ -1532,7 +1537,7 @@ private
           end
           if p_netto.to_i != 0
             if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
-              Pneumatico.create(nome_fornitore: "MultiTires", marca: marca, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+              Pneumatico.create(nome_fornitore: "MultiTires", marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
               j+=1
             end
           end
@@ -1702,7 +1707,7 @@ private
         
         
         if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp)
-            Pneumatico.create(nome_fornitore: "MaxTyre", marca: marca, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, pfu: @pfu)
+            Pneumatico.create(nome_fornitore: "MaxTyre", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, pfu: @pfu)
         end
       end
       file.close

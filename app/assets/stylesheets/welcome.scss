@@ -61,7 +61,7 @@ pagination{
   width: 100%;
   padding: 9px 0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
-  background-color: #1b1e24 !important;
+  /*background-color: #1b1e24 !important;*/
 }
 .advance-search-header div[class^="col-"] {
   padding-left: 5px;
@@ -78,7 +78,7 @@ pagination{
 
 
 .advanced-search {
-  background-color: #1b1e24 !important;
+  /*background-color: #1b1e24 !important;*/
   position: relative;
 }
 .advanced-search .form-group {
@@ -101,10 +101,7 @@ body {
 
 .jplist-panel{
     height: 20px;
-    margin-top: 0;
-   
-    margin-left: auto;
-    margin-right: auto;
+    
 }
 .jplist-icon {
     padding: 5px 10px !important;
@@ -150,7 +147,7 @@ body {
   margin: 0 auto;
 }
 body {
-    background-color: #ededed !important;
+    /*background-color: #ededed !important;*/
     /*font-family: "Raleway" !important;*/
     font-family: 'Raleway', sans-serif !important;
 }
@@ -195,18 +192,14 @@ body {
 
 
 .text-filter {
-    
+   
     max-height: 45px;
     height: 100%;
 }
 .pagination {
   margin-top: 0 !important;
 }
-@media (max-width: 767px) {
-  .checkboxes {
-    display: none !important;
-  }
-}
+
 
 
 @media (max-width: 767px) {
@@ -216,6 +209,7 @@ body {
   .pagination {
     
   }
+  
 }
 
 .jplist-panel .col-md-2 {

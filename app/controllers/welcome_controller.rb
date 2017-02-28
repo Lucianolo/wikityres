@@ -10,10 +10,13 @@ class WelcomeController < ApplicationController
 
   def search 
     @marche = []
+    
+=begin
     Pneumatico.all.each do |item|
       @marche.push(item.marca) unless @marche.include?(item.marca)
     end
-    
+=end
+
     @marche_pneumatici = []
     file_pneumatici = File.open('marche_pneumatici.html.erb','r')
     document_pneumatici = Nokogiri::HTML(file_pneumatici)
@@ -25,7 +28,7 @@ class WelcomeController < ApplicationController
   end
   
   def update_results 
-    
+    marca = params[:marca]
     stringa = Search.last.misura
     stringa2 = Pneumatico.last.misura + Pneumatico.last.raggio
     stagione = Search.last.stagione
@@ -33,9 +36,17 @@ class WelcomeController < ApplicationController
       misura = Pneumatico.last.misura
       raggio = Pneumatico.last.raggio
       if stagione != "Tutte"
-        @res = Pneumatico.where(misura: misura, raggio: raggio, stagione: stagione).order(:prezzo_finale)
+        if marca != "Tutte"
+          @res = Pneumatico.where(misura: misura, raggio: raggio, stagione: stagione , marca: marca).order(:prezzo_finale)
+        else
+          @res = Pneumatico.where(misura: misura, raggio: raggio, stagione: stagione ).order(:prezzo_finale)
+        end
       else
-        @res = Pneumatico.where(misura: misura, raggio: raggio).order(:prezzo_finale)
+        if marca != "Tutte"
+          @res = Pneumatico.where(misura: misura, raggio: raggio, marca: marca).order(:prezzo_finale)
+        else
+          @res = Pneumatico.where(misura: misura, raggio: raggio).order(:prezzo_finale)
+        end
       end
     end
 =begin
@@ -97,6 +108,7 @@ class WelcomeController < ApplicationController
       end
     end
     #puts @res.inspect
+    
     @finished = Search.last.finished
     puts @finished
     respond_to do |format|
@@ -115,9 +127,8 @@ class WelcomeController < ApplicationController
   
     # Per ora tolgo la marca
     
-    #marca = params[:marca]
+    @marca_query = params[:marca]
     
-    marca = ""
     stagione = params[:stagione]
     @stagione = stagione
     # DA AGGIUNGERE SUPPORTO CAMION
@@ -153,17 +164,17 @@ class WelcomeController < ApplicationController
         puts "La query esiste già"
         @new = false
         if stagione != "Tutte"
-          if marca != ""
+          if @marca_query != "Tutte"
             
-            @res = Pneumatico.where("misura like ? AND raggio like ? AND (stagione like ? ) AND marca like ?", "%#{tmp_misura}%","%#{tmp_raggio}%", stagione, marca).order(:prezzo_finale)
+            @res = Pneumatico.where("misura like ? AND raggio like ? AND (stagione like ? ) AND marca like ?", "%#{tmp_misura}%","%#{tmp_raggio}%", stagione, @marca_query).order(:prezzo_finale)
           else
             
             @res = Pneumatico.where("misura like ? AND raggio like ? AND (stagione like ? )", "%#{tmp_misura}%","%#{tmp_raggio}%", stagione).order(:prezzo_finale)
           end
         else
-          if marca != ""
+          if @marca_query != "Tutte"
             
-            @res = Pneumatico.where("misura like ? AND raggio like ?  AND marca like ?", "%#{tmp_misura}%","%#{tmp_raggio}%", marca).order(:prezzo_finale)
+            @res = Pneumatico.where("misura like ? AND raggio like ?  AND marca like ?", "%#{tmp_misura}%","%#{tmp_raggio}%", @marca_query).order(:prezzo_finale)
           else
             
             @res = Pneumatico.where("misura like ? AND raggio like ?", "%#{tmp_misura}%","%#{tmp_raggio}%" ).order(:prezzo_finale)
@@ -177,7 +188,7 @@ class WelcomeController < ApplicationController
             inactives.push el.nome
           end
         end
-        puts inactives
+        
         @res.each do |item|
           if inactives.include? item.nome_fornitore 
             puts "removing"
@@ -200,14 +211,14 @@ class WelcomeController < ApplicationController
         Pneumatico.delay.add_to_db(query_list, max_results, stagione)
 
         if stagione != "Tutte"
-          if marca != ""
-            @res = Pneumatico.where("misura like ? AND raggio like ? AND (stagione like ?  OR stagione like ?) AND marca like ?", "%#{tmp_misura}%","%#{tmp_raggio}%", stagione, "4 Stagioni", marca).order(:prezzo_finale)
+          if @marca_query != "Tutte"
+            @res = Pneumatico.where("misura like ? AND raggio like ? AND (stagione like ?  OR stagione like ?) AND marca like ?", "%#{tmp_misura}%","%#{tmp_raggio}%", stagione, "4 Stagioni", @marca_query).order(:prezzo_finale)
           else
             @res = Pneumatico.where("misura like ? AND raggio like ? AND (stagione like ?  OR stagione like ?)", "%#{tmp_misura}%","%#{tmp_raggio}%", stagione, "4 Stagioni").order(:prezzo_finale)
           end
         else
-          if marca != ""
-            @res = Pneumatico.where("misura like ? AND raggio like ?  AND marca like ?", "%#{tmp_misura}%","%#{tmp_raggio}%", marca).order(:prezzo_finale)
+          if @marca_query != "Tutte"
+            @res = Pneumatico.where("misura like ? AND raggio like ?  AND marca like ?", "%#{tmp_misura}%","%#{tmp_raggio}%", @marca_query).order(:prezzo_finale)
           else
             @res = Pneumatico.where("misura like ? AND raggio like ?", "%#{tmp_misura}%","%#{tmp_raggio}%" ).order(:prezzo_finale)
           end
