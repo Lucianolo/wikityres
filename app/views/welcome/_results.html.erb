@@ -1,10 +1,10 @@
 
-                
+                <% if !res.nil? %>
                     <% res.each do |item| %>
                         <tr class="table-item">
                             <td class="text-left fornitore">
-                                <% if item.nome_fornitore == "PneuShopping" %>
-                                    <%= link_to (image_tag "#{item.nome_fornitore}.png"  , :class => 'logo') + item.nome_fornitore, "http://www.pneushopping.it/catalogo", :target => 'blank' %>
+                                <% if item.nome_fornitore == "MaxPneus" %>
+                                    <%= link_to (image_tag "#{item.nome_fornitore}.png"  , :class => 'logo') + item.nome_fornitore, "http://www.maxpneus.it/", :target => 'blank' %>
                                 <% else %>
                                     <%= link_to (image_tag "#{item.nome_fornitore}.png"  , :class => 'logo') + item.nome_fornitore, item.fornitore, :target => 'blank' %>
                                 <% end %>
@@ -56,7 +56,7 @@
                           
                         </tr>
                     <% end %>
+                <% end %>    
                     
-                    
-                </tbody>
+               
            

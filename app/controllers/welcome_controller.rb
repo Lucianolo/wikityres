@@ -76,39 +76,45 @@ class WelcomeController < ApplicationController
       @res = Pneumatico.where(misura: misura, raggio: raggio).order(:prezzo_finale)
     end
 =end
-    @results = []
-    inactives = []
-    Fornitore.where(status: "Disattivato").each do |el|
-      if el.nome == "MultiTyre"
-        inactives.push "MultiTires"
-      else
-        inactives.push el.nome
-      end
-    end
-    @res.each do |item|
-      if inactives.include? item.nome_fornitore 
-        puts "removing"
-        puts item
-        @res.delete item
-      end
-    end
-        #puts @res.inspect
+    #@results = []
     @fornitori = []
-    @res.each do |r|
-      if !@fornitori.include? r.nome_fornitore
-        if r.nome_fornitore == "FarnesePneus"
-          @fornitori.push "Farnese"
-        elsif r.nome_fornitore == "PendinGomme"
-          @fornitori.push "Pendin"
-        elsif r.nome_fornitore == "CarliniGomme"
-          @fornitori.push "Carlini"
-        else
-          @fornitori.push r.nome_fornitore
+    inactives = []
+    if !@res.nil?
+      Fornitore.all.each do |el|
+        if el.status == "Disattivato"
+          if el.nome == "MultiTyre"
+            inactives.push "MultiTires"
+          else
+            inactives.push el.nome
+          end
+          puts el.nome
         end
       end
+      @res.each do |item|
+        if inactives.include? item.nome_fornitore 
+          puts "removing"
+          puts item
+          @res.delete item
+        end
+      end
+          #puts @res.inspect
+      
+      @res.each do |r|
+        if !@fornitori.include? r.nome_fornitore
+          if r.nome_fornitore == "FarnesePneus"
+            @fornitori.push "Farnese"
+          elsif r.nome_fornitore == "PendinGomme"
+            @fornitori.push "Pendin"
+          elsif r.nome_fornitore == "CarliniGomme"
+            @fornitori.push "Carlini"
+          else
+            @fornitori.push r.nome_fornitore
+          end
+        end
+      end
+      #puts @res.inspect
+      
     end
-    #puts @res.inspect
-    
     @finished = Search.last.finished
     puts @finished
     respond_to do |format|

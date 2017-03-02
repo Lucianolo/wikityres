@@ -1,9 +1,9 @@
-<div>
+<div class="container" id="settings">
     
-    <div class="row">
-        <div class="col-lg-6">
-            
-            <table class="table-fill queries">
+    <div class="row" style="color:white;">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <%= form_tag(add_query_path(:params), :method => "get", :id => "query_form") do %>
+            <table class="table-fill queries" id="manage_queries">
                 <label class="title">RICERCHE FREQUENTI</label>
                 <thead>
                     <tr>
@@ -26,7 +26,7 @@
                         </tr>
                     <% end %>
                     <tr class="table-item">
-                        <%= form_tag(add_query_path(:params), :method => "get", :id => "query_form") do %>
+                        
                             <td class="text-center misura">
                                 <%= text_field_tag(:misura, '', :class => "form-control text-center") %>
                             </td>
@@ -38,27 +38,28 @@
                                     <i class="fa fa-plus-circle" aria-hidden="true"></i> Aggiungi
                                 <% end %>
                             </td>
-                        <% end %>
+                        
                     </tr>
                 </tbody>
-            </table>    
+            </table>   
+            <% end %>
         </div>
        
-        <div class="col-lg-6" style="height:fill-parent;">
+        <div class="col-lg-6 col-md-6 info" style="height:fill-parent;">
             <div class="descrizione">
                 <h3>Aggiungi qui le ricerche più frequenti per velocizzare il caricamento dei risultati</h3>
             </div>
         </div>
     </div>
     <hr style="border-top: 1px solid #000 !important;margin: 2em 0 !important">
-    <div class="row" style="padding-top: 0 !important">
-        <div class="col-lg-6">
+    <div class="row" style="color:white; padding-top: 0 !important">
+        <div class="col-lg-6 col-md-6 info">
             <div class="descrizione">
                 <h3>Da qui puoi gestire i tuoi fornitori, attivando o disattivando la ricerca a seconda delle necessità</h3>
             </div>
         </div>
         <div class="col-lg-6">
-            <table class="table-fill">
+            <table class="table-fill" id="manage_queries">
                 <label class="title" style="text-align:right !important;">LISTA FORNITORI</label>
                 <thead>
                     <tr>
@@ -111,19 +112,19 @@
         </div>
     </div>
     <hr style="border-top: 1px solid #000 !important;margin: 2em 0 !important">
-    <div class="row">
+    <div class="row" style="color:white;">
         <div class="col-lg-3">
             
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6" >
             <h3 class="text-center">Aggiorna Password</h4>
             <br>
             <%= form_tag(update_password_path(:params) , :method => 'get' , :id => 'password_form') do %>
-                <div class="form-group" style="color:#333;">
+                <div class="form-group" >
                   <%= label_tag(:misura, "Nuova Password   (Minimo 8 caratteri)") %>
                   <%= password_field_tag(:password, '', :class => "form-control  input") %>
                 </div>
-                <div class="form-group" style="color:#333;">
+                <div class="form-group">
                   <%= label_tag(:misura, "Ripeti Password") %>
                   <%= password_field_tag(:password_confirmation, '', :class => "form-control  input") %>
                 </div>

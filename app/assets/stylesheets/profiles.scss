@@ -2,26 +2,40 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 .queries {
-  width: 500px !important;
+  max-width: 500px !important;
   margin: 0 0 !important;
 }
 
 .misura {
-  width: 200px !important;
+  max-width: 200px !important;
 }
 
 .stagione-query {
-  width: 200px !important;
+  max-width: 200px !important;
 }
 
 .elimina {
-  width: 100px !important;
+  max-width: 100px !important;
 }
 .title {
     font-size: 25px;
+    padding-bottom: .8em;
 }
 .descrizione{
     margin: 6em 3em;
     height: 100%;
 }
 
+
+#settings {
+  padding-top: 2em;
+}
+@media only screen and (max-width: 600px) {
+  .info {
+    display: none;
+  }
+  #manage_queries{
+    max-width: 800px !important;
+    width: 100% !important;
+  }
+}

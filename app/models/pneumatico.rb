@@ -43,7 +43,7 @@ class Pneumatico < ActiveRecord::Base
         @multitires = "http://multitires.autotua.it/interna.asp"
         @maxtyre = "http://web.maxtyre.it/"
         @pendingomme = "http://www.pendingomme.it/login"
-        @pneushopping = "http://www.pneushopping.it/"
+        @maxpneus = "http://www.maxpneus.it"
         @carlinigomme = "http://carlinigomme.nuovo.diffusori.it/interna.asp"
         @olpneus = "http://olpneus.ct.diffusori.it/default.asp"
         @maxityre = "https://www.maxityre.it/"
@@ -100,10 +100,10 @@ class Pneumatico < ActiveRecord::Base
             
             # PNEUSHOPPING.IT
             if query.to_s.length > 6
-              if fornitori.include? "PneuShopping"
+              if fornitori.include? "MaxPneus"
                 threads1 << Thread.new {
                   begin
-                    Pneumatico.search_pneushopping(query,stagione,max_results)
+                    Pneumatico.search_maxpneus(query,stagione,max_results)
                   ensure
                     ActiveRecord::Base.connection_pool.release_connection
                   end
@@ -726,37 +726,38 @@ private
   
   
   
-  def self.search_pneushopping(query, stagione, max_results)
+  def self.search_maxpneus(query, stagione, max_results)
     switches = ['--load-images=no']
     browser = Watir::Browser.new :phantomjs, :args => switches
     browser.window.maximize
-    Pneumatico.sureLoadLink(10){ browser.goto 'http://www.pneushopping.it/login?_next=/' }
+    Pneumatico.sureLoadLink(10){ browser.goto 'http://www.maxpneus.it' }
     query_old = query           
     #puts "page loaded"
-    if query.to_s.length > 7
-      query = query.to_s[0..-2]+"."+query.to_s.last
-    end
-    fornitore_pneushopping = Fornitore.where(nome: "PneuShopping").first
+   
+    fornitore_maxpneus = Fornitore.where(nome: "MaxPneus").first
     if browser.text_field(:name => 'username').exists?
-      browser.text_field(:name => 'username').set fornitore_pneushopping.user_name
-      browser.text_field(:name => 'password').set fornitore_pneushopping.password
+      browser.text_field(:name => 'username').set fornitore_maxpneus.user_name
+      browser.text_field(:name => 'password').set fornitore_maxpneus.password
       browser.button(:class => 'btn').click   
     else
-      puts "Pneushopping non disponibile"
+      puts "MaxPneus non disponibile"
       return
     end
-
+    
+    puts "Login effettuato"
     #browser.link(:href => '/catalogo').click
-    browser.goto "http://www.pneushopping.it/catalogo"
+    browser.goto "http://www.maxpneus.it/catalogo"
     #puts "pagina risultati"
     
-    sleep 1
+    sleep 0.4
     
     
     browser.link(:class => 'btn btn-default buttons-collection buttons-colvis').click
     
+    
     browser.ul(:class => 'dt-button-collection dropdown-menu fixed three-column').links.each do |li|
       if li.text == "Stagione"
+        puts li.text
         li.click
         browser.link(:class => 'btn btn-default buttons-collection buttons-colvis').click
         break
@@ -764,39 +765,43 @@ private
     end
     
     browser.text_field(:class => 'form-control input-sm').set query
+    puts browser.text_field(:class => 'form-control input-sm').value
     
     
+    sleep 1
     
-    sleep 0.5
     table = browser.table(:id => 'Grid').tbody
-
     
-    if table.td(:class => 'dataTables_empty').exists?
+    
+
+    if table.tr(:index => 1).text.strip == "Nessun dato presente nella tabella"
+    #if table.td(:class => 'dataTables_empty').exists?
       puts "nessun risultato per PneuShopping"
       browser.close
       return
     end
-    File.open('pages/pneushopping.html', 'w') {|f| f.write table.html }
+    File.open('pages/maxpneus.html', 'w') {|f| f.write table.html }
     
     
-    
-    browser.ul(:class => 'pagination').links.each do |link|
-      if link.text == '2'
-        link.click
-        sleep 0.5
-        #puts "Second Page"
-        table2 = browser.table(:id => 'Grid').tbody
-        File.open('pages/pneushopping.html', 'a') {|f| f.write table2.html }
+    if browser.ul(:class => 'pagination').link(:index => 2).exists?
+      browser.ul(:class => 'pagination').links.each do |link|
+        if link.text == '2'
+          link.click
+          sleep 0.5
+          #puts "Second Page"
+          table2 = browser.table(:id => 'Grid').tbody
+          File.open('pages/maxpneus.html', 'a') {|f| f.write table2.html }
+        end
       end
     end
     #puts "closing Watir"
     browser.close
     
-    file = File.open('pages/pneushopping.html', 'r')
+    file = File.open('pages/maxpneus.html', 'r')
     document = Nokogiri::HTML(file)
     tmp = query_old.to_s
     document.css('tr').each do |row|
-      puts "PneuShopping:" + row.text
+      puts "MaxPneus:" + row.text
       misura = row.css('td')[1].text + row.css('td')[2].text
       if query.to_s.length > 7
         raggio = row.css('td')[3].text[0..1]+row.css('td')[3].text.last
@@ -805,7 +810,7 @@ private
       end
       marca = row.css('td')[4].text 
       cod_vel = row.css('td')[6].text+row.css('td')[7].text
-      modello = misura+" "+raggio+" "+marca+" "+row.css('td')[5].text+" "+cod_vel
+      modello = row.css('td')[5].text+" "+cod_vel  # misura+" "+raggio+" "+marca+" "+
       #puts row.css('td.sorting_1').text[3..-1]
       prezzo_netto = row.css('td.sorting_1').text[3..-1].strip.gsub(",",".").to_f.round(2)
       giacenza = row.css('td')[9].text
@@ -816,7 +821,7 @@ private
       misura_totale = misura+raggio
       
       if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-          Pneumatico.create(nome_fornitore: "PneuShopping", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @pneushopping, prezzo_netto: prezzo_netto, prezzo_finale: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel, pfu: @pfu)
+          Pneumatico.create(nome_fornitore: "MaxPneus", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @maxpneus, prezzo_netto: prezzo_netto, prezzo_finale: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel, pfu: @pfu)
       end
     end
     
