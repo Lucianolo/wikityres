@@ -599,3 +599,6 @@ div {
   -o-background-size: cover;
   background-size: cover;
 }
+.jplist-panel label {
+  padding: 0 2px;
+}
