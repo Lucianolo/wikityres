@@ -47,6 +47,7 @@ class Pneumatico < ActiveRecord::Base
         @carlinigomme = "http://carlinigomme.nuovo.diffusori.it/interna.asp"
         @olpneus = "http://olpneus.ct.diffusori.it/default.asp"
         @maxityre = "https://www.maxityre.it/"
+        @pneus26 = "http://www.pneus26.it/customer/account/login/"
         
         fornitori = []
         Fornitore.where(status: "Attivo").each do |f|
@@ -60,9 +61,18 @@ class Pneumatico < ActiveRecord::Base
             
             # FARNESEPNEUS.IT
             if fornitori.include? "FarnesePneus"
-              threads << Thread.new {
                 begin
                   search_farnese(query,stagione,max_results)
+                ensure
+                #guarantee that the thread is releasing the DB connection after it is done
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+            end
+            
+            if fornitori.include? "Pneus26"
+              threads << Thread.new {
+                begin
+                  search_pneus26(query,stagione)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -228,6 +238,114 @@ private
         end
     end
     
+  
+  def self.search_pneus26(query, stagione) 
+    switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs, :args => switches
+    browser.window.maximize
+    Pneumatico.sureLoadLink(10){ browser.goto @pneus26 }
+    
+    fornitore_pneus26 = Fornitore.where(nome: "Pneus26").first
+    
+    if browser.text_field(:id => 'email').exists?
+      browser.text_field(:id => 'email').set fornitore_pneus26.user_name
+      browser.text_field(:id => 'pass').set fornitore_pneus26.password
+      browser.button(:id => 'send2').click  
+    else
+      puts "Pneus26 non disponibile"
+      return
+    end
+    
+    puts "Pneus26: Login Effettuato"
+    
+    element = browser.div(:class => 'category-products')
+    search_page = "http://www.pneus26.it/products_list"
+    
+    flag = Pneumatico.try_until(browser,search_page, element) {
+      
+      browser.text_field(:id => 'search_list').wait_until_present
+      
+      Pneumatico.sureLoadLink(10){ browser.goto "http://www.pneus26.it/catalogsearch/result/index/?dir=asc&order=price&q="+query.to_s }
+      #browser.text_field(:id => 'search_list').set query
+      
+      #browser.div(:class => 'form-search').button.click
+      
+      #sleep 0.5
+              
+      if !(browser.div(:class => 'category-products').exists?)
+        puts "no results for pneus26"
+        browser.close
+        return false
+      end
+            
+    }
+    puts flag
+    if flag
+      rows = ""
+      table = browser.div(:class => 'category-products').ol(:id => 'products-list')
+      table.lis.each do |item|
+        rows = rows+item.html
+      end
+      if browser.div(:class => 'pages').exists?
+        browser.goto "http://www.pneus26.it/catalogsearch/result/index/?dir=asc&order=price&p=2&q="+query.to_s
+        table = browser.div(:class => 'category-products').ol(:id => 'products-list')
+        table.lis.each do |item|
+          rows = rows+item.html
+        end
+      end
+      
+      File.open('pages/pneus26.html', 'w') {|f| f.write rows }
+              
+      browser.close
+      browser.quit
+                
+      file = File.open('pages/pneus26.html', 'r')
+      document = Nokogiri::HTML(file)
+   
+      tmp = query.to_s
+      
+      rows = document.css('li')
+      if @pfu == 'C2'
+        add = 17.60
+      elsif @pfu == 'C1'
+        add = 8.10
+      else
+        add = 2.30
+      end
+      
+      
+      rows.each do |row|
+        
+        modello = row.css(".product-name").text
+        marca = modello.split(" ").first.strip
+        misura = modello.split("/").first.split(" ").last + modello.split("/").second.split(" ").first
+        raggio = modello.split("/").second.split("R").second.split(" ").first.strip
+        cod_vel = modello.split(" ").last.strip
+        p_netto = row.css(".price").text.strip.split(" ").first.gsub(",",".").to_f.round(2)
+        stock = row.css(".stock_qty").text.gsub(/[^0-9]/, '').strip.to_i
+        stagione = ""
+        
+        modello.slice! marca
+        
+        puts "Pneus26: "+modello
+        
+        p_finale = p_netto + add + ((p_netto + add )/100)*22    
+        
+        misura_totale = misura + raggio
+        
+        
+        if (misura_totale == tmp)
+          Pneumatico.create(nome_fornitore: "Pneus26", marca: marca.upcase , misura: misura, raggio: raggio, modello: modello, cod_vel: cod_vel, fornitore: @pneus26, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+        end
+      end
+      
+    file.close
+    
+    else
+      browser.close
+      puts "no results for Pneus26"
+    end    
+  end
     
   
   def self.search_maxityre(query, stagione, max_results)
