@@ -862,7 +862,7 @@ private
       return
     end
     
-    puts "Login effettuato"
+    puts "MaxPneus: Login effettuato"
     #browser.link(:href => '/catalogo').click
     browser.goto "http://www.maxpneus.it/catalogo"
     #puts "pagina risultati"
@@ -892,9 +892,9 @@ private
     
     
 
-    if table.tr(:index => 1).text.strip == "Nessun dato presente nella tabella"
+    if table.tr(:class => 'odd').text.strip == "Nessun dato presente nella tabella"
     #if table.td(:class => 'dataTables_empty').exists?
-      puts "nessun risultato per PneuShopping"
+      puts "nessun risultato per MaxPneus"
       browser.close
       return
     end
