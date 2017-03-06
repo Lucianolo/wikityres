@@ -55,14 +55,14 @@ class Pneumatico < ActiveRecord::Base
         end
         puts fornitori
         
-        switches = ['--load-images=no']
-        browser1 = Watir::Browser.new :phantomjs, :args => switches
-        browser2 = Watir::Browser.new :phantomjs, :args => switches
-        browser1.window.maximize
-        browser2.window.maximize
+        
         
         query_list.each do |query|
-            
+            switches = ['--load-images=no']
+            browser1 = Watir::Browser.new :phantomjs, :args => switches
+            browser2 = Watir::Browser.new :phantomjs, :args => switches
+            browser1.window.maximize
+            browser2.window.maximize
             puts query
             threads = []
             
