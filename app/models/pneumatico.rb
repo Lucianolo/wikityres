@@ -54,6 +54,13 @@ class Pneumatico < ActiveRecord::Base
           fornitori.push(f.nome)
         end
         puts fornitori
+        
+        switches = ['--load-images=no']
+        browser1 = Watir::Browser.new :phantomjs, :args => switches
+        browser2 = Watir::Browser.new :phantomjs, :args => switches
+        browser1.window.maximize
+        browser2.window.maximize
+        
         query_list.each do |query|
             
             puts query
@@ -62,7 +69,7 @@ class Pneumatico < ActiveRecord::Base
             # FARNESEPNEUS.IT
             if fornitori.include? "FarnesePneus"
                 begin
-                  search_farnese(query,stagione,max_results)
+                  search_farnese(query,stagione,max_results, browser1)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -72,7 +79,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "Pneus26"
               threads << Thread.new {
                 begin
-                  search_pneus26(query,stagione)
+                  search_pneus26(query,stagione, browser1)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -84,7 +91,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "OLPneus"
               threads << Thread.new {
                 begin
-                  Pneumatico.search_olpneus(query, stagione, max_results)
+                  Pneumatico.search_olpneus(query, stagione, max_results, browser2)
                 ensure
                   ActiveRecord::Base.connection_pool.release_connection
                 end
@@ -98,7 +105,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "CarliniGomme"
               threads1 << Thread.new {
                 begin
-                  Pneumatico.search_carlini(query, stagione, max_results)
+                  Pneumatico.search_carlini(query, stagione, max_results, browser1)
                 ensure
                   ActiveRecord::Base.connection_pool.release_connection
                 end
@@ -113,7 +120,7 @@ class Pneumatico < ActiveRecord::Base
               if fornitori.include? "MaxPneus"
                 threads1 << Thread.new {
                   begin
-                    Pneumatico.search_maxpneus(query,stagione,max_results)
+                    Pneumatico.search_maxpneus(query,stagione,max_results, browser2)
                   ensure
                     ActiveRecord::Base.connection_pool.release_connection
                   end
@@ -128,7 +135,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "PendinGomme"
               threads2 << Thread.new {
                 begin
-                  search_pendingomme(query,stagione,max_results)
+                  search_pendingomme(query,stagione,max_results, browser1)
                 ensure
                   ActiveRecord::Base.connection_pool.release_connection
                 end
@@ -140,7 +147,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "Fintyre"
               threads2 << Thread.new {
                 begin
-                  search_fintyre(query,stagione,max_results)
+                  search_fintyre(query,stagione,max_results, browser2)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -154,7 +161,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "CentroGomme"
               threads3 << Thread.new {
                 begin
-                  search_centrogomme(query,stagione,max_results)
+                  search_centrogomme(query,stagione,max_results, browser1)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -166,7 +173,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "MaxiTyre"
               threads3 << Thread.new {
                 begin
-                  search_maxityre(query,stagione,max_results)
+                  search_maxityre(query,stagione,max_results, browser2)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -182,7 +189,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "MaxTyre"
               threads4 << Thread.new {
                 begin
-                  search_maxtyre(query, stagione, max_results)
+                  search_maxtyre(query, stagione, max_results, browser1)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -195,7 +202,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "MultiTyre"
               threads4 << Thread.new {
                 begin
-                  search_multityre(query, stagione, max_results)
+                  search_multityre(query, stagione, max_results, browser2)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -204,7 +211,8 @@ class Pneumatico < ActiveRecord::Base
             end
             threads4.each(&:join)
             @query = query.to_s
-            
+            browser1.close
+            browser2.close
             value = system( " pkill -f 'phantomjs' ")
             puts value
             Search.where(misura: @query).first.update(finished: true)
@@ -239,10 +247,12 @@ private
     end
     
   
-  def self.search_pneus26(query, stagione) 
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
-    browser.window.maximize
+  def self.search_pneus26(query, stagione, browser) 
+    #switches = ['--load-images=no']
+    #browser = Watir::Browser.new :phantomjs, :args => switches
+    #browser.window.maximize
+    
+    
     Pneumatico.sureLoadLink(10){ browser.goto @pneus26 }
     
     fornitore_pneus26 = Fornitore.where(nome: "Pneus26").first
@@ -274,7 +284,7 @@ private
               
       if !(browser.div(:class => 'category-products').exists?)
         puts "no results for pneus26"
-        browser.close
+        #browser.close
         return false
       end
             
@@ -296,8 +306,8 @@ private
       
       File.open('pages/pneus26.html', 'w') {|f| f.write rows }
               
-      browser.close
-      browser.quit
+      #browser.close
+      #browser.quit
                 
       file = File.open('pages/pneus26.html', 'r')
       document = Nokogiri::HTML(file)
@@ -342,16 +352,17 @@ private
     file.close
     
     else
-      browser.close
+      #browser.close
       puts "no results for Pneus26"
     end    
   end
     
   
-  def self.search_maxityre(query, stagione, max_results)
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
-    browser.window.maximize
+  def self.search_maxityre(query, stagione, max_results, browser)
+    #switches = ['--load-images=no']
+    #browser = Watir::Browser.new :phantomjs, :args => switches
+    #browser.window.maximize
+    
     Pneumatico.sureLoadLink(10){ browser.goto @maxityre }
     
     fornitore_maxityre = Fornitore.where(nome: "MaxiTyre").first
@@ -381,7 +392,7 @@ private
       
       if browser.div(:class => 'alert-warning').present? 
         puts "no results for maxityre"
-        browser.close
+        #browser.close
         return false
       end
             
@@ -426,8 +437,8 @@ private
       
       File.open('pages/maxityre.html', 'w') {|f| f.write rows }
               
-      browser.close
-      browser.quit
+      #browser.close
+      #browser.quit
                 
       file = File.open('pages/maxityre.html', 'r')
       document = Nokogiri::HTML(file)
@@ -505,17 +516,17 @@ private
     file.close
     
     else
-      browser.close
+      #browser.close
       puts "no results for MaxiTyre"
     end    
     
   end
   
   
-  def self.search_carlini(query, stagione, max_results)
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
-    browser.window.maximize
+  def self.search_carlini(query, stagione, max_results , browser)
+    #switches = ['--load-images=no']
+    #browser = Watir::Browser.new :phantomjs, :args => switches
+    #browser.window.maximize
     Pneumatico.sureLoadLink(10){ browser.goto @carlinigomme }
     
     fornitore_carlini = Fornitore.where(nome: "CarliniGomme").first
@@ -559,7 +570,7 @@ private
       
       if browser.iframe(:id => 'search1').span(:class => 'NessunArticolo').text.strip == "Articoli Trovati 0"
         puts "no results for carlinigomme"
-        browser.close
+        #browser.close
         return false
       end
       
@@ -573,8 +584,8 @@ private
       table = browser.iframe(:id => 'search1').table(:class => 'gvTheGrid')
       File.open('pages/carlinigomme.html', 'w') {|f| f.write table.html }
               
-      browser.close
-      browser.quit
+      #browser.close
+      #browser.quit
                 
       file = File.open('pages/carlinigomme.html', 'r')
       document = Nokogiri::HTML(file)
@@ -659,7 +670,7 @@ private
       file.close
     
     else
-      browser.close
+      #browser.close
       puts "no results for carlinigomme"
     end    
   end    
@@ -668,12 +679,12 @@ private
   # OLPNEUS
   
   
-  def self.search_olpneus(query, stagione, max_results)
+  def self.search_olpneus(query, stagione, max_results, browser)
     
 
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
-    browser.window.maximize
+    #switches = ['--load-images=no']
+    #browser = Watir::Browser.new :phantomjs, :args => switches
+    #browser.window.maximize
     Pneumatico.sureLoadLink(10){ browser.goto @olpneus }
     
     fornitore_olpneus = Fornitore.where(nome: "OLPneus").first
@@ -719,7 +730,7 @@ private
       
       if browser.iframe(:id => 'search1').span(:class => 'NessunArticolo').text.strip == "Articoli Trovati 0"
         puts "no results for OLPneus"
-        browser.close
+        #browser.close
         return false
       end
       
@@ -733,8 +744,8 @@ private
       table = browser.iframe(:id => 'search1').table(:class => 'gvTheGrid')
       File.open('pages/olpneus.html', 'w') {|f| f.write table.html }
               
-      browser.close
-      browser.quit
+      #browser.close
+      #browser.quit
 
   
       file = File.open('pages/olpneus.html', 'r')
@@ -833,7 +844,7 @@ private
       file.close
     
     else
-      browser.close
+      #browser.close
       puts "no results for olpneus"
     end    
   end    
@@ -844,10 +855,10 @@ private
   
   
   
-  def self.search_maxpneus(query, stagione, max_results)
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
-    browser.window.maximize
+  def self.search_maxpneus(query, stagione, max_results, browser)
+    #switches = ['--load-images=no']
+    #browser = Watir::Browser.new :phantomjs, :args => switches
+    #browser.window.maximize
     Pneumatico.sureLoadLink(10){ browser.goto 'http://www.maxpneus.it' }
     query_old = query           
     #puts "page loaded"
@@ -895,7 +906,7 @@ private
     if table.tr(:class => 'odd').text.strip == "Nessun dato presente nella tabella"
     #if table.td(:class => 'dataTables_empty').exists?
       puts "nessun risultato per MaxPneus"
-      browser.close
+      #browser.close
       return
     end
     File.open('pages/maxpneus.html', 'w') {|f| f.write table.html }
@@ -913,7 +924,8 @@ private
       end
     end
     #puts "closing Watir"
-    browser.close
+    
+    #browser.close
     
     file = File.open('pages/maxpneus.html', 'r')
     document = Nokogiri::HTML(file)
@@ -946,11 +958,11 @@ private
     file.close
   end
   
-  def self.search_pendingomme(query,stagione,max_results)
+  def self.search_pendingomme(query,stagione,max_results, browser)
     
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
-    browser.window.maximize
+    #switches = ['--load-images=no']
+    #browser = Watir::Browser.new :phantomjs, :args => switches
+    #browser.window.maximize
     Pneumatico.sureLoadLink(10){ browser.goto 'http://www.pendingomme.it/login' }
                
     #puts "page loaded"
@@ -974,14 +986,14 @@ private
 
     if browser.element(:class => 'alert-warning').present?
       puts "nessun resultato per PendinGomme"
-      browser.close
+      #browser.close
       return
     end
       
     File.open('pages/pendingomme.html', 'w') {|f| f.write browser.ul(:class => 'product_list').html }
    
     #puts "PendinGomme: closing Watir"
-    browser.close
+    #browser.close
     
     file = File.open('pages/pendingomme.html', 'r')
     document = Nokogiri::HTML(file)
@@ -1052,8 +1064,9 @@ private
     
   end
   
-  def self.search_farnese(query,stagione,max_results)
-    
+  def self.search_farnese(query,stagione,max_results, browser)
+
+  
     marche_pneumatici = {}
     file_pneumatici = File.open('marche_pneumatici.html.erb','r')
     document_pneumatici = Nokogiri::HTML(file_pneumatici)
@@ -1061,10 +1074,10 @@ private
       marche_pneumatici[option["value"]] = option.text
     end
     file_pneumatici.close
-    
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
-    browser.window.maximize
+
+    #switches = ['--load-images=no']
+    #browser = Watir::Browser.new :phantomjs, :args => switches
+    #browser.window.maximize
     Pneumatico.sureLoadLink(10){ browser.goto 'http://www.b2b.farnesepneus.it/' }
              
     #puts "page loaded"
@@ -1109,7 +1122,7 @@ private
       if browser.td(:class => 'dataTables_empty').exists?
         puts "no results for farnese"
         @pfu = 2.30
-        browser.close
+        #browser.close
         return false
       end
       
@@ -1121,7 +1134,7 @@ private
       File.open('pages/farnesepneus.html', 'w') {|f| f.write table.html }
    
       #puts "Farnese: closing Watir"
-      browser.close
+      #browser.close
    
       file = File.open('pages/farnesepneus.html', 'r')
       document = Nokogiri::HTML(file)
@@ -1182,18 +1195,18 @@ private
       @pfu = Pneumatico.where(nome_fornitore: "FarnesePneus").last.pfu
       file.close
     else
-      browser.close
+      #browser.close
       @pfu = 2.30
       puts "No results for Farnese"
     end
   end
   
   
-  def self.search_fintyre(query,stagione,max_results)
+  def self.search_fintyre(query,stagione,max_results, browser)
     
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
-    browser.window.maximize
+    #switches = ['--load-images=no']
+    #browser = Watir::Browser.new :phantomjs, :args => switches
+    #browser.window.maximize
     
     Pneumatico.sureLoadLink(10){
       browser.goto 'http://b2b.fintyre.it'
@@ -1244,7 +1257,7 @@ private
       
       if browser.table(:id => 'result').span(:class => 'infoBanner').exists?
         puts "no results for fintyre"
-        browser.close
+        #browser.close
         return false
       end
       
@@ -1254,8 +1267,8 @@ private
             
       File.open('pages/fintyre.html', 'w') {|f| f.write browser.table(:id => 'result').html }
               
-      browser.close
-      browser.quit
+      #browser.close
+      #browser.quit
               
       file = File.open('pages/fintyre.html', 'r')
       document = Nokogiri::HTML(file)
@@ -1355,16 +1368,16 @@ private
       end
       file.close    
     else
-      browser.close
+      #browser.close
       puts "No results for Fintyre"
     end
   end
   
   
-  def self.search_centrogomme(query,stagione,max_results)
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
-    browser.window.maximize
+  def self.search_centrogomme(query,stagione,max_results, browser)
+    #switches = ['--load-images=no']
+    #browser = Watir::Browser.new :phantomjs, :args => switches
+    #browser.window.maximize
             
     Pneumatico.sureLoadLink(10){ browser.goto 'http://www.centrogomme.com/' }
            
@@ -1407,7 +1420,7 @@ private
       
       if browser.table(:id => 'result-table').tr(:class => 'no-records-found').exists?
         puts "no results for centrogomme"
-        browser.close
+        #browser.close
         return false
       end
        
@@ -1421,8 +1434,8 @@ private
             
       File.open('pages/centrogomme.html', 'w') {|f| f.write browser.table(:id => 'result-table').html }
                 
-      browser.close
-      browser.quit
+      #browser.close
+      #browser.quit
                 
       file = File.open('pages/centrogomme.html', 'r')
       document = Nokogiri::HTML(file)
@@ -1515,18 +1528,18 @@ private
       
       file.close   
     else
-      browser.close
+      #browser.close
       puts "No results for CentroGomme"
     end
     
   end
   
   
-  def self.search_multityre(query,stagione,max_results)
+  def self.search_multityre(query,stagione,max_results, browser)
     
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
-    browser.window.maximize
+    #switches = ['--load-images=no']
+    #browser = Watir::Browser.new :phantomjs, :args => switches
+    #browser.window.maximize
             
     Pneumatico.sureLoadLink(10){ browser.goto 'http://multitires.autotua.it/' }
     
@@ -1573,7 +1586,7 @@ private
       
       if browser.iframe(:id => 'search1').span(:class => 'NessunArticolo').text.strip == "Articoli Trovati 0"
         puts "no results for multitires"
-        browser.close
+        #browser.close
         return false
       end
       
@@ -1587,8 +1600,8 @@ private
       table = browser.iframe(:id => 'search1').table(:class => 'gvTheGrid')
       File.open('pages/multitires.html', 'w') {|f| f.write table.html }
               
-      browser.close
-      browser.quit
+      #browser.close
+      #browser.quit
                 
       file = File.open('pages/multitires.html', 'r')
       document = Nokogiri::HTML(file)
@@ -1671,15 +1684,15 @@ private
       file.close
     
     else
-      browser.close
+      #browser.close
       puts "no results for multitires"
     end    
   end
   
-  def self.search_maxtyre(query,stagione,max_results)
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
-    browser.window.maximize
+  def self.search_maxtyre(query,stagione,max_results, browser)
+    #switches = ['--load-images=no']
+    #browser = Watir::Browser.new :phantomjs, :args => switches
+    #browser.window.maximize
     count = 0
     while true
       begin
@@ -1768,8 +1781,8 @@ private
       
       File.open('pages/maxtyre.html', 'w') {|f| table.each { |e| f.write(e) } }
               
-      browser.close
-      browser.quit
+      #browser.close
+      #browser.quit
                 
       file = File.open('pages/maxtyre.html', 'r')
       document = Nokogiri::HTML(file)
@@ -1835,7 +1848,7 @@ private
       end
       file.close
     else
-      browser.close
+      #browser.close
       puts "no results for maxtyre"
     end    
   end
