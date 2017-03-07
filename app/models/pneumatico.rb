@@ -213,7 +213,7 @@ class Pneumatico < ActiveRecord::Base
             @query = query.to_s
             browser1.close
             browser2.close
-            value = system( " pkill -f 'phantomjs' ")
+            value = system( " pkill -9 'phantomjs' ")
             puts value
             Search.where(misura: @query).first.update(finished: true)
           end
@@ -1143,7 +1143,7 @@ private
       i = 0
       document.css('tbody tr').each do |row|
         if i < max_results
-          modello = row.css('.row-description').text.strip.gsub("-","R").gsub("CAM.","").gsub("COP.","").gsub(",",".")
+          modello = row.css('.row-description').text.strip.gsub("-","R").gsub("CAM.","").gsub("COP.","").gsub(",",".").gsub("B","R")
           puts "FarnesePneus: "+ modello
           misura = modello.split("R",2).first.strip.gsub(/[^0-9]/, '')
           marca_tmp = row.css('td.row-manufacturer img').first['src'].split("/").last.split('.').first.to_i.to_s
