@@ -1212,7 +1212,7 @@ private
     #browser.window.maximize
     
     Pneumatico.sureLoadLink(10){
-      browser.goto 'http://b2b.fintyre.it'
+      browser.goto 'http://b2b.fintyre.it/fintyre2/'
     }
     fornitore_fintyre = Fornitore.where(nome: "Fintyre").first
     if browser.text_field(:id => 'username').exists?
@@ -1236,7 +1236,7 @@ private
     flag = Pneumatico.try_until(browser, search_page , element) {
     
       browser.text_field(:id => 'id_ricerca').set query
-      
+      #puts browser.text_field(:id => 'id_ricerca').value
       #browser.text_field(:id => 'id_ricerca2').set query_accoppiata
       
       if stagione == "Estate"
@@ -1259,6 +1259,7 @@ private
       end
       
       if browser.table(:id => 'result').span(:class => 'infoBanner').exists?
+        
         puts "no results for fintyre"
         #browser.close
         return false
