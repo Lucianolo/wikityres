@@ -611,6 +611,7 @@ div {
 
 .quantity {
   position: relative;
+  
 }
 
 input[type=number]::-webkit-inner-spin-button,
@@ -625,55 +626,50 @@ input[type=number]
   -moz-appearance: textfield;
 }
 
-.quantity input {
-  height: 25px;
+.quantity input,
+.quantity select{
+  
+  height: 22px;
   line-height: 1.25;
   float: left;
   display: block;
   padding: 0;
   margin: 0;
-  padding-left: 30px;
-  border: 1px solid #eee;
+  border-radius: 20px;
+  border: 1px solid #4E5066;
 }
 
+.calcolo p {
+  border-radius: 20px;
+  background: #73AD21;
+  color: white !important;
+}
 .quantity input:focus {
   outline: 0;
 }
 
-.quantity-nav {
-  float: left;
-  position: relative;
-  height: 25px;
+.calcolo{
+  margin: 6em 3em;
+  font-size: 16px;
+  height: 100%;
+  padding-bottom: 0.3em;
 }
 
-.quantity-button {
-  position: relative;
+.calcolo h3{
+  font-size: 15px;
+  padding: 0 0;
+  margin: 0 0;
+}
+
+.calcolo .row {
+  margin: 0 0 ;
+  padding: 0 0;
+}
+
+td.p_finale {
   cursor: pointer;
-  border-left: 1px solid #eee;
-  width: 20px;
-  text-align: center;
-  color: #333;
-  font-size: 13px;
-  font-family: "Trebuchet MS", Helvetica, sans-serif !important;
-  line-height: 1.7;
-  -webkit-transform: translateX(-100%);
-  transform: translateX(-100%);
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  user-select: none;
 }
 
-.quantity-button.quantity-up {
-  position: absolute;
-  height: 30%;
-  top: 0;
-  border-bottom: 1px solid #eee;
-}
-
-.quantity-button.quantity-down {
-  position: absolute;
-  bottom: -1px;
-  height: 30%;
+.fa-circle {
+  color: green;
 }

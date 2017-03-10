@@ -26,39 +26,54 @@
                                         <% end %>
                                     </div>
                                 </td>
-                                <td class="calcolo" id="target<%=i%>" style="display:none;">
-                                    <div class="row" style="margin:0 0;">
-                                        <div class="col-sm-3">
-                                            Quantità:
-                                            <div class="quantity full-line text-center">
-                                                <input type="number" min="1" max="100" step="1" value="1" id="quantita" style="color:black !important; max-width:100%;">
+                                <td class="text-left calcolo" id="target<%=i%>" style="display:none;">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="row">
+                                                <h3>
+                                                    Quantità:
+                                                </h3>
                                             </div>
-                                            
+                                            <div class="row">
+                                                    <div class="quantity ">
+                                                    <input class="text-center" type="number" min="1" max="100" step="1" value="1" id="quantita" style="color:black !important; max-width:100%;">
+                                                </div>
+                                            </div>
                                         </div>
-                                            <div class="col-sm-5">
-                                                Incremento:
-                                                <div class="col-sm-7" style="padding: 0 0;" >
-                                                    <select name="tipo-incremento" id="tipo-incremento" style="color:black !important; max-width:100%;">
-                                                      <option value="fisso">Fisso</option>
-                                                      <option value="percentuale">Percentuale</option>
-                                                    </select>
+                                            <div class="col-lg-5 col-md-5 col-sm-12  col-xs-12">
+                                                <div class="row">
+                                                    <h3>
+                                                        Incremento:
+                                                    </h3>
                                                 </div>
-                                                <div class="col-sm-5"  style="padding: 0 0 5px 5px;">
-                                                    
-                                                    <input type="number" min="0" step="any" value="0" id="incremento" style="color:black !important; max-width:100%;">
+                                                <div class="row">
+                                                    <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 quantity " style="padding-left: 0">
+                                                        <input class="text-center" type="number" min="0" step="any" value="0" id="incremento" style="color:black !important; max-width:100%;">
+                                                    </div>
+                                                    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 quantity text-center" style="padding-left: 0;padding-right: 0" >
+                                                        <select name="tipo-incremento" id="tipo-incremento" style="color:black !important; max-width:100%;">
+                                                          <option value="fisso"> € </option>
+                                                          <option value="percentuale"> % </option>
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                                
                                             </div>
                                             
-                                            <div class="col-sm-4">
-                                                Prezzo:
-                                                <p class="result" id="result">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 text-center">
+                                                <div class="row">
+                                                    <h3>
+                                                        Totale:
+                                                    </h3>
+                                                </div>
+                                                <div class="row">
+                                                    <p class="result quantity" id="result" style="margin: 0 0;">
                                                     
-                                                </p>
+                                                    </p>
+                                                </div>
                                             </div>
                                           
-                                       
                                     </div>
+                                    
                                     
                                 </td>
                                 <!--td class="text-left">
@@ -87,7 +102,7 @@
                                 <% end %>
                                 
                                 
-                                <td class="text-center p_finale"><%= number_with_precision(item.prezzo_finale, precision: 2) %>€ </td>
+                                <td class="text-center p_finale"><%= number_with_precision(item.prezzo_finale, precision: 2) %>€<i class="fa fa-calculator" aria-hidden="true" style="padding-left:0.4em;"></i></td>
                             </tr>
                         <% i += 1 %>
                     <% end %>
@@ -115,36 +130,5 @@ $( ".table-item" ).change(function() {
     });
    
 
-   jQuery('<div class="quantity-nav"><div class="quantity-button quantity-up">+</div><div class="quantity-button quantity-down">-</div></div>').insertAfter('.quantity input');
-    jQuery('.quantity').each(function() {
-      var spinner = jQuery(this),
-        input = spinner.find('input[type="number"]'),
-        btnUp = spinner.find('.quantity-up'),
-        btnDown = spinner.find('.quantity-down'),
-        min = input.attr('min'),
-        max = input.attr('max');
-
-      btnUp.click(function() {
-        var oldValue = parseFloat(input.val());
-        if (oldValue >= max) {
-          var newVal = oldValue;
-        } else {
-          var newVal = oldValue + 1;
-        }
-        spinner.find("input").val(newVal);
-        spinner.find("input").trigger("change");
-      });
-
-      btnDown.click(function() {
-        var oldValue = parseFloat(input.val());
-        if (oldValue <= min) {
-          var newVal = oldValue;
-        } else {
-          var newVal = oldValue - 1;
-        }
-        spinner.find("input").val(newVal);
-        spinner.find("input").trigger("change");
-      });
-
-    });
+  
 </script>
