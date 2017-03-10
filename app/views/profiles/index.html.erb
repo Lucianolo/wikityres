@@ -1,5 +1,4 @@
 <div class="container" id="settings">
-    
     <div class="row" style="color:white;">
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <%= form_tag(add_query_path(:params), :method => "get", :id => "query_form") do %>
@@ -10,7 +9,6 @@
                         <th class="text-center">MISURA</th>
                         <th class="text-center">STAGIONE</th>
                         <th class="text-center"></th>
-                        
                     </tr>
                 </thead>
                 <tbody class="table-hover">
@@ -26,7 +24,6 @@
                         </tr>
                     <% end %>
                     <tr class="table-item">
-                        
                             <td class="text-center misura">
                                 <%= text_field_tag(:misura, '', :class => "form-control text-center") %>
                             </td>
@@ -38,7 +35,6 @@
                                     <i class="fa fa-plus-circle" aria-hidden="true"></i> Aggiungi
                                 <% end %>
                             </td>
-                        
                     </tr>
                 </tbody>
             </table>   

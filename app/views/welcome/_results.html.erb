@@ -1,62 +1,150 @@
 
                 <% if !res.nil? %>
+                    <% i = 0 %>
                     <% res.each do |item| %>
-                        <tr class="table-item">
-                            <td class="text-left fornitore">
-                                <% if item.nome_fornitore == "MaxPneus" %>
-                                    <%= link_to (image_tag "#{item.nome_fornitore}.png"  , :class => 'logo') + item.nome_fornitore, "http://www.maxpneus.it/", :target => 'blank' %>
-                                <% else %>
-                                    <%= link_to (image_tag "#{item.nome_fornitore}.png"  , :class => 'logo') + item.nome_fornitore, item.fornitore, :target => 'blank' %>
-                                <% end %>
-                            </td>
-                            <td class="text-left marca" ><%= item.marca %></td>
-                            <td class="text-left descrizione"><%= item.modello.to_s.force_encoding("UTF-8")[0..40] %>
-                                <% if item.modello.to_s.length > 39 %>
-                                    ..
-                                <% end %>
-                                <div class="pull-right" style="padding-right: 1em;">
-                                    <% if item.stagione == "4 Stagioni" %>
-                                        <%= image_tag "4S.png", :class => 'logo-stagione' %>
-                                    <% elsif item.stagione == "" %>
-                
+                        <tr class="table-item ">
+                            
+                                <td class="text-left fornitore">
+                                    <% if item.nome_fornitore == "MaxPneus" %>
+                                        <%= link_to (image_tag "#{item.nome_fornitore}.png"  , :class => 'logo') + item.nome_fornitore, "http://www.maxpneus.it/", :target => 'blank' %>
                                     <% else %>
-                                        <%= image_tag item.stagione+".png", :class => 'logo-stagione' %>
+                                        <%= link_to (image_tag "#{item.nome_fornitore}.png"  , :class => 'logo') + item.nome_fornitore, item.fornitore, :target => 'blank' %>
                                     <% end %>
-                                </div>
+                                </td>
+                                <td class="text-left marca" ><%= item.marca %></td>
+                                <td class="text-left descrizione" id="descrizione<%=i%>"><%= item.modello.to_s.force_encoding("UTF-8")[0..40] %>
+                                    <% if item.modello.to_s.length > 39 %>
+                                        ..
+                                    <% end %>
+                                    <div class="pull-right" style="padding-right: 1em;">
+                                        <% if item.stagione == "4 Stagioni" %>
+                                            <%= image_tag "4S.png", :class => 'logo-stagione' %>
+                                        <% elsif item.stagione == "" %>
+                    
+                                        <% else %>
+                                            <%= image_tag item.stagione+".png", :class => 'logo-stagione' %>
+                                        <% end %>
+                                    </div>
+                                </td>
+                                <td class="calcolo" id="target<%=i%>" style="display:none;">
+                                    <div class="row" style="margin:0 0;">
+                                        <div class="col-sm-3">
+                                            Quantità:
+                                            <div class="quantity full-line text-center">
+                                                <input type="number" min="1" max="100" step="1" value="1" id="quantita" style="color:black !important; max-width:100%;">
+                                            </div>
+                                            
+                                        </div>
+                                            <div class="col-sm-5">
+                                                Incremento:
+                                                <div class="col-sm-7" style="padding: 0 0;" >
+                                                    <select name="tipo-incremento" id="tipo-incremento" style="color:black !important; max-width:100%;">
+                                                      <option value="fisso">Fisso</option>
+                                                      <option value="percentuale">Percentuale</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-5"  style="padding: 0 0 5px 5px;">
+                                                    
+                                                    <input type="number" min="0" step="any" value="0" id="incremento" style="color:black !important; max-width:100%;">
+                                                </div>
+                                                
+                                            </div>
+                                            
+                                            <div class="col-sm-4">
+                                                Prezzo:
+                                                <p class="result" id="result">
+                                                    
+                                                </p>
+                                            </div>
+                                          
+                                       
+                                    </div>
+                                    
+                                </td>
+                                <!--td class="text-left">
+                                    % if item.prezzo_listino.to_i == 0 %>
+                                        -
+                                    % else %>
+                                        %= item.prezzo_listino %>
+                                    % end %>
+                                </td-->
+                                <td class="text-center p_netto" ><%= number_with_precision(item.prezzo_netto, precision: 2) %>€</td>
                                 
-                            </td>
-                            <!--td class="text-left">
-                                % if item.prezzo_listino.to_i == 0 %>
-                                    -
-                                % else %>
-                                    %= item.prezzo_listino %>
-                                % end %>
-                            </td-->
-                            <td class="text-center p_netto" ><%= number_with_precision(item.prezzo_netto, precision: 2) %>€</td>
-                            
-                            <td class="text-center giacenza" >
-                                <% if item.nome_fornitore == "MaxiTyre" %>
-                                    <%= "?" %>
+                                <td class="text-center giacenza" >
+                                    <% if item.nome_fornitore == "MaxiTyre" %>
+                                        <%= "?" %>
+                                    <% else %>
+                                        <%= item.giacenza %>
+                                    <% end %>
+                                </td>
+                                
+                                <% if item.pfu == "C2" %>
+                                    <% pfu = 17.60 %>
+                                <% elsif item.pfu == "C1" %>
+                                    <% pfu = 8.10 %>
                                 <% else %>
-                                    <%= item.giacenza %>
+                                    <% pfu = 2.30 %>
                                 <% end %>
-                            </td>
-                            
-                            <% if item.pfu == "C2" %>
-                                <% pfu = 17.60 %>
-                            <% elsif item.pfu == "C1" %>
-                                <% pfu = 8.10 %>
-                            <% else %>
-                                <% pfu = 2.30 %>
-                            <% end %>
-                            
-                            
-                            <td class="text-center p_finale"><%= number_with_precision(item.prezzo_finale, precision: 2) %>€</td>
                                 
-                          
-                        </tr>
+                                
+                                <td class="text-center p_finale"><%= number_with_precision(item.prezzo_finale, precision: 2) %>€ </td>
+                            </tr>
+                        <% i += 1 %>
                     <% end %>
                 <% end %>    
                     
-               
-           
+
+<script>
+$( ".table-item" ).change(function() {
+        
+        var q = parseInt($(this).find("#quantita").val());
+        var t = $(this).find("#tipo-incremento").val();
+        var i = parseFloat($(this).find("#incremento").val());
+        var p_unitario = parseFloat($(this).find("td.p_finale").text().replace("€", ""));
+        
+        if(t == "fisso"){
+            var res = q*(p_unitario+i);
+            $(this).find("#result").text(res.toFixed(2)+"€").show;
+            return;
+        }
+        else {
+            var res = q*(p_unitario+((p_unitario/100)*i));
+            $(this).find("#result").text(res.toFixed(2)+"€").show;
+            return;
+        }
+    });
+   
+
+   jQuery('<div class="quantity-nav"><div class="quantity-button quantity-up">+</div><div class="quantity-button quantity-down">-</div></div>').insertAfter('.quantity input');
+    jQuery('.quantity').each(function() {
+      var spinner = jQuery(this),
+        input = spinner.find('input[type="number"]'),
+        btnUp = spinner.find('.quantity-up'),
+        btnDown = spinner.find('.quantity-down'),
+        min = input.attr('min'),
+        max = input.attr('max');
+
+      btnUp.click(function() {
+        var oldValue = parseFloat(input.val());
+        if (oldValue >= max) {
+          var newVal = oldValue;
+        } else {
+          var newVal = oldValue + 1;
+        }
+        spinner.find("input").val(newVal);
+        spinner.find("input").trigger("change");
+      });
+
+      btnDown.click(function() {
+        var oldValue = parseFloat(input.val());
+        if (oldValue <= min) {
+          var newVal = oldValue;
+        } else {
+          var newVal = oldValue - 1;
+        }
+        spinner.find("input").val(newVal);
+        spinner.find("input").trigger("change");
+      });
+
+    });
+</script>

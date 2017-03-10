@@ -788,13 +788,16 @@ private
         if  i.even? && j<max_results
           
           #puts row.text
+          
           if row.css('td.Catalogo.allinea div').text != ""
             marca = row.css('td.Catalogo.allinea div').text
+          elsif !(row.css('td')[0].css('img')).nil?
+            marca = row.css('td')[0].css('img').attr("title")
           else
-            marca = row.css('td')[6].css('img').attr("title")
+            marca = ""
           end
           
-          puts marca.to_s.upcase
+          
          
           nome = row.css('div.DescrizioneArticolo').text.gsub("CAM."," ").gsub("SET.","SET").gsub("SET","").gsub("RIC.","").gsub("CH.","").strip
           p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text[3..-1].gsub(",",".").strip.to_f.round(2)
