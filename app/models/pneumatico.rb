@@ -462,61 +462,67 @@ private
       
       rows.each do |row|
         #puts row
-        marca = row.css('td img.block').attr('alt')
+        begin
         
-        marca = marca.to_s.upcase
-        first_row = row.at_css('td a.block').text 
-        if first_row.strip == ""
-          first_row = row.css('td a.block')[1].text 
-        end
-        descrizione =row.css('td span.block').first.text + " " + first_row
-        seconda_riga = row.css('td span.block').last
-        
-        misura_tmp = descrizione.split(" ").first.strip.gsub("-","R")
-        
-        if misura_tmp.split("R").second != nil
+          marca = row.css('td img.block').attr('alt')
           
-          misura = misura_tmp.split("R").first.gsub(/[^0-9]/, '')
-         
-          raggio = misura_tmp.split("R").second.strip.gsub(/[^0-9]/, '')
-          
-          cod_vel = descrizione.split(" ").second.strip
-        else
-         
-          misura = misura_tmp.gsub(/[^0-9]/, '')
-          raggio = descrizione.split(" ").second.strip.gsub(/[^0-9]/, '')
-          
-          cod_vel = descrizione.split(" ")[2].strip.gsub(/[^0-9]/, '')
-        end
-       
-        if misura == "75"
-          misura += "0"
-        end
-        if seconda_riga.text != row.css('td span.block').first.text
-          descrizione = descrizione + " "  + seconda_riga.text
-        end
-        puts "MaxiTyre: "+descrizione
-        
-        p_netto = row.css("td b.green").text.gsub("€","").strip.gsub(",",".").to_f.round(2)
-        if row.css("td span.weather").first.nil? 
-          stagione = "Estate"
-        else
-          stagione = row.css("td span.weather").first["data-content"]
-          if stagione == "4 stagioni" 
-            stagione = "4 Stagioni"
+          marca = marca.to_s.upcase
+          first_row = row.at_css('td a.block').text 
+          if first_row.strip == ""
+            first_row = row.css('td a.block')[1].text 
           end
-        end
-        
-        
-        
-        p_finale = p_netto + add + ((p_netto + add )/100)*22    
-        
-        misura_totale = misura + raggio
-        
-        
-        if (misura_totale == tmp)
-          Pneumatico.create(nome_fornitore: "MaxiTyre", marca: marca.upcase , misura: misura, raggio: raggio, modello: descrizione, cod_vel: cod_vel, fornitore: @maxityre, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: 25, stagione: stagione, pfu: @pfu)
-
+          descrizione =row.css('td span.block').first.text + " " + first_row
+          seconda_riga = row.css('td span.block').last
+          
+          misura_tmp = descrizione.split(" ").first.strip.gsub("-","R")
+          
+          if misura_tmp.split("R").second != nil
+            
+            misura = misura_tmp.split("R").first.gsub(/[^0-9]/, '')
+           
+            raggio = misura_tmp.split("R").second.strip.gsub(/[^0-9]/, '')
+            
+            cod_vel = descrizione.split(" ").second.strip
+          else
+           
+            misura = misura_tmp.gsub(/[^0-9]/, '')
+            raggio = descrizione.split(" ").second.strip.gsub(/[^0-9]/, '')
+            
+            cod_vel = descrizione.split(" ")[2].strip.gsub(/[^0-9]/, '')
+          end
+         
+          if misura == "75"
+            misura += "0"
+          end
+          if seconda_riga.text != row.css('td span.block').first.text
+            descrizione = descrizione + " "  + seconda_riga.text
+          end
+          puts "MaxiTyre: "+descrizione
+          
+          p_netto = row.css("td b.green").text.gsub("€","").strip.gsub(",",".").to_f.round(2)
+          if row.css("td span.weather").first.nil? 
+            stagione = "Estate"
+          else
+            stagione = row.css("td span.weather").first["data-content"]
+            if stagione == "4 stagioni" 
+              stagione = "4 Stagioni"
+            end
+          end
+          
+          
+          
+          p_finale = p_netto + add + ((p_netto + add )/100)*22    
+          
+          misura_totale = misura + raggio
+          
+          
+          if (misura_totale == tmp)
+            Pneumatico.create(nome_fornitore: "MaxiTyre", marca: marca.upcase , misura: misura, raggio: raggio, modello: descrizione, cod_vel: cod_vel, fornitore: @maxityre, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: 25, stagione: stagione, pfu: @pfu)
+  
+          end
+        rescue => e
+          puts e.message
+          next
         end
       end
     file.close
@@ -611,66 +617,68 @@ private
         anchor['class']="Riga"
       end
       table.css('tbody tr.Riga').each do |row|
+        begin
         #puts row
-        if i.even? &&  j<max_results
-          
+          if i.even? &&  j<max_results
          
-          if row.css('td.Catalogo.allinea div').text != ""
-            marca = row.css('td.Catalogo.allinea div').text
-          else
-            marca = row.at_css('td.Catalogo img').attr("title")
-          end
-          
-          
-          nome = row.css('div.DescrizioneArticolo').text.gsub("CAM."," ").gsub("SET.","SET").gsub("SET","").strip
-          p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text.strip.gsub(",",".").to_f.round(2)
-          stock = row.css('td.CatalogoDisp.allinea strong')[0].text.to_i + row.css('td.CatalogoDisp.allinea strong')[1].text.to_i + row.css('td.CatalogoDisp.allinea strong span').text.to_i
-          
-          misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip.gsub(/[^0-9]/, '')
-          if query.to_s.length == 5
-            raggio = nome.gsub('-','R').split('R').second.split(" ").first.strip.gsub(/[^0-9]/, '')
-          else
-            raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip.gsub(/[^0-9]/, '')
-          end
-          
-          
-          puts "CarliniGomme: "+nome
-          # CONTROLLO SULLA VALIDITA' DEL CAMPO RAGGIO --- DA SISTEMARE PER ALCUNI VALORI
-         
-          if raggio.to_i.to_s != raggio
-            raggio = nome.split(" ")[2]
-          end
-          
-          
-          
-          tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
-          
-          
-          if @pfu == 'C2'
-            add = 17.60
-          elsif @pfu == 'C1'
-            add = 8.10
-          else
-            add = 2.30
-          end
-              
-          p_finale = p_netto + add + ((p_netto + add )/100)*22          
-          
-          misura_totale = misura+raggio
-          
-          if tmp_stagione == "sun"
-            stagione = "Estate"
-          elsif tmp_stagione == "snow"
-            stagione = "Inverno"
-          else
-            stagione = "4 Stagioni"
-          end
-          if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
-            Pneumatico.create(nome_fornitore: "CarliniGomme", marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @carlinigomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
-            j+=1
-          end
-        end 
-        i+=1
+            if row.css('td.Catalogo.allinea div').text != ""
+              marca = row.css('td.Catalogo.allinea div').text
+            else
+              marca = row.at_css('td.Catalogo img').attr("title")
+            end
+  
+            nome = row.css('div.DescrizioneArticolo').text.gsub("CAM."," ").gsub("SET.","SET").gsub("SET","").strip
+            p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text.strip.gsub(",",".").to_f.round(2)
+            stock = row.css('td.CatalogoDisp.allinea strong')[0].text.to_i + row.css('td.CatalogoDisp.allinea strong')[1].text.to_i + row.css('td.CatalogoDisp.allinea strong span').text.to_i
+            
+            misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip.gsub(/[^0-9]/, '')
+            if query.to_s.length == 5
+              raggio = nome.gsub('-','R').split('R').second.split(" ").first.strip.gsub(/[^0-9]/, '')
+            else
+              raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip.gsub(/[^0-9]/, '')
+            end
+  
+            puts "CarliniGomme: "+nome
+            # CONTROLLO SULLA VALIDITA' DEL CAMPO RAGGIO --- DA SISTEMARE PER ALCUNI VALORI
+           
+            if raggio.to_i.to_s != raggio
+              raggio = nome.split(" ")[2]
+            end
+            
+            
+            
+            tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
+            
+            
+            if @pfu == 'C2'
+              add = 17.60
+            elsif @pfu == 'C1'
+              add = 8.10
+            else
+              add = 2.30
+            end
+                
+            p_finale = p_netto + add + ((p_netto + add )/100)*22          
+            
+            misura_totale = misura+raggio
+            
+            if tmp_stagione == "sun"
+              stagione = "Estate"
+            elsif tmp_stagione == "snow"
+              stagione = "Inverno"
+            else
+              stagione = "4 Stagioni"
+            end
+            if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
+              Pneumatico.create(nome_fornitore: "CarliniGomme", marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @carlinigomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+              j+=1
+            end
+          end 
+          i+=1
+        rescue => e
+          puts e.message
+          next
+        end
       end
         
       file.close
@@ -791,63 +799,62 @@ private
      
       table.css('tbody tr.Riga').each do |row|
         #puts row
-        if  i.even? && j<max_results
-          
-          #puts row.text
-          
-          if row.css('td.Catalogo.allinea div').text != ""
-            marca = row.css('td.Catalogo.allinea div').text
-          elsif !(row.css('td')[0].css('img')).nil?
-            marca = row.css('td')[0].css('img').attr("title")
-          else
-            marca = ""
-          end
-          
-          
-         
-          nome = row.css('div.DescrizioneArticolo').text.gsub("CAM."," ").gsub("SET.","SET").gsub("SET","").gsub("RIC.","").gsub("CH.","").strip
-          p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text[3..-1].gsub(",",".").strip.to_f.round(2)
-          stock = row.css('td.CatalogoDisp.allinea strong')[1].text.gsub(/[^0-9]/, '').to_i 
-         
-          misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip.gsub(/[^0-9]/, '')
-          if query.to_s.length == 5
-            raggio = nome.gsub('-','R').split('R').second.split(" ").first.strip.gsub(/[^0-9]/, '')
-          else
-            raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip.gsub(/[^0-9]/, '')
-          end
-          
-          
-          puts "OLPneus: "+nome
-          # CONTROLLO SULLA VALIDITA' DEL CAMPO RAGGIO --- DA SISTEMARE PER ALCUNI VALORI
-         
-          if raggio.to_i.to_s != raggio
-            raggio = nome.split(" ")[2]
-          end
-          
-          
-          
-          tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
-          
-          local_pfu = row.css('td.CatalogoDisp.allinea i').first.text.strip.to_f
-          
-              
-          p_finale = p_netto + local_pfu + ((p_netto + local_pfu )/100)*22          
-          
-          misura_totale = misura+raggio
-         
-          if tmp_stagione == "sun"
-            stagione = "Estate"
-          elsif tmp_stagione == "snow"
-            stagione = "Inverno"
-          else
-            stagione = "4 Stagioni"
-          end
-          if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
-            Pneumatico.create(nome_fornitore: "OLPneus", marca: marca , misura: misura, raggio: raggio, modello: nome, fornitore: @olpneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
-            j+=1
-          end
-        end 
-        i+=1
+        begin
+          if  i.even? && j<max_results
+            
+            #puts row.text
+            
+            if row.css('td.Catalogo.allinea div').text != ""
+              marca = row.css('td.Catalogo.allinea div').text
+            elsif !(row.css('td')[0].css('img')).nil?
+              marca = row.css('td')[0].css('img').attr("title")
+            else
+              marca = ""
+            end
+            
+            nome = row.css('div.DescrizioneArticolo').text.gsub("CAM."," ").gsub("SET.","SET").gsub("SET","").gsub("RIC.","").gsub("CH.","").strip
+            p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text[3..-1].gsub(",",".").strip.to_f.round(2)
+            stock = row.css('td.CatalogoDisp.allinea strong')[1].text.gsub(/[^0-9]/, '').to_i 
+           
+            misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip.gsub(/[^0-9]/, '')
+            if query.to_s.length == 5
+              raggio = nome.gsub('-','R').split('R').second.split(" ").first.strip.gsub(/[^0-9]/, '')
+            else
+              raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip.gsub(/[^0-9]/, '')
+            end
+            
+            puts "OLPneus: "+nome
+            # CONTROLLO SULLA VALIDITA' DEL CAMPO RAGGIO --- DA SISTEMARE PER ALCUNI VALORI
+           
+            if raggio.to_i.to_s != raggio
+              raggio = nome.split(" ")[2]
+            end
+
+            tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
+            
+            local_pfu = row.css('td.CatalogoDisp.allinea i').first.text.strip.to_f
+            p_finale = p_netto + local_pfu + ((p_netto + local_pfu )/100)*22          
+            
+            misura_totale = misura+raggio
+           
+            if tmp_stagione == "sun"
+              stagione = "Estate"
+            elsif tmp_stagione == "snow"
+              stagione = "Inverno"
+            else
+              stagione = "4 Stagioni"
+            end
+            if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
+              Pneumatico.create(nome_fornitore: "OLPneus", marca: marca , misura: misura, raggio: raggio, modello: nome, fornitore: @olpneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+              j+=1
+            end
+          end 
+          i+=1
+        rescue => e
+          puts e.message
+          next
+        end
+        
       end
         
       file.close
@@ -940,27 +947,32 @@ private
     document = Nokogiri::HTML(file)
     tmp = query_old.to_s
     document.css('tr').each do |row|
-      puts "MaxPneus:" + row.text
-      misura = row.css('td')[1].text + row.css('td')[2].text
-      if query.to_s.length > 7
-        raggio = row.css('td')[3].text[0..1]+row.css('td')[3].text.last
-      else
-        raggio = row.css('td')[3].text
-      end
-      marca = row.css('td')[4].text 
-      cod_vel = row.css('td')[6].text+row.css('td')[7].text
-      modello = row.css('td')[5].text+" "+cod_vel  # misura+" "+raggio+" "+marca+" "+
-      #puts row.css('td.sorting_1').text[3..-1]
-      prezzo_netto = row.css('td.sorting_1').text[3..-1].strip.gsub(",",".").to_f.round(2)
-      giacenza = row.css('td')[9].text
-      stag = row.css('td')[14].text
-      if stag == "All Season"
-        stag = "4 Stagioni"
-      end
-      misura_totale = misura+raggio
-      
-      if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-          Pneumatico.create(nome_fornitore: "MaxPneus", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @maxpneus, prezzo_netto: prezzo_netto, prezzo_finale: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel, pfu: @pfu)
+      begin
+        puts "MaxPneus:" + row.text
+        misura = row.css('td')[1].text + row.css('td')[2].text
+        if query.to_s.length > 7
+          raggio = row.css('td')[3].text[0..1]+row.css('td')[3].text.last
+        else
+          raggio = row.css('td')[3].text
+        end
+        marca = row.css('td')[4].text 
+        cod_vel = row.css('td')[6].text+row.css('td')[7].text
+        modello = row.css('td')[5].text+" "+cod_vel  # misura+" "+raggio+" "+marca+" "+
+        #puts row.css('td.sorting_1').text[3..-1]
+        prezzo_netto = row.css('td.sorting_1').text[3..-1].strip.gsub(",",".").to_f.round(2)
+        giacenza = row.css('td')[9].text
+        stag = row.css('td')[14].text
+        if stag == "All Season"
+          stag = "4 Stagioni"
+        end
+        misura_totale = misura+raggio
+        
+        if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
+            Pneumatico.create(nome_fornitore: "MaxPneus", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @maxpneus, prezzo_netto: prezzo_netto, prezzo_finale: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel, pfu: @pfu)
+        end
+      rescue => e
+        puts e.message
+        next
       end
     end
     
@@ -1010,64 +1022,68 @@ private
   
     
     document.css('ul li').each do |row|
-      line = row.css('h5').text.strip
-      
-      marca = line.split(" ").first
-      
-      if query.to_s.length > 6
-      
-        misura = line.split("(").last.split(")").first[0..4].gsub(/[^0-9]/, '')
-      
-        raggio = line.split("(").last.split(")").first[5..-1]
-      elsif query.to_s.length == 5
+      begin
+        line = row.css('h5').text.strip
         
-        index = query.to_s.length - 2
-
-        misura = line.split("(").last.split(")").first[0..index-1].gsub(/[^0-9]/, '')
-
-        raggio = line.split("(").last.split(")").first[index..-1]
-      else
-        index = query.to_s.length - 3
-
-        misura = line.split("(").last.split(")").first[0..index-1].gsub(/[^0-9]/, '')
-
-        raggio = line.split("(").last.split(")").first[index..-1]
+        marca = line.split(" ").first
         
-      end
-      if (misura.length != query.to_s.length - raggio.length)
+        if query.to_s.length > 6
+        
+          misura = line.split("(").last.split(")").first[0..4].gsub(/[^0-9]/, '')
+        
+          raggio = line.split("(").last.split(")").first[5..-1]
+        elsif query.to_s.length == 5
+          
+          index = query.to_s.length - 2
+  
+          misura = line.split("(").last.split(")").first[0..index-1].gsub(/[^0-9]/, '')
+  
+          raggio = line.split("(").last.split(")").first[index..-1]
+        else
+          index = query.to_s.length - 3
+  
+          misura = line.split("(").last.split(")").first[0..index-1].gsub(/[^0-9]/, '')
+  
+          raggio = line.split("(").last.split(")").first[index..-1]
+          
+        end
+        if (misura.length != query.to_s.length - raggio.length)
+          next
+        end
+        stagione = row.css('p').text.strip.split("Stagione: ").last.split(",").first
+        prezzo_netto = row.css(".price").text.strip.gsub(",",".").gsub(" €","").to_f.round(2)
+        giacenza = row.css("#pQuantityAvailable").text.strip.split(" ").first.to_i
+        cod_vel = row.css('p').text.strip.split("LI: ").last.split(",").first + row.css('p').text.strip.split("SI: ").last.split(",").first 
+        if query.to_s.length > 6
+          modello = misura[0..2]+"/"+misura[3..-1]+" "+"R"+raggio+" "+marca+" "+line.split(" ").second.strip+" "+cod_vel
+        else
+          modello = misura+" "+"R"+raggio+" "+marca+" "+line.split(" ").second.strip+" "+cod_vel
+        end
+         puts "PendinGomme: "+modello
+        if stagione == "All Season"
+          stagione = "4 Stagioni"
+        end
+        
+        
+        if @pfu == 'C2'
+          add = 17.60
+        elsif @pfu == 'C1'
+          add = 8.10
+        else
+          add = 2.30
+        end
+            
+        p_finale = prezzo_netto + add + ((prezzo_netto + add )/100)*22
+        misura_totale = misura+raggio
+        
+        
+        if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
+          Pneumatico.create(nome_fornitore: "PendinGomme", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel, pfu: @pfu)
+        end
+      rescue => e
+        puts e.message
         next
       end
-      stagione = row.css('p').text.strip.split("Stagione: ").last.split(",").first
-      prezzo_netto = row.css(".price").text.strip.gsub(",",".").gsub(" €","").to_f.round(2)
-      giacenza = row.css("#pQuantityAvailable").text.strip.split(" ").first.to_i
-      cod_vel = row.css('p').text.strip.split("LI: ").last.split(",").first + row.css('p').text.strip.split("SI: ").last.split(",").first 
-      if query.to_s.length > 6
-        modello = misura[0..2]+"/"+misura[3..-1]+" "+"R"+raggio+" "+marca+" "+line.split(" ").second.strip+" "+cod_vel
-      else
-        modello = misura+" "+"R"+raggio+" "+marca+" "+line.split(" ").second.strip+" "+cod_vel
-      end
-       puts "PendinGomme: "+modello
-      if stagione == "All Season"
-        stagione = "4 Stagioni"
-      end
-      
-      
-      if @pfu == 'C2'
-        add = 17.60
-      elsif @pfu == 'C1'
-        add = 8.10
-      else
-        add = 2.30
-      end
-          
-      p_finale = prezzo_netto + add + ((prezzo_netto + add )/100)*22
-      misura_totale = misura+raggio
-      
-      
-      if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-        Pneumatico.create(nome_fornitore: "PendinGomme", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel, pfu: @pfu)
-      end
-        
     end
     file.close
     
@@ -1151,54 +1167,59 @@ private
      
       i = 0
       document.css('tbody tr').each do |row|
-        if i < max_results
-          modello = row.css('.row-description').text.strip.gsub("-","R").gsub("CAM.","").gsub("COP.","").gsub(",",".").gsub("B","R")
-          puts "FarnesePneus: "+ modello
-          misura = modello.split("R",2).first.strip.gsub(/[^0-9]/, '')
-          marca_tmp = row.css('td.row-manufacturer img').first['src'].split("/").last.split('.').first.to_i.to_s
-          marca = marche_pneumatici[marca_tmp]
-          if marca.nil?
-            marca = modello.split("R",2).second.split(" ").second.split(" ").first
+        begin
+          if i < max_results
+            modello = row.css('.row-description').text.strip.gsub("-","R").gsub("CAM.","").gsub("COP.","").gsub(",",".").gsub("B","R")
+            puts "FarnesePneus: "+ modello
+            misura = modello.split("R",2).first.strip.gsub(/[^0-9]/, '')
+            marca_tmp = row.css('td.row-manufacturer img').first['src'].split("/").last.split('.').first.to_i.to_s
+            marca = marche_pneumatici[marca_tmp]
+            if marca.nil?
+              marca = modello.split("R",2).second.split(" ").second.split(" ").first
+            end
+           
+            raggio = modello.split("R",2).second.split(" ").first.gsub(".","")
+            if row.css('.row-season img').first['src'] != ""
+              stagione = row.css('.row-season img').first['src'].split("/").last.split(".").first
+            else
+              stagione = "Inverno"
+            end
+            
+            if stagione == "summer"
+              stagione_db = "Estate"
+            elsif stagione == "winter"
+              stagione_db = "Inverno"
+            else
+              stagione_db = "4 Stagioni"
+            end
+            pfu = row.css('.row-pfu').text.strip
+            
+            p_netto = row.css('.row-net-price').text.strip.gsub(",",".").to_f.round(2)
+                      
+            stock = row.css('.row-stock-column-1').text.strip.to_i + row.css('.row-stock-column-4').text.to_i
+            
+            
+            if pfu == 'C2'
+              add = 17.60
+            elsif pfu == 'C1'
+              add = 8.10
+            else
+              add = 2.30
+            end
+            
+            p_finale = p_netto + add + ((p_netto + add )/100)*22
+            
+            misura_totale = misura+raggio
+            
+          
+            if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
+              Pneumatico.create(nome_fornitore: "FarnesePneus", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @farnesepneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione_db, pfu: pfu)
+              i+=1
+            end
           end
-         
-          raggio = modello.split("R",2).second.split(" ").first.gsub(".","")
-          if row.css('.row-season img').first['src'] != ""
-            stagione = row.css('.row-season img').first['src'].split("/").last.split(".").first
-          else
-            stagione = "Inverno"
-          end
-          
-          if stagione == "summer"
-            stagione_db = "Estate"
-          elsif stagione == "winter"
-            stagione_db = "Inverno"
-          else
-            stagione_db = "4 Stagioni"
-          end
-          pfu = row.css('.row-pfu').text.strip
-          
-          p_netto = row.css('.row-net-price').text.strip.gsub(",",".").to_f.round(2)
-                    
-          stock = row.css('.row-stock-column-1').text.strip.to_i + row.css('.row-stock-column-4').text.to_i
-          
-          
-          if pfu == 'C2'
-            add = 17.60
-          elsif pfu == 'C1'
-            add = 8.10
-          else
-            add = 2.30
-          end
-          
-          p_finale = p_netto + add + ((p_netto + add )/100)*22
-          
-          misura_totale = misura+raggio
-          
-        
-          if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-            Pneumatico.create(nome_fornitore: "FarnesePneus", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @farnesepneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione_db, pfu: pfu)
-            i+=1
-          end
+        rescue => e
+          puts e.message
+          next
         end
       end
       @pfu = Pneumatico.where(nome_fornitore: "FarnesePneus").last.pfu
@@ -1371,8 +1392,8 @@ private
             i+=1
           end
         end
-        rescue NoMethodError
-          puts "error Fintyre"
+        rescue => e 
+          puts e.message
           next
         end
       end
@@ -1456,84 +1477,67 @@ private
       i = 0
       j = 0
       document.css('tbody tr').each do |row|
-        if j<max_results
-          
-          #if row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c2').text.strip.split(" ").first == "CATENE"
-          #  i+=1
-          #  next
-          #end
-=begin
-          marca = row.at_css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c1 img').attr('src').split("/").last[0..-5].gsub("%20"," ").upcase
-          nome = row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c2').text.strip
-          p_netto = row.at_css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c9').text[4..-1].strip.gsub(",",".").to_f
-          stock = row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c10').text.strip.to_i + row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c11').text.strip.to_i + row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c12').text.strip.to_i + row.css('#searchartico_WT_39019_mt_r'+i.to_s+'_searchartico_WT_39019_mt_c13').text.strip.to_i
-          
-          tmp_stagione = row.css('img.pdImgstagione').first['src'].split("/").last.split(".").first
-          
-          if tmp_stagione == "I"
-            stagione = "Inverno"
-          elsif tmp_stagione == "E"
-            stagione = "Estate"
-          else
-            stagione = "4 Stagioni"
-          end
+        
+        begin
+          if j<max_results
             
-          
-=end
-          
-          if row.search('td:nth-child(2)').search('img').first.nil?
-            marca = row.search('td:nth-child(2)').text.strip
-          else
-            marca = row.search('td:nth-child(2)').search('img').first.attr('src').split("/").last[0..-5].gsub("%20"," ").upcase
-          end
-          nome = row.search('td:nth-child(3)').text.strip
-          puts "CentroGomme: "+nome
-          
-          p_netto = row.search('td:nth-child(10)').text[4..-1].strip.gsub(",",".").to_f
-          
-          stock = row.search('td:nth-child(11)').text.strip.to_i + row.search('td:nth-child(12)').text.strip.to_i + row.search('td:nth-child(13)').text.strip.to_i + row.search('td:nth-child(14)').text.strip.to_i 
-          
-          tmp_stagione = row.search('td:nth-child(5)').search('img').first.attr('src').split('/').last.split('.').first
-          
-          if tmp_stagione == "winter"
-            stagione = "Inverno"
-          elsif tmp_stagione == "summer"
-            stagione = "Estate"
-          else
-            stagione = "4 Stagioni"
-          end
-          if query.to_s.length == 7
-            if nome[6] != "R" && nome[7] != "R"
-              misura = nome.gsub("CAM.", "").split(" ").first.strip.gsub(/[^0-9]/, '')
-              raggio = nome.gsub("CAM.", "").split(" ").second.strip.gsub(/[^0-9]/, '')
+            if row.search('td:nth-child(2)').search('img').first.nil?
+              marca = row.search('td:nth-child(2)').text.strip
             else
-            
-              misura = nome.gsub("CAM.","").split("R").first.strip.gsub(/[^0-9]/, '')
-              raggio = nome.gsub("CAM.","").split("R").second.split(" ").first.gsub(/[^0-9]/, '')
+              marca = row.search('td:nth-child(2)').search('img').first.attr('src').split("/").last[0..-5].gsub("%20"," ").upcase
             end
-          else
-            raggio = nome.split("R").second.split(" ").first.strip.gsub(/[^0-9]/, '')
-            misura = nome.split("R").first.strip.gsub(/[^0-9]/, '')
+            nome = row.search('td:nth-child(3)').text.strip
+            puts "CentroGomme: "+nome
+            
+            p_netto = row.search('td:nth-child(10)').text[4..-1].strip.gsub(",",".").to_f
+            
+            stock = row.search('td:nth-child(11)').text.strip.to_i + row.search('td:nth-child(12)').text.strip.to_i + row.search('td:nth-child(13)').text.strip.to_i + row.search('td:nth-child(14)').text.strip.to_i 
+            
+            tmp_stagione = row.search('td:nth-child(5)').search('img').first.attr('src').split('/').last.split('.').first
+            
+            if tmp_stagione == "winter"
+              stagione = "Inverno"
+            elsif tmp_stagione == "summer"
+              stagione = "Estate"
+            else
+              stagione = "4 Stagioni"
+            end
+            if query.to_s.length == 7
+              if nome[6] != "R" && nome[7] != "R"
+                misura = nome.gsub("CAM.", "").split(" ").first.strip.gsub(/[^0-9]/, '')
+                raggio = nome.gsub("CAM.", "").split(" ").second.strip.gsub(/[^0-9]/, '')
+              else
+              
+                misura = nome.gsub("CAM.","").split("R").first.strip.gsub(/[^0-9]/, '')
+                raggio = nome.gsub("CAM.","").split("R").second.split(" ").first.gsub(/[^0-9]/, '')
+              end
+            else
+              raggio = nome.split("R").second.split(" ").first.strip.gsub(/[^0-9]/, '')
+              misura = nome.split("R").first.strip.gsub(/[^0-9]/, '')
+            end
+            
+            if @pfu == 'C2'
+              add = 17.60
+            elsif @pfu == 'C1'
+              add = 8.10
+            else
+              add = 2.30
+            end
+            
+            p_finale = p_netto + add + ((p_netto + add )/100)*22       
+            
+            misura_totale = misura+raggio
+            
+            if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp )
+              Pneumatico.create(nome_fornitore: "CentroGomme" ,marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @centrogomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+              j+=1
+            end
           end
-          
-          if @pfu == 'C2'
-            add = 17.60
-          elsif @pfu == 'C1'
-            add = 8.10
-          else
-            add = 2.30
-          end
-          
-          p_finale = p_netto + add + ((p_netto + add )/100)*22       
-          
-          misura_totale = misura+raggio
-          
-          if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp )
-            Pneumatico.create(nome_fornitore: "CentroGomme" ,marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @centrogomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
-            j+=1
-          end
+          i+=1
+        rescue => e
+          puts e.message
+          next
         end
-        i+=1
       end
       
       file.close   
@@ -1632,63 +1636,68 @@ private
       
       
       table.css('tbody tr.Riga').each do |row|
-        if i.even? && j<max_results*2
-          
-          if row.at_css('td.Catalogo.allinea').text.strip != ""
-            marca = row.at_css('td.Catalogo.allinea').text
-          else
-            marca = row.at_css('td.Catalogo.allinea img').attr("title")
-          end
-                    
-          nome = row.css('div.DescrizioneArticolo').text
-          p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text.strip.gsub(",",".").to_f.round(2)
-          stock = row.css('td.CatalogoDisp.allinea strong')[0].text.to_i + row.css('td.CatalogoDisp.allinea strong')[1].text.to_i + row.css('td.CatalogoDisp.allinea strong span').text.to_i
-          misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip.gsub(/[^0-9]/, '')
-          if query.to_s.length == 5
-            raggio = nome.gsub('-','R').split('R').second.split(" ").first.strip
-          else
-            raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip
-          end
-          
-          puts "MultiTires: "+nome
-          # CONTROLLO SULLA VALIDITA' DEL CAMPO RAGGIO --- DA SISTEMARE PER ALCUNI VALORI
-          
-          if raggio.to_i.to_s != raggio
-            raggio = nome.split(" ")[2]
-          end
-          
-          raggio = raggio.gsub(".","")
-          
-          tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
-          
-          
-          if @pfu == 'C2'
-            add = 17.60
-          elsif @pfu == 'C1'
-            add = 8.10
-          else
-            add = 2.30
-          end
-              
-          p_finale = p_netto + add + ((p_netto + add )/100)*22          
-          
-          misura_totale = misura+raggio
-          
-          if tmp_stagione == "sun"
-            stagione = "Estate"
-          elsif tmp_stagione == "snow"
-            stagione = "Inverno"
-          else
-            stagione = "4 Stagioni"
-          end
-          if p_netto.to_i != 0
-            if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
-              Pneumatico.create(nome_fornitore: "MultiTires", marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
-              j+=1
+        begin
+          if i.even? && j<max_results*2
+            
+            if row.at_css('td.Catalogo.allinea').text.strip != ""
+              marca = row.at_css('td.Catalogo.allinea').text
+            else
+              marca = row.at_css('td.Catalogo.allinea img').attr("title")
             end
-          end
-        end 
-        i+=1
+                      
+            nome = row.css('div.DescrizioneArticolo').text
+            p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text.strip.gsub(",",".").to_f.round(2)
+            stock = row.css('td.CatalogoDisp.allinea strong')[0].text.to_i + row.css('td.CatalogoDisp.allinea strong')[1].text.to_i + row.css('td.CatalogoDisp.allinea strong span').text.to_i
+            misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip.gsub(/[^0-9]/, '')
+            if query.to_s.length == 5
+              raggio = nome.gsub('-','R').split('R').second.split(" ").first.strip
+            else
+              raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip
+            end
+            
+            puts "MultiTires: "+nome
+            # CONTROLLO SULLA VALIDITA' DEL CAMPO RAGGIO --- DA SISTEMARE PER ALCUNI VALORI
+            
+            if raggio.to_i.to_s != raggio
+              raggio = nome.split(" ")[2]
+            end
+            
+            raggio = raggio.gsub(".","")
+            
+            tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
+            
+            
+            if @pfu == 'C2'
+              add = 17.60
+            elsif @pfu == 'C1'
+              add = 8.10
+            else
+              add = 2.30
+            end
+                
+            p_finale = p_netto + add + ((p_netto + add )/100)*22          
+            
+            misura_totale = misura+raggio
+            
+            if tmp_stagione == "sun"
+              stagione = "Estate"
+            elsif tmp_stagione == "snow"
+              stagione = "Inverno"
+            else
+              stagione = "4 Stagioni"
+            end
+            if p_netto.to_i != 0
+              if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
+                Pneumatico.create(nome_fornitore: "MultiTires", marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+                j+=1
+              end
+            end
+          end 
+          i+=1
+        rescue => e
+          puts e.message
+          next
+        end
       end
         
       file.close
@@ -1801,59 +1810,64 @@ private
       
       #table = document.css('table x-grid-item')
       document.css('table.x-grid-item tr').each do |row|
-        if row.css('td.x-grid-cell img').first["title"] != ""
-          marca = row.css('td.x-grid-cell img').first["title"].split(":").second.strip
-        else
-          marca = ""
-        end
-       
-        
-        modello = row.css("td.x-grid-cell")[1].text
-        
-        puts "MaxTyre: "+modello
-        tmp_stagione = row.css("td.x-grid-cell")[10].css("img").first['src'].split("/").last.split(".").first
-        if tmp_stagione == "sole"
-          stagione = "Estate"
-        elsif tmp_stagione == "snow"
-          stagione = "Inverno"
-        else
-          stagione = "4 Stagioni"
-        end
-        
-        prezzo_netto = row.css("td.x-grid-cell")[13].text.strip.gsub(",",".").to_f.round(2)
-     
-        
-        giacenza = row.css("td.x-grid-cell")[15].text.strip.to_i + row.css("td.x-grid-cell")[16].text.strip.to_i 
-        
-        
-        if query.to_s.length > 6
-       
-          misura = modello.split(" ").first+modello.split(" ").second[0..1].gsub(/[^0-9]/, '')
-          raggio = modello[6..-1].strip.split(" ").first.gsub(/[^0-9]/, '')
+        begin
+          if row.css('td.x-grid-cell img').first["title"] != ""
+            marca = row.css('td.x-grid-cell img').first["title"].split(":").second.strip
+          else
+            marca = ""
+          end
+         
           
-        else
+          modello = row.css("td.x-grid-cell")[1].text
           
-          misura = modello.gsub("-","R").split("R").first.strip.gsub(/[^0-9]/, '')
-          raggio = modello.gsub("-","R").split("R").second.split(" ").first.strip.gsub(/[^0-9]/, '')
-        
-        end
-        
-        if @pfu == 'C2'
-          add = 17.60
-        elsif @pfu == 'C1'
-          add = 8.10
-        else
-          add = 2.30
-        end
+          puts "MaxTyre: "+modello
+          tmp_stagione = row.css("td.x-grid-cell")[10].css("img").first['src'].split("/").last.split(".").first
+          if tmp_stagione == "sole"
+            stagione = "Estate"
+          elsif tmp_stagione == "snow"
+            stagione = "Inverno"
+          else
+            stagione = "4 Stagioni"
+          end
+          
+          prezzo_netto = row.css("td.x-grid-cell")[13].text.strip.gsub(",",".").to_f.round(2)
+       
+          
+          giacenza = row.css("td.x-grid-cell")[15].text.strip.to_i + row.css("td.x-grid-cell")[16].text.strip.to_i 
+          
+          
+          if query.to_s.length > 6
+         
+            misura = modello.split(" ").first+modello.split(" ").second[0..1].gsub(/[^0-9]/, '')
+            raggio = modello[6..-1].strip.split(" ").first.gsub(/[^0-9]/, '')
             
-        p_finale = prezzo_netto + add + ((prezzo_netto + add )/100)*22        
-        
-        
-        misura_totale = misura + raggio
-        
-        
-        if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp)
-            Pneumatico.create(nome_fornitore: "MaxTyre", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, pfu: @pfu)
+          else
+            
+            misura = modello.gsub("-","R").split("R").first.strip.gsub(/[^0-9]/, '')
+            raggio = modello.gsub("-","R").split("R").second.split(" ").first.strip.gsub(/[^0-9]/, '')
+          
+          end
+          
+          if @pfu == 'C2'
+            add = 17.60
+          elsif @pfu == 'C1'
+            add = 8.10
+          else
+            add = 2.30
+          end
+              
+          p_finale = prezzo_netto + add + ((prezzo_netto + add )/100)*22        
+          
+          
+          misura_totale = misura + raggio
+          
+          
+          if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp)
+              Pneumatico.create(nome_fornitore: "MaxTyre", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, pfu: @pfu)
+          end
+        rescue => e
+          puts e.message
+          next
         end
       end
       file.close
