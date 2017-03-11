@@ -325,27 +325,33 @@ private
       
       
       rows.each do |row|
-        
-        modello = row.css(".product-name").text
-        marca = modello.split(" ").first.strip
-        misura = modello.split("/").first.split(" ").last + modello.split("/").second.split(" ").first
-        raggio = modello.split("/").second.split("R").second.split(" ").first.strip
-        cod_vel = modello.split(" ").last.strip
-        p_netto = row.css(".price").text.strip.split(" ").first.gsub(",",".").to_f.round(2)
-        stock = row.css(".stock_qty").text.gsub(/[^0-9]/, '').strip.to_i
-        stagione = ""
-        
-        modello.slice! marca
-        
-        puts "Pneus26: "+modello
-        
-        p_finale = p_netto + add + ((p_netto + add )/100)*22    
-        
-        misura_totale = misura + raggio
-        
-        
-        if (misura_totale == tmp)
-          Pneumatico.create(nome_fornitore: "Pneus26", marca: marca.upcase , misura: misura, raggio: raggio, modello: modello, cod_vel: cod_vel, fornitore: @pneus26, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+        begin
+          modello = row.css(".product-name").text
+          marca = modello.split(" ").first.strip
+          
+          misura = modello.split("/").first.split(" ").last + modello.split("/").second.split(" ").first
+          raggio = modello.split("/").second.split("R").second.split(" ").first.strip
+          cod_vel = modello.split(" ").last.strip
+          p_netto = row.css(".price").text.strip.split(" ").first.gsub(",",".").to_f.round(2)
+          stock = row.css(".stock_qty").text.gsub(/[^0-9]/, '').strip.to_i
+          stagione = ""
+          
+          modello.slice! marca
+          
+          puts "Pneus26: "+modello
+          
+          p_finale = p_netto + add + ((p_netto + add )/100)*22    
+          
+          misura_totale = misura + raggio
+          
+          
+          if (misura_totale == tmp)
+            Pneumatico.create(nome_fornitore: "Pneus26", marca: marca.upcase , misura: misura, raggio: raggio, modello: modello, cod_vel: cod_vel, fornitore: @pneus26, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+          end
+          
+        rescue => e
+          puts e.message
+          next
         end
       end
       
