@@ -29,12 +29,15 @@ class WelcomeController < ApplicationController
   
   def update_results 
     marca = params[:marca]
-    stringa = Search.last.misura
-    stringa2 = Pneumatico.last.misura + Pneumatico.last.raggio
-    stagione = Search.last.stagione
-    if stringa == stringa2
-      misura = Pneumatico.last.misura
-      raggio = Pneumatico.last.raggio
+    misura_query = params[:misura]
+    # CONTROLLO CHE CI SIA ALMENO UN RISULTATO
+    if pneumatico = Pneumatico.where(query: misura_query).first
+      puts pneumatico
+      misura = pneumatico.misura
+      raggio = pneumatico.raggio
+      stagione = Search.where(misura: misura_query).first.stagione
+      puts misura
+      puts raggio
       if stagione != "Tutte"
         if marca != "Tutte"
           @res = Pneumatico.where(misura: misura, raggio: raggio, stagione: stagione , marca: marca).order(:prezzo_finale)
@@ -48,7 +51,55 @@ class WelcomeController < ApplicationController
           @res = Pneumatico.where(misura: misura, raggio: raggio).order(:prezzo_finale)
         end
       end
+     
+      puts @res.inspect
+      #@results = []
+      @fornitori = []
+      inactives = []
+      if !@res.nil?
+        Fornitore.all.each do |el|
+          if el.status == "Disattivato"
+            if el.nome == "MultiTyre"
+              inactives.push "MultiTires"
+            else
+              inactives.push el.nome
+            end
+            puts el.nome
+          end
+        end
+        @res.each do |item|
+          if inactives.include? item.nome_fornitore 
+            puts "removing"
+            puts item
+            @res.delete item
+          end
+        end
+            #puts @res.inspect
+        
+        @res.each do |r|
+          if !@fornitori.include? r.nome_fornitore
+            if r.nome_fornitore == "FarnesePneus"
+              @fornitori.push "Farnese"
+            elsif r.nome_fornitore == "PendinGomme"
+              @fornitori.push "Pendin"
+            elsif r.nome_fornitore == "CarliniGomme"
+              @fornitori.push "Carlini"
+            else
+              @fornitori.push r.nome_fornitore
+            end
+          end
+        end
+        #puts @res.inspect
+        
+      end
     end
+    
+    @finished = Search.where(misura: misura_query).first.finished
+    puts @finished
+    respond_to do |format|
+        format.js
+    end
+    
 =begin
       
     if Search.last.misura.length == 7
@@ -76,50 +127,6 @@ class WelcomeController < ApplicationController
       @res = Pneumatico.where(misura: misura, raggio: raggio).order(:prezzo_finale)
     end
 =end
-    #@results = []
-    @fornitori = []
-    inactives = []
-    if !@res.nil?
-      Fornitore.all.each do |el|
-        if el.status == "Disattivato"
-          if el.nome == "MultiTyre"
-            inactives.push "MultiTires"
-          else
-            inactives.push el.nome
-          end
-          puts el.nome
-        end
-      end
-      @res.each do |item|
-        if inactives.include? item.nome_fornitore 
-          puts "removing"
-          puts item
-          @res.delete item
-        end
-      end
-          #puts @res.inspect
-      
-      @res.each do |r|
-        if !@fornitori.include? r.nome_fornitore
-          if r.nome_fornitore == "FarnesePneus"
-            @fornitori.push "Farnese"
-          elsif r.nome_fornitore == "PendinGomme"
-            @fornitori.push "Pendin"
-          elsif r.nome_fornitore == "CarliniGomme"
-            @fornitori.push "Carlini"
-          else
-            @fornitori.push r.nome_fornitore
-          end
-        end
-      end
-      #puts @res.inspect
-      
-    end
-    @finished = Search.last.finished
-    puts @finished
-    respond_to do |format|
-        format.js
-    end
   end
   
   def index

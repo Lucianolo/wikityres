@@ -39,7 +39,8 @@ $( document ).ready(function() {
          $.ajax({
             url: '/welcome/update_results/',
             data: { 
-                marca: "<%= @marca_query %>"
+                marca: "<%= @marca_query %>",
+                misura: "<%= @query %>"
             },
             success: function(data) { 
             }
