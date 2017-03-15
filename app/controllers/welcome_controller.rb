@@ -32,12 +32,11 @@ class WelcomeController < ApplicationController
     misura_query = params[:misura]
     # CONTROLLO CHE CI SIA ALMENO UN RISULTATO
     if pneumatico = Pneumatico.where(query: misura_query).first
-      puts pneumatico
+      
       misura = pneumatico.misura
       raggio = pneumatico.raggio
       stagione = Search.where(misura: misura_query).first.stagione
-      puts misura
-      puts raggio
+      
       if stagione != "Tutte"
         if marca != "Tutte"
           @res = Pneumatico.where(misura: misura, raggio: raggio, stagione: stagione , marca: marca).order(:prezzo_finale)
@@ -52,7 +51,7 @@ class WelcomeController < ApplicationController
         end
       end
      
-      puts @res.inspect
+      
       #@results = []
       @fornitori = []
       inactives = []
