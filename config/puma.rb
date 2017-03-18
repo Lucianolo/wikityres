@@ -1,5 +1,5 @@
-workers Integer(2)
-threads_count = Integer(ENV['RAILS_MAX_THREADS'] || 6)
+workers Integer(ENV['WEB_CONCURRENCY'] || 2)
+threads_count = Integer(ENV['RAILS_MAX_THREADS'] || 8)
 min_threads = 2
 threads min_threads, threads_count
 
