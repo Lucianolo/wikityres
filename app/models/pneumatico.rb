@@ -94,12 +94,12 @@ class Pneumatico < ActiveRecord::Base
               }
             end
             
-            threads.each(&:join)
-            threads1 = []
+            #threads.each(&:join)
+            #threads1 = []
             
             # CARLINIGOMME.IT
             if fornitori.include? "CarliniGomme"
-              threads1 << Thread.new {
+              threads << Thread.new {
                 begin
                   Pneumatico.search_carlini(query, stagione, max_results)
                 ensure
@@ -114,7 +114,7 @@ class Pneumatico < ActiveRecord::Base
             # PNEUSHOPPING.IT
             if query.to_s.length > 6
               if fornitori.include? "MaxPneus"
-                threads1 << Thread.new {
+                threads << Thread.new {
                   begin
                     Pneumatico.search_maxpneus(query,stagione,max_results)
                   ensure
@@ -124,7 +124,7 @@ class Pneumatico < ActiveRecord::Base
               end
             end
             
-            threads1.each(&:join)
+            threads.each(&:join)
             
             threads2 = []
             # PENDINGOMME.IT
@@ -150,12 +150,12 @@ class Pneumatico < ActiveRecord::Base
                 end
               }
             end
-            threads2.each(&:join)
+            #threads2.each(&:join)
             
-            threads3 = []
+            #threads3 = []
             # CENTRO GOMME
             if fornitori.include? "CentroGomme"
-              threads3 << Thread.new {
+              threads2 << Thread.new {
                 begin
                   search_centrogomme(query,stagione,max_results)
                 ensure
@@ -167,7 +167,7 @@ class Pneumatico < ActiveRecord::Base
             
             
             if fornitori.include? "MaxiTyre"
-              threads3 << Thread.new {
+              threads2 << Thread.new {
                 begin
                   search_maxityre(query,stagione,max_results)
                 ensure
@@ -177,7 +177,7 @@ class Pneumatico < ActiveRecord::Base
               }
             end
             
-            threads3.each(&:join)
+            threads2.each(&:join)
             
             threads4=[]
             
