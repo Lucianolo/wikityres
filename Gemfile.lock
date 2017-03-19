@@ -58,6 +58,8 @@ GEM
     delayed_job_active_record (4.1.1)
       activerecord (>= 3.0, < 5.1)
       delayed_job (>= 3.0, < 5)
+    delayed_job_worker_pool (0.2.3)
+      delayed_job (>= 3.0, < 4.2)
     domain_name (0.5.20170223)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
@@ -191,6 +193,7 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
   delayed_job_active_record
+  delayed_job_worker_pool
   hirefire-resource
   jbuilder (~> 2.0)
   jquery-rails
