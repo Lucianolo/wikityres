@@ -222,7 +222,7 @@ private
         browser_loaded=0
         i=0
         while (browser_loaded == 0)
-            if i<4
+            if i<2
                 begin
                   browser_loaded=1
                   Timeout::timeout(mytimeout)  do
@@ -624,7 +624,7 @@ private
   
             nome = row.css('div.DescrizioneArticolo').text.gsub("CAM."," ").gsub("SET.","SET").gsub("SET","").strip
             p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text.strip.gsub(",",".").to_f.round(2)
-            stock = row.css('td.CatalogoDisp.allinea strong')[0].text.to_i + row.css('td.CatalogoDisp.allinea strong')[1].text.to_i + row.css('td.CatalogoDisp.allinea strong span').text.to_i
+            stock = row.css('td.CatalogoDisp.allinea strong')[1].text.to_i + row.css('td.CatalogoDisp.allinea strong')[2].text.to_i + row.css('td.CatalogoDisp.allinea strong')[3].text.to_i + row.css('td.CatalogoDisp.allinea strong')[4].text.to_i
             
             misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip.gsub(/[^0-9]/, '')
             if query.to_s.length == 5
@@ -1649,8 +1649,10 @@ private
             end
                       
             nome = row.css('div.DescrizioneArticolo').text
+            
+            
             p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text.strip.gsub(",",".").to_f.round(2)
-            stock = row.css('td.CatalogoDisp.allinea strong')[0].text.to_i + row.css('td.CatalogoDisp.allinea strong')[1].text.to_i + row.css('td.CatalogoDisp.allinea strong span').text.to_i
+            stock = row.css('td.CatalogoDisp.allinea strong')[1].text.to_i + row.css('td.CatalogoDisp.allinea strong')[2].text.to_i  #+ row.css('td.CatalogoDisp.allinea strong span').text.to_i
             misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip.gsub(/[^0-9]/, '')
             if query.to_s.length == 5
               raggio = nome.gsub('-','R').split('R').second.split(" ").first.strip
