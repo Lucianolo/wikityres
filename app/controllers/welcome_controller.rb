@@ -240,7 +240,7 @@ class WelcomeController < ApplicationController
         puts Search.last.inspect
       end  
       k = 0
-      while k < 10
+      while k < 8
         ActiveRecord::Base.connection.clear_query_cache
         puts Pneumatico.where("misura like ? AND raggio like ?", "%#{tmp_misura}%","%#{tmp_raggio}%" ).count
         if Pneumatico.where("misura like ? AND raggio like ?", "%#{tmp_misura}%","%#{tmp_raggio}%" ).count < 1
