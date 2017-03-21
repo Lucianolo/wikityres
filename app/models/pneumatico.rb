@@ -248,7 +248,8 @@ private
     browser.window.maximize
     
     
-    Pneumatico.sureLoadLink(10){ browser.goto @pneus26 }
+    #Pneumatico.sureLoadLink(10){}
+    browser.goto @pneus26 
     
     fornitore_pneus26 = Fornitore.where(nome: "Pneus26").first
     
@@ -270,7 +271,8 @@ private
       
       browser.text_field(:id => 'search_list').wait_until_present
       
-      Pneumatico.sureLoadLink(10){ browser.goto "http://www.pneus26.it/catalogsearch/result/index/?dir=asc&order=price&q="+query.to_s }
+      #Pneumatico.sureLoadLink(10){ }
+      browser.goto "http://www.pneus26.it/catalogsearch/result/index/?dir=asc&order=price&q="+query.to_s 
       #browser.text_field(:id => 'search_list').set query
       
       #browser.div(:class => 'form-search').button.click
@@ -364,7 +366,8 @@ private
     browser = Watir::Browser.new :phantomjs, :args => switches
     browser.window.maximize
     
-    Pneumatico.sureLoadLink(10){ browser.goto @maxityre }
+    #Pneumatico.sureLoadLink(10){ }
+    browser.goto @maxityre 
     
     fornitore_maxityre = Fornitore.where(nome: "MaxiTyre").first
     
@@ -534,8 +537,8 @@ private
     switches = ['--load-images=no']
     browser = Watir::Browser.new :phantomjs, :args => switches
     browser.window.maximize
-    Pneumatico.sureLoadLink(10){ browser.goto @carlinigomme }
-    
+    #Pneumatico.sureLoadLink(10){  }
+    browser.goto @carlinigomme
     fornitore_carlini = Fornitore.where(nome: "CarliniGomme").first
     if browser.text_field(:name => 'username').exists?
       browser.text_field(:name => 'username').set fornitore_carlini.user_name
@@ -640,6 +643,7 @@ private
               raggio = nome.split(" ")[2]
             end
             
+          
             
             
             tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
@@ -694,8 +698,8 @@ private
     switches = ['--load-images=no']
     browser = Watir::Browser.new :phantomjs, :args => switches
     browser.window.maximize
-    Pneumatico.sureLoadLink(10){ browser.goto @olpneus }
-    
+    #Pneumatico.sureLoadLink(10){ }
+    browser.goto @olpneus 
     fornitore_olpneus = Fornitore.where(nome: "OLPneus").first
     if browser.text_field(:name => 'username').exists?
       browser.text_field(:name => 'username').set fornitore_olpneus.user_name
@@ -871,7 +875,8 @@ private
     switches = ['--load-images=no']
     browser = Watir::Browser.new :phantomjs, :args => switches
     browser.window.maximize
-    Pneumatico.sureLoadLink(10){ browser.goto 'http://www.maxpneus.it' }
+    #Pneumatico.sureLoadLink(10){}
+    browser.goto 'http://www.maxpneus.it' 
     query_old = query           
     #puts "page loaded"
    
@@ -982,7 +987,8 @@ private
     switches = ['--load-images=no']
     browser = Watir::Browser.new :phantomjs, :args => switches
     browser.window.maximize
-    Pneumatico.sureLoadLink(10){ browser.goto 'http://www.pendingomme.it/login' }
+    #Pneumatico.sureLoadLink(10){  }
+    browser.goto 'http://www.pendingomme.it/login'
                
     #puts "page loaded"
     
@@ -1001,7 +1007,8 @@ private
     sleep 1
       
     puts "Pendin logged in"
-    Pneumatico.sureLoadLink(10) { browser.goto('http://www.pendingomme.it/ricerca?controller=search&orderby=position&orderway=desc&search_query='+query.to_s+'&submit_search=') }
+    #Pneumatico.sureLoadLink(10) { }
+    browser.goto('http://www.pendingomme.it/ricerca?controller=search&orderby=position&orderway=desc&search_query='+query.to_s+'&submit_search=') 
 
     if browser.element(:class => 'alert-warning').present?
       puts "nessun resultato per PendinGomme"
@@ -1101,8 +1108,8 @@ private
     switches = ['--load-images=no']
     browser = Watir::Browser.new :phantomjs, :args => switches
     browser.window.maximize
-    Pneumatico.sureLoadLink(10){ browser.goto 'http://www.b2b.farnesepneus.it/' }
-             
+    #Pneumatico.sureLoadLink(10){  }
+    browser.goto 'http://www.b2b.farnesepneus.it/'
     #puts "page loaded"
     fornitore_farnese = Fornitore.where(nome: "FarnesePneus").first
     if browser.text_field(:name => '_username').exists?
@@ -1238,9 +1245,9 @@ private
     browser = Watir::Browser.new :phantomjs, :args => switches
     browser.window.maximize
     
-    Pneumatico.sureLoadLink(10){
-      browser.goto 'http://b2b.fintyre.it/fintyre2/'
-    }
+    #Pneumatico.sureLoadLink(10){}
+    browser.goto 'http://b2b.fintyre.it/fintyre2/'
+
     fornitore_fintyre = Fornitore.where(nome: "Fintyre").first
     if browser.text_field(:id => 'username').exists?
       browser.text_field(:id => 'username').set fornitore_fintyre.user_name
@@ -1257,9 +1264,15 @@ private
           
     search_page = 'http://b2b.fintyre.it/fintyre2/main?TASK=Precercaarticoli&OUTPAGE=/ordini/ricerche/ricercaArticoli.jsp&ERRPAGE=/common/error.jsp'  
             
-    Pneumatico.sureLoadLink(15){ browser.goto search_page}
-         
-    element = browser.table(:id => 'result')
+    #Pneumatico.sureLoadLink(15){ }
+    browser.goto search_page
+    
+    if browser.text_field(:id => 'id_ricerca').exists?
+      element = browser.table(:id => 'result')
+    else
+      puts "Problema caricamento pagina ricerca Fintyre"
+      return
+    end
     
     flag = Pneumatico.try_until(browser, search_page , element) {
     
@@ -1411,10 +1424,10 @@ private
     browser = Watir::Browser.new :phantomjs, :args => switches
     browser.window.maximize
             
-    Pneumatico.sureLoadLink(10){ browser.goto 'http://www.centrogomme.com/' }
-           
+    #Pneumatico.sureLoadLink(10){ }
+    browser.goto 'http://www.centrogomme.com/' 
     fornitore_centrogomme = Fornitore.where(nome: "CentroGomme").first
-    puts browser.iframe.text_field(:id => 't_username').exists?
+    
     if browser.iframe.text_field(:id => 't_username').exists?
       browser.iframe.text_field(:id => 't_username').set fornitore_centrogomme.user_name
               
@@ -1428,11 +1441,16 @@ private
     end
     puts "login effettuato"
     search_page = "http://ordini.centrogomme.com/index.php?item=search"
-    Pneumatico.sureLoadLink(10){ browser.goto search_page }
-    element = browser.table(:id => 'result-table')
-    
+    #Pneumatico.sureLoadLink(10){  }
     browser.goto search_page
     
+    if browser.text_field(:id => 'search_criteria').exists?
+      element = browser.table(:id => 'result-table')
+    else 
+      puts "Problema caricamento pagina risultati CentroGomme"
+      return
+    end
+   
     flag = Pneumatico.try_until(browser, search_page, element) {
     
       browser.text_field(:id => 'search_criteria').set query
@@ -1557,8 +1575,8 @@ private
     browser = Watir::Browser.new :phantomjs, :args => switches
     browser.window.maximize
             
-    Pneumatico.sureLoadLink(10){ browser.goto 'http://multitires.autotua.it/' }
-    
+    #Pneumatico.sureLoadLink(10){ }
+    browser.goto 'http://multitires.autotua.it/'
     fornitore_multityre = Fornitore.where(nome: "MultiTyre").first
     
     if browser.text_field(:name => 'username').exists?
@@ -1725,25 +1743,30 @@ private
           break
         end
           
-        Pneumatico.sureLoadLink(10){ browser.goto 'http://web.maxtyre.it/' }
-                   
+        #Pneumatico.sureLoadLink(10){ }
+        browser.goto 'http://web.maxtyre.it/'
         #puts "page loaded"
         
         fornitore_maxtyre = Fornitore.where(nome: "MaxTyre").first
-        #if browser.text_field(:name => 'username').exists?
+        if browser.text_field(:name => 'username').exists?
           browser.text_field(:name => 'username').set fornitore_maxtyre.user_name
                       
           browser.text_field(:name => 'password').set fornitore_maxtyre.password
                      
           browser.link(:id => 'button-1017').click
-        #else
-        #  puts "MaxTyre non disponibile"
-        #  return 
-        #end  
+        else
+          puts "MaxTyre non disponibile"
+          return 
+        end  
         sleep 2
         puts "MaxTyre login effettuato"
-          
-        browser.link(:id =>"button-1026").click
+        
+        if browser.link(:id =>"button-1026").exists?
+          browser.link(:id =>"button-1026").click
+        else
+          puts "Problema caricamento MaxTyre"
+          return
+        end
             
         #puts "Bottone ricerca premuto" 
           
@@ -1954,7 +1977,8 @@ private
           
           puts "Retrying.."
           sleep 1
-          Pneumatico.sureLoadLink(10){ browser.goto search_page }
+          #Pneumatico.sureLoadLink(10){ }
+          browser.goto search_page 
         end
       end
       i+=1
