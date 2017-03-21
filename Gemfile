@@ -4,7 +4,7 @@ gem 'puma'
 #gem 'newrelic_rpm'
 gem 'delayed_job_active_record'
 #gem 'delayed_job_worker_pool'
-gem 'hirefire'
+#gem 'hirefire'
 gem "hirefire-resource"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.5'
