@@ -110,7 +110,23 @@
                     
 
 <script>
-$( ".table-item" ).change(function() {
+    $( "td.p_finale" ).click(function() {
+        var item1 = $("td.descrizione");
+        var item2 = $("td.calcolo");
+        
+        if($(this).parent().find(item2).css('display') == 'none')
+        {
+            $( this).parent().find( item1 ).css("display", "none");
+            $( this).parent().find( item2 ).css("display", "table-cell");
+        } 
+        else
+        {
+            $( this).parent().find( item1 ).css("display", "table-cell");
+            $( this).parent().find( item2 ).css("display", "none");
+        }
+    });
+    
+    $( ".table-item" ).change(function() {
         
         var q = parseInt($(this).find("#quantita").val());
         var t = $(this).find("#tipo-incremento").val();
@@ -130,5 +146,4 @@ $( ".table-item" ).change(function() {
     });
    
 
-  
 </script>
