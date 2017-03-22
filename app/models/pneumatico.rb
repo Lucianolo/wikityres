@@ -1,4 +1,4 @@
-require 'heroku-api'
+require 'platform-api'
 class Pneumatico < ActiveRecord::Base
     
     def self.update 

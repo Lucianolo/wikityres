@@ -3,7 +3,7 @@ require "watir"
 require 'thread'
 require 'nokogiri'
 require 'mechanize'
-require 'heroku-api'
+require 'platform-api'
 class WelcomeController < ApplicationController
   
   skip_before_filter :require_login, :only => :cron_job

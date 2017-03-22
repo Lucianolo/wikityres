@@ -66,9 +66,10 @@ GEM
     ffi (1.9.18)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
-    heroku-api (0.4.2)
-      excon (~> 0.45)
-      multi_json (~> 1.8)
+    heroics (0.0.21)
+      erubis (~> 2.0)
+      excon
+      multi_json (>= 1.9.2)
     hirefire-resource (0.4.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -101,6 +102,7 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
     minitest (5.10.1)
+    moneta (0.8.1)
     multi_json (1.12.1)
     net-http-digest_auth (1.4.1)
     net-http-persistent (2.9.4)
@@ -108,6 +110,9 @@ GEM
       mini_portile2 (~> 2.1.0)
     ntlm-http (0.1.1)
     pg (0.20.0)
+    platform-api (1.0.0)
+      heroics (~> 0.0.20)
+      moneta (~> 0.8.1)
     puma (3.8.2)
     rack (1.6.5)
     rack-test (0.6.3)
@@ -195,7 +200,6 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
   delayed_job_active_record
-  heroku-api
   hirefire-resource
   jbuilder (~> 2.0)
   jquery-rails
@@ -203,6 +207,7 @@ DEPENDENCIES
   mechanize
   nokogiri (~> 1.6, >= 1.6.8)
   pg
+  platform-api
   puma
   rails (= 4.2.5)
   sass-rails (~> 5.0)
