@@ -131,7 +131,7 @@ class WelcomeController < ApplicationController
   
   def index
     
-    heroku = Heroku::API.new(:api_key => "5681181a-1f63-4619-b3fd-832be797e7ca")
+    #heroku = Heroku::API.new(:api_key => "5681181a-1f63-4619-b3fd-832be797e7ca")
     @results = {}
     max_results = 300
   
@@ -230,8 +230,8 @@ class WelcomeController < ApplicationController
         Pneumatico.delay.add_to_db(worker_id, query_list, max_results, stagione)
         
         
-        heroku.post_ps_scale('wikityres', 'worker', worker_id)
-        
+        #heroku.post_ps_scale('wikityres', 'worker', worker_id)
+        PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff'})
         
         if stagione != "Tutte"
           if @marca_query != "Tutte"

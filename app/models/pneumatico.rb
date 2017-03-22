@@ -212,10 +212,7 @@ class Pneumatico < ActiveRecord::Base
             value = system( " pkill -9 'phantomjs' ")
             puts value
             Search.where(misura: @query).first.update(finished: true)
-            
-            
-            
-            return Pneumatico.stop_worker(heroku)
+       
           end
         
         
