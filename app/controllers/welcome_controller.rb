@@ -231,7 +231,7 @@ class WelcomeController < ApplicationController
         
         
         #heroku.post_ps_scale('wikityres', 'worker', worker_id)
-        PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff'})
+        PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'performance-M'})
         
         if stagione != "Tutte"
           if @marca_query != "Tutte"
