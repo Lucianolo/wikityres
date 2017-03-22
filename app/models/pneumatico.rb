@@ -215,7 +215,7 @@ class Pneumatico < ActiveRecord::Base
             
             
             
-            return stop_worker(heroku)
+            return Pneumatico.stop_worker(heroku)
           end
         
         
@@ -223,7 +223,7 @@ class Pneumatico < ActiveRecord::Base
 
 private
 
-    def stop_worker(heroku)
+    def self.stop_worker(heroku)
       id = ENV['DYNO']
       heroku.post_ps_stop('wikityres', 'ps' => id ) 
     end
