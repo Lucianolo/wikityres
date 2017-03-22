@@ -282,7 +282,7 @@ class WelcomeController < ApplicationController
     Pneumatico.delete_all
     Search.where(tag: nil).delete_all
     query_list = []
-    i = 0
+   
     Search.where(tag: "routine").each do |query|
         query_list.push(query.misura)
     end
@@ -290,23 +290,9 @@ class WelcomeController < ApplicationController
     puts "LIST:"
     puts query_list
     query_list.each do |item|
-      puts item
-      puts i
-      if i<2
-        tmp_list.push item
-        i+=1
-      else
-        Pneumatico.delay(run_at: 5.seconds.from_now).add_to_db(tmp_list, 300)
-        
-        puts "Added: "
-        puts tmp_list
-        tmp_list=[]
-        tmp_list.push item
-        i = 1
-      end
-    end
-    if query_list.length > 2
-      Pneumatico.delay(run_at: 5.seconds.from_now).add_to_db(tmp_list, 300)
+      tmp_list = [item]
+      Pneumatico.delay.add_to_db(tmp_list, 300)
+      PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff'})
     end
     #Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
 

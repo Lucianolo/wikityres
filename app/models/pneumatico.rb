@@ -15,22 +15,11 @@ class Pneumatico < ActiveRecord::Base
       query_list.each do |item|
         puts item
         puts i
-        if i<2
-          tmp_list.push item
-          i+=1
-        else
-          Pneumatico.delay(run_at: 5.seconds.from_now).add_to_db(tmp_list, 300)
-          
-          puts "Added: "
-          puts tmp_list
-          tmp_list=[]
-          tmp_list.push item
-          i = 1
-        end
-      end
-      if query_list.length > 2
+        tmp_list = [item]
         Pneumatico.delay(run_at: 5.seconds.from_now).add_to_db(tmp_list, 300)
+        
       end
+      
     end
     
     
