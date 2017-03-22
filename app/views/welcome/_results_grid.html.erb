@@ -34,7 +34,8 @@
                                />
                             </div>
                         </div>   
-                        <div class="col-lg-2 col-md-2 col-sm-2">
+                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
+        
                             <div class="dropdown">
                                 <span class="btn btn-lg dropbtn">FORNITORI</span>
                                 <div class="dropdown-content">
@@ -45,24 +46,43 @@
                                         <%         purged.push forn %>
                                         <%     end %>
                                         <% end %>
-                                        <% purged.each do |f| %>
-                                            <div class="form-group  text-center">
-                                                <label>
-                                                    <input
-                                                       value="<%= f %>"
-                                                       id="<%= f %>"
-                                                       type="checkbox"
-                                                    />
-                                                <%= f %></label>
-                                            </div>
-                                            
-                                            <br>
-                                        <% end %>
+                                        <ul>
+                                            <% purged.each do |f| %>
+                                            <li>
+                                                <span class="form-group  text-center">
+                                                    <label>
+                                                        <input
+                                                           value="<%= f %>"
+                                                           id="<%= f %>"
+                                                           type="checkbox"
+                                                        />
+                                                    <%= f %></label>
+                                                </span>
+                                                
+                                            </li>
+                                            <% end %>
+                                        </ul>
+                                        
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-4">
+                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
+                            <div class="dropdown">
+                                <span class="btn btn-lg dropbtn">STAGIONE</span>
+                                <div class="dropdown-content">
+                                    <div class="jplist-group" style="" data-control-type="checkbox-text-filter" data-control-action="filter" data-control-name="stagioni" data-path=".stagione" >
+                                        <ul><li><label><input value="Estate" id="Estate" type="checkbox"/>Estate
+                                        </label></li></ul>
+                                        <ul><li><label><input value="Inverno" id="Inverno" type="checkbox"/>Inverno
+                                        </label></li></ul>
+                                        <ul><li><label><input value="4 Seasons" id="4s" type="checkbox"/>4 Seasons
+                                        </label></li></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-0 col-xs-0">
                             
                         </div>
                         <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12  text-right select">

@@ -3,6 +3,7 @@ require "watir"
 require 'thread'
 require 'nokogiri'
 require 'mechanize'
+require 'heroku-api'
 class WelcomeController < ApplicationController
   
   skip_before_filter :require_login, :only => :cron_job
@@ -129,6 +130,8 @@ class WelcomeController < ApplicationController
   end
   
   def index
+    
+    heroku = Heroku::API.new(:api_key => "5681181a-1f63-4619-b3fd-832be797e7ca")
     @results = {}
     max_results = 300
   
@@ -221,7 +224,11 @@ class WelcomeController < ApplicationController
         #populate(query_list, max_results, stagione)
         
         Pneumatico.delay.add_to_db(query_list, max_results, stagione)
-
+        
+        actual_workers = heroku.get_dyno_types('wikityres')
+        heroku.post_ps_scale('wikityres', 'worker', actual_workers + 1)
+        
+        
         if stagione != "Tutte"
           if @marca_query != "Tutte"
             @res = Pneumatico.where("misura like ? AND raggio like ? AND (stagione like ?  OR stagione like ?) AND marca like ?", "%#{tmp_misura}%","%#{tmp_raggio}%", stagione, "4 Stagioni", @marca_query).order(:prezzo_finale)

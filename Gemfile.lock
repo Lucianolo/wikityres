@@ -61,10 +61,14 @@ GEM
     domain_name (0.5.20170223)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
+    excon (0.55.0)
     execjs (2.7.0)
     ffi (1.9.18)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
+    heroku-api (0.4.2)
+      excon (~> 0.45)
+      multi_json (~> 1.8)
     hirefire-resource (0.4.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -191,6 +195,7 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
   delayed_job_active_record
+  heroku-api
   hirefire-resource
   jbuilder (~> 2.0)
   jquery-rails

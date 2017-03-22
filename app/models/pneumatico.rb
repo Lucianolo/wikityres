@@ -1,3 +1,4 @@
+require 'heroku-api'
 class Pneumatico < ActiveRecord::Base
     
     def self.update 
@@ -35,7 +36,7 @@ class Pneumatico < ActiveRecord::Base
     
     def self.add_to_db(query_list, max_results, stagione = "Tutte")
         
-        
+        heroku = Heroku::API.new(:api_key => "5681181a-1f63-4619-b3fd-832be797e7ca")
         @fintyre = "http://b2b.fintyre.it/fintyre2/main?TASK=Precercaarticoli&OUTPAGE=/ordini/ricerche/ricercaArticoli.jsp&ERRPAGE=/common/error.jsp"
         @farnesepneus = "http://www.b2b.farnesepneus.it/check-prices"
         @centrogomme = "http://ordini.centrogomme.com/views/B2BCG/BB.view.php?page=ricerca"
@@ -211,6 +212,11 @@ class Pneumatico < ActiveRecord::Base
             value = system( " pkill -9 'phantomjs' ")
             puts value
             Search.where(misura: @query).first.update(finished: true)
+            
+            actual_workers = heroku.get_dyno_types('wikityres')
+            if actual_workers>0
+              heroku.post_ps_scale('wikityres', 'worker', actual_workers - 1)
+            end
           end
         
         

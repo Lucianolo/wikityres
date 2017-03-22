@@ -5,6 +5,7 @@ gem 'puma'
 gem 'delayed_job_active_record'
 #gem 'delayed_job_worker_pool'
 #gem 'hirefire'
+gem 'heroku-api'
 gem "hirefire-resource"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.5'
