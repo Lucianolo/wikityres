@@ -24,6 +24,7 @@ class Pneumatico < ActiveRecord::Base
     
     
     def self.add_to_db(query_list, max_results, stagione = "Tutte")
+      tries = 2
       begin
         @fintyre = "http://b2b.fintyre.it/fintyre2/main?TASK=Precercaarticoli&OUTPAGE=/ordini/ricerche/ricercaArticoli.jsp&ERRPAGE=/common/error.jsp"
         @farnesepneus = "http://www.b2b.farnesepneus.it/check-prices"
@@ -207,8 +208,12 @@ class Pneumatico < ActiveRecord::Base
             Search.where(misura: @query).first.update(finished: true)
        
         end
-      rescue
-        retry
+      rescue => e
+        tries-=1
+        puts e.message
+        if tries > 0
+          retry
+        end
       end
         
     end
