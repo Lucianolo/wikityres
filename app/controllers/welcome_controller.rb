@@ -231,7 +231,7 @@ class WelcomeController < ApplicationController
         
         
         #heroku.post_ps_scale('wikityres', 'worker', worker_id)
-        PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'performance-M'})
+        
         
         if stagione != "Tutte"
           if @marca_query != "Tutte"
@@ -251,6 +251,7 @@ class WelcomeController < ApplicationController
         puts Search.last.inspect
       end  
       k = 0
+      PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'performance-M'})
       while k < 8
         ActiveRecord::Base.connection.clear_query_cache
         puts Pneumatico.where("misura like ? AND raggio like ?", "%#{tmp_misura}%","%#{tmp_raggio}%" ).count
