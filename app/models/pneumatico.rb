@@ -35,8 +35,7 @@ class Pneumatico < ActiveRecord::Base
     
     
     def self.add_to_db(worker_id, query_list, max_results, stagione = "Tutte")
-        puts worker_id
-        heroku = Heroku::API.new(:api_key => "5681181a-1f63-4619-b3fd-832be797e7ca")
+        
         @fintyre = "http://b2b.fintyre.it/fintyre2/main?TASK=Precercaarticoli&OUTPAGE=/ordini/ricerche/ricercaArticoli.jsp&ERRPAGE=/common/error.jsp"
         @farnesepneus = "http://www.b2b.farnesepneus.it/check-prices"
         @centrogomme = "http://ordini.centrogomme.com/views/B2BCG/BB.view.php?page=ricerca"
@@ -220,10 +219,7 @@ class Pneumatico < ActiveRecord::Base
 
 private
 
-    def self.stop_worker(heroku)
-      id = ENV['DYNO']
-      heroku.post_ps_stop('wikityres', 'ps' => id ) 
-    end
+    
     def self.sureLoadLink(mytimeout)
         browser_loaded=0
         i=0
