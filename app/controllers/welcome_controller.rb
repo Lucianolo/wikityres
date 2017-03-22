@@ -226,8 +226,8 @@ class WelcomeController < ApplicationController
         # SEZIONE CRITICA DA PROTEGGERE - DUE PROCESSI POTREBBERO ARRIVARE INSIEME A QUESTO PUNTO E SCAMBIARSI GLI ID
         
         #actual_workers = heroku.get_dyno_types('wikityres').body.second["quantity"]
-        worker_id =  1
-        Pneumatico.delay.add_to_db(worker_id, query_list, max_results, stagione)
+        
+        Pneumatico.delay.add_to_db(query_list, max_results, stagione)
         
         
         #heroku.post_ps_scale('wikityres', 'worker', worker_id)

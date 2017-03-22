@@ -23,7 +23,7 @@ class Pneumatico < ActiveRecord::Base
     end
     
     
-    def self.add_to_db(worker_id, query_list, max_results, stagione = "Tutte")
+    def self.add_to_db(query_list, max_results, stagione = "Tutte")
         
         @fintyre = "http://b2b.fintyre.it/fintyre2/main?TASK=Precercaarticoli&OUTPAGE=/ordini/ricerche/ricercaArticoli.jsp&ERRPAGE=/common/error.jsp"
         @farnesepneus = "http://www.b2b.farnesepneus.it/check-prices"
