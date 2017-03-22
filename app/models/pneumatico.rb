@@ -213,7 +213,7 @@ class Pneumatico < ActiveRecord::Base
             puts value
             Search.where(misura: @query).first.update(finished: true)
             
-            actual_workers = heroku.get_dyno_types('wikityres')
+            actual_workers = heroku.get_dyno_types('wikityres').body.second["quantity"]
             if actual_workers>0
               heroku.post_ps_scale('wikityres', 'worker', actual_workers - 1)
             end

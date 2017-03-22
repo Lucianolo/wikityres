@@ -225,7 +225,7 @@ class WelcomeController < ApplicationController
         
         Pneumatico.delay.add_to_db(query_list, max_results, stagione)
         
-        actual_workers = heroku.get_dyno_types('wikityres')
+        actual_workers = heroku.get_dyno_types('wikityres').body.second["quantity"]
         heroku.post_ps_scale('wikityres', 'worker', actual_workers + 1)
         
         
