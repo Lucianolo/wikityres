@@ -215,8 +215,7 @@ class Pneumatico < ActiveRecord::Base
             
             
             
-            heroku.post_ps_stop('wikityres', 'ps' => 'worker.'+worker_id.to_s) 
-            
+            return stop_worker(heroku)
           end
         
         
@@ -224,6 +223,10 @@ class Pneumatico < ActiveRecord::Base
 
 private
 
+    def stop_worker(heroku)
+      id = ENV['DYNO']
+      heroku.post_ps_stop('wikityres', 'ps' => id ) 
+    end
     def self.sureLoadLink(mytimeout)
         browser_loaded=0
         i=0
