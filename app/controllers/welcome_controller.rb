@@ -231,7 +231,7 @@ class WelcomeController < ApplicationController
         
         
         #heroku.post_ps_scale('wikityres', 'worker', worker_id)
-        PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'standard-2X'})
+        PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'performance-M'})
         
         if stagione != "Tutte"
           if @marca_query != "Tutte"
@@ -292,7 +292,7 @@ class WelcomeController < ApplicationController
     query_list.each do |item|
       tmp_list = [item]
       Pneumatico.delay.add_to_db(tmp_list, 300)
-      PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'standard-2X'})
+      PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'performance-M'})
     end
     #Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
 
