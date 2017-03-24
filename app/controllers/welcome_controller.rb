@@ -249,9 +249,11 @@ class WelcomeController < ApplicationController
         
         Search.create(misura: query.to_s , stagione: stagione, finished: false)
         puts Search.last.inspect
+        
+        PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'performance-M'})
       end  
       k = 0
-      PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'performance-M'})
+      
       while k < 8
         ActiveRecord::Base.connection.clear_query_cache
         puts Pneumatico.where("misura like ? AND raggio like ?", "%#{tmp_misura}%","%#{tmp_raggio}%" ).count
