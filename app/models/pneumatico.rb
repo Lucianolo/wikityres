@@ -2,10 +2,11 @@ require 'platform-api'
 class Pneumatico < ActiveRecord::Base
     
     def self.update 
+      
       Pneumatico.delete_all
       Search.where(tag: nil).delete_all
       query_list = []
-      i = 0
+     
       Search.where(tag: "routine").each do |query|
           query_list.push(query.misura)
       end
@@ -13,11 +14,14 @@ class Pneumatico < ActiveRecord::Base
       puts "LIST:"
       puts query_list
       query_list.each do |item|
-        puts item
-        puts i
         tmp_list = [item]
-        Pneumatico.delay(run_at: 5.seconds.from_now).add_to_db(tmp_list, 300)
+        Pneumatico.delay.add_to_db(tmp_list, 300)
         
+      end
+      
+      for i in 0..query_list.length-1
+        PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'performance-M'})
+        sleep 1
       end
       
     end
