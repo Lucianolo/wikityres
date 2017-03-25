@@ -1117,7 +1117,7 @@ private
     browser = Watir::Browser.new :phantomjs , :driver_opts => options
     browser.window.maximize
     #Pneumatico.sureLoadLink(10){  }
-    browser.goto 'http://www.b2b.farnesepneus.it/'
+    sureLoadLink(10) { browser.goto 'http://www.b2b.farnesepneus.it/' }
     #puts "page loaded"
     fornitore_farnese = Fornitore.where(nome: "FarnesePneus").first
     if browser.text_field(:name => '_username').exists?
