@@ -49,7 +49,8 @@ class Pneumatico < ActiveRecord::Base
         end
         puts fornitori
         
-        
+        driver_opts = {}
+        driver_opts["load-images"] = false
         
         query_list.each do |query|
             
@@ -59,7 +60,7 @@ class Pneumatico < ActiveRecord::Base
             # FARNESEPNEUS.IT
             if fornitori.include? "FarnesePneus"
                 begin
-                  search_farnese(query,stagione,max_results)
+                  search_farnese(query,stagione,max_results, options)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -69,7 +70,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "Fintyre"
               threads << Thread.new {
                 begin
-                  search_fintyre(query,stagione,max_results)
+                  search_fintyre(query,stagione,max_results, options)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -83,7 +84,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "OLPneus"
               threads << Thread.new {
                 begin
-                  Pneumatico.search_olpneus(query, stagione, max_results)
+                  Pneumatico.search_olpneus(query, stagione, max_results, options)
                 ensure
                   ActiveRecord::Base.connection_pool.release_connection
                 end
@@ -97,7 +98,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "CarliniGomme"
               threads << Thread.new {
                 begin
-                  Pneumatico.search_carlini(query, stagione, max_results)
+                  Pneumatico.search_carlini(query, stagione, max_results, options)
                 ensure
                   ActiveRecord::Base.connection_pool.release_connection
                 end
@@ -112,7 +113,7 @@ class Pneumatico < ActiveRecord::Base
               if fornitori.include? "MaxPneus"
                 threads << Thread.new {
                   begin
-                    Pneumatico.search_maxpneus(query,stagione,max_results)
+                    Pneumatico.search_maxpneus(query,stagione,max_results, options)
                   ensure
                     ActiveRecord::Base.connection_pool.release_connection
                   end
@@ -123,7 +124,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "MultiTyre"
               threads << Thread.new {
                 begin
-                  search_multityre(query, stagione, max_results)
+                  search_multityre(query, stagione, max_results, options)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -139,7 +140,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "PendinGomme"
               threads2 << Thread.new {
                 begin
-                  search_pendingomme(query,stagione,max_results)
+                  search_pendingomme(query,stagione,max_results, options)
                 ensure
                   ActiveRecord::Base.connection_pool.release_connection
                 end
@@ -151,7 +152,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "Pneus26"
               threads2 << Thread.new {
                 begin
-                  search_pneus26(query,stagione)
+                  search_pneus26(query,stagione, options)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -165,7 +166,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "CentroGomme"
               threads2 << Thread.new {
                 begin
-                  search_centrogomme(query,stagione,max_results)
+                  search_centrogomme(query,stagione,max_results, options)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -177,7 +178,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "MaxiTyre"
               threads2 << Thread.new {
                 begin
-                  search_maxityre(query,stagione,max_results)
+                  search_maxityre(query,stagione,max_results, options)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -188,7 +189,7 @@ class Pneumatico < ActiveRecord::Base
             if fornitori.include? "MaxTyre"
               threads2 << Thread.new {
                 begin
-                  search_maxtyre(query, stagione, max_results)
+                  search_maxtyre(query, stagione, max_results, options)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
@@ -249,9 +250,9 @@ private
     end
     
   
-  def self.search_pneus26(query, stagione) 
+  def self.search_pneus26(query, stagione, options) 
     #switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs #, :args => switches
+    browser = Watir::Browser.new :phantomjs , :driver_opts => options
     browser.window.maximize
     
     
@@ -368,9 +369,9 @@ private
   end
     
   
-  def self.search_maxityre(query, stagione, max_results)
+  def self.search_maxityre(query, stagione, max_results, options)
     #switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs #, :args => switches
+    browser = Watir::Browser.new :phantomjs , :driver_opts => options
     browser.window.maximize 
     
     #Pneumatico.sureLoadLink(10){ }
@@ -540,9 +541,9 @@ private
   end
   
   
-  def self.search_carlini(query, stagione, max_results)
+  def self.search_carlini(query, stagione, max_results, options)
     #switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs #, :args => switches
+    browser = Watir::Browser.new :phantomjs , :driver_opts => options
     browser.window.maximize
     #Pneumatico.sureLoadLink(10){  }
     browser.goto @carlinigomme
@@ -699,11 +700,11 @@ private
   # OLPNEUS
   
   
-  def self.search_olpneus(query, stagione, max_results)
+  def self.search_olpneus(query, stagione, max_results, options)
     
 
     #switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs #, :args => switches
+    browser = Watir::Browser.new :phantomjs , :driver_opts => options
     browser.window.maximize
     #Pneumatico.sureLoadLink(10){ }
     browser.goto @olpneus 
@@ -878,9 +879,9 @@ private
   
   
   
-  def self.search_maxpneus(query, stagione, max_results)
+  def self.search_maxpneus(query, stagione, max_results, options)
     #switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs #, :args => switches
+    browser = Watir::Browser.new :phantomjs , :driver_opts => options
     browser.window.maximize
     #Pneumatico.sureLoadLink(10){}
     browser.goto 'http://www.maxpneus.it' 
@@ -989,10 +990,10 @@ private
     file.close
   end
   
-  def self.search_pendingomme(query,stagione,max_results)
+  def self.search_pendingomme(query,stagione,max_results, options)
     
     #switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs #, :args => switches
+    browser = Watir::Browser.new :phantomjs , :driver_opts => options
     browser.window.maximize
     #Pneumatico.sureLoadLink(10){  }
     browser.goto 'http://www.pendingomme.it/login'
@@ -1101,7 +1102,7 @@ private
     
   end
   
-  def self.search_farnese(query,stagione,max_results)
+  def self.search_farnese(query,stagione,max_results, options)
 
   
     marche_pneumatici = {}
@@ -1113,7 +1114,7 @@ private
     file_pneumatici.close
 
     #switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs #, :args => switches
+    browser = Watir::Browser.new :phantomjs , :driver_opts => options
     browser.window.maximize
     #Pneumatico.sureLoadLink(10){  }
     browser.goto 'http://www.b2b.farnesepneus.it/'
@@ -1246,10 +1247,10 @@ private
   end
   
   
-  def self.search_fintyre(query,stagione,max_results)
+  def self.search_fintyre(query,stagione,max_results, options)
     
     #switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs #, :args => switches
+    browser = Watir::Browser.new :phantomjs , :driver_opts => options
     browser.window.maximize
     
     #Pneumatico.sureLoadLink(10){}
@@ -1426,9 +1427,9 @@ private
   end
   
   
-  def self.search_centrogomme(query,stagione,max_results)
+  def self.search_centrogomme(query,stagione,max_results, options)
     #switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs #, :args => switches
+    browser = Watir::Browser.new :phantomjs , :driver_opts => options
     browser.window.maximize
             
     #Pneumatico.sureLoadLink(10){ }
@@ -1576,10 +1577,10 @@ private
   end
   
   
-  def self.search_multityre(query,stagione,max_results)
+  def self.search_multityre(query,stagione,max_results, options)
     
     #switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs #, :args => switches
+    browser = Watir::Browser.new :phantomjs , :driver_opts => options
     browser.window.maximize
             
     #Pneumatico.sureLoadLink(10){ }
@@ -1738,9 +1739,9 @@ private
     end    
   end
   
-  def self.search_maxtyre(query,stagione,max_results)
+  def self.search_maxtyre(query,stagione,max_results, options)
     #switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs #, :args => switches
+    browser = Watir::Browser.new :phantomjs , :driver_opts => options
     browser.window.maximize
     count = 0
     while true
