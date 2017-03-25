@@ -230,22 +230,23 @@ private
         browser_loaded=0
         i=0
         while (browser_loaded == 0)
+          begin
             if i<2
-                begin
-                  browser_loaded=1
-                  Timeout::timeout(mytimeout)  do
-                    yield
-                  end
-                rescue Timeout::Error => e
-                  puts "Page load timed out: #{e}"
-                  browser_loaded=0
-                  retry
-                end
+              browser_loaded=1
+              Timeout::timeout(mytimeout)  do
+                yield
+              end
             else
                 puts "failed to load resource"
                 break
             end
+          rescue Timeout::Error => e
+            puts "Page load timed out: #{e}"
+            browser_loaded=0
             i+=1
+            retry
+          end
+            
         end
     end
     
