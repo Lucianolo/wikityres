@@ -49,8 +49,8 @@ class Pneumatico < ActiveRecord::Base
         end
         puts fornitori
         
-        driver_opts = {}
-        driver_opts["load-images"] = false
+        options = {}
+        options["load-images"] = false
         
         query_list.each do |query|
             
