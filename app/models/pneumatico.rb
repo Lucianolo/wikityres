@@ -250,8 +250,8 @@ private
     
   
   def self.search_pneus26(query, stagione) 
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
+    #switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs #, :args => switches
     browser.window.maximize
     
     
@@ -369,9 +369,9 @@ private
     
   
   def self.search_maxityre(query, stagione, max_results)
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
-    browser.window.maximize
+    #switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs #, :args => switches
+    browser.window.maximize 
     
     #Pneumatico.sureLoadLink(10){ }
     browser.goto @maxityre 
@@ -541,8 +541,8 @@ private
   
   
   def self.search_carlini(query, stagione, max_results)
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
+    #switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs #, :args => switches
     browser.window.maximize
     #Pneumatico.sureLoadLink(10){  }
     browser.goto @carlinigomme
@@ -702,8 +702,8 @@ private
   def self.search_olpneus(query, stagione, max_results)
     
 
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
+    #switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs #, :args => switches
     browser.window.maximize
     #Pneumatico.sureLoadLink(10){ }
     browser.goto @olpneus 
@@ -879,8 +879,8 @@ private
   
   
   def self.search_maxpneus(query, stagione, max_results)
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
+    #switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs #, :args => switches
     browser.window.maximize
     #Pneumatico.sureLoadLink(10){}
     browser.goto 'http://www.maxpneus.it' 
@@ -991,8 +991,8 @@ private
   
   def self.search_pendingomme(query,stagione,max_results)
     
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
+    #switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs #, :args => switches
     browser.window.maximize
     #Pneumatico.sureLoadLink(10){  }
     browser.goto 'http://www.pendingomme.it/login'
@@ -1112,8 +1112,8 @@ private
     end
     file_pneumatici.close
 
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
+    #switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs #, :args => switches
     browser.window.maximize
     #Pneumatico.sureLoadLink(10){  }
     browser.goto 'http://www.b2b.farnesepneus.it/'
@@ -1248,8 +1248,8 @@ private
   
   def self.search_fintyre(query,stagione,max_results)
     
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
+    #switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs #, :args => switches
     browser.window.maximize
     
     #Pneumatico.sureLoadLink(10){}
@@ -1427,8 +1427,8 @@ private
   
   
   def self.search_centrogomme(query,stagione,max_results)
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
+    #switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs #, :args => switches
     browser.window.maximize
             
     #Pneumatico.sureLoadLink(10){ }
@@ -1578,8 +1578,8 @@ private
   
   def self.search_multityre(query,stagione,max_results)
     
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
+    #switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs #, :args => switches
     browser.window.maximize
             
     #Pneumatico.sureLoadLink(10){ }
@@ -1739,8 +1739,8 @@ private
   end
   
   def self.search_maxtyre(query,stagione,max_results)
-    switches = ['--load-images=no']
-    browser = Watir::Browser.new :phantomjs, :args => switches
+    #switches = ['--load-images=no']
+    browser = Watir::Browser.new :phantomjs #, :args => switches
     browser.window.maximize
     count = 0
     while true

@@ -223,9 +223,7 @@ class WelcomeController < ApplicationController
         
         #populate(query_list, max_results, stagione)
         
-        # SEZIONE CRITICA DA PROTEGGERE - DUE PROCESSI POTREBBERO ARRIVARE INSIEME A QUESTO PUNTO E SCAMBIARSI GLI ID
-        
-        #actual_workers = heroku.get_dyno_types('wikityres').body.second["quantity"]
+       
         
         Pneumatico.delay.add_to_db(query_list, max_results, stagione)
         
