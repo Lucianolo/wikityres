@@ -67,19 +67,6 @@ class Pneumatico < ActiveRecord::Base
                 end
             end
             
-            if fornitori.include? "Fintyre"
-              threads << Thread.new {
-                begin
-                  search_fintyre(query,stagione,max_results, options)
-                ensure
-                #guarantee that the thread is releasing the DB connection after it is done
-                  ActiveRecord::Base.connection_pool.release_connection
-                end
-              }
-            end
-            
-            
-            
             # OLPNEUS
             if fornitori.include? "OLPneus"
               threads << Thread.new {
@@ -91,9 +78,6 @@ class Pneumatico < ActiveRecord::Base
               }
             end
             
-            #threads.each(&:join)
-            #threads1 = []
-            
             # CARLINIGOMME.IT
             if fornitori.include? "CarliniGomme"
               threads << Thread.new {
@@ -103,22 +87,6 @@ class Pneumatico < ActiveRecord::Base
                   ActiveRecord::Base.connection_pool.release_connection
                 end
               }
-            end
-            
-            
-            
-            
-            # PNEUSHOPPING.IT
-            if query.to_s.length > 6
-              if fornitori.include? "MaxPneus"
-                threads << Thread.new {
-                  begin
-                    Pneumatico.search_maxpneus(query,stagione,max_results, options)
-                  ensure
-                    ActiveRecord::Base.connection_pool.release_connection
-                  end
-                }
-              end
             end
             
             if fornitori.include? "MultiTyre"
@@ -132,10 +100,36 @@ class Pneumatico < ActiveRecord::Base
               }
             end
             
-            
             threads.each(&:join)
-            
             threads2 = []
+            
+            if fornitori.include? "Fintyre"
+              threads2 << Thread.new {
+                begin
+                  search_fintyre(query,stagione,max_results, options)
+                ensure
+                #guarantee that the thread is releasing the DB connection after it is done
+                  ActiveRecord::Base.connection_pool.release_connection
+                end
+              }
+            end
+            
+            
+            # PNEUSHOPPING.IT
+            if query.to_s.length > 6
+              if fornitori.include? "MaxPneus"
+                threads2 << Thread.new {
+                  begin
+                    Pneumatico.search_maxpneus(query,stagione,max_results, options)
+                  ensure
+                    ActiveRecord::Base.connection_pool.release_connection
+                  end
+                }
+              end
+            end
+            
+            
+            
             # PENDINGOMME.IT
             if fornitori.include? "PendinGomme"
               threads2 << Thread.new {
@@ -657,7 +651,9 @@ private
             
             tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
             
-            
+            pfu = row.css('td.CatalogoDisp.allinea i').first.text.strip.to_f
+            puts pfu
+=begin
             if @pfu == 'C2'
               add = 17.60
             elsif @pfu == 'C1'
@@ -665,8 +661,8 @@ private
             else
               add = 2.30
             end
-                
-            p_finale = p_netto + add + ((p_netto + add )/100)*22          
+=end                
+            p_finale = p_netto + pfu + ((p_netto + pfu )/100)*22          
             
             misura_totale = misura+raggio
             
@@ -678,7 +674,7 @@ private
               stagione = "4 Stagioni"
             end
             if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
-              Pneumatico.create(query: misura_totale , nome_fornitore: "CarliniGomme", marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @carlinigomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+              Pneumatico.create(query: misura_totale , nome_fornitore: "CarliniGomme", marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @carlinigomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: pfu)
               j+=1
             end
           end 
@@ -854,7 +850,7 @@ private
               stagione = "4 Stagioni"
             end
             if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
-              Pneumatico.create(query: misura_totale , nome_fornitore: "OLPneus", marca: marca , misura: misura, raggio: raggio, modello: nome, fornitore: @olpneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+              Pneumatico.create(query: misura_totale , nome_fornitore: "OLPneus", marca: marca , misura: misura, raggio: raggio, modello: nome, fornitore: @olpneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: local_pfu)
               j+=1
             end
           end 
@@ -1698,16 +1694,9 @@ private
             
             tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
             
-            
-            if @pfu == 'C2'
-              add = 17.60
-            elsif @pfu == 'C1'
-              add = 8.10
-            else
-              add = 2.30
-            end
+            local_pfu = row.css('td.CatalogoDisp.allinea i').first.text.strip.to_f
                 
-            p_finale = p_netto + add + ((p_netto + add )/100)*22          
+            p_finale = p_netto + local_pfu + ((p_netto + local_pfu )/100)*22          
             
             misura_totale = misura+raggio
             
@@ -1720,7 +1709,7 @@ private
             end
             if p_netto.to_i != 0
               if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
-                Pneumatico.create(query: misura_totale  , nome_fornitore: "MultiTires", marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+                Pneumatico.create(query: misura_totale  , nome_fornitore: "MultiTires", marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: local_pfu)
                 j+=1
               end
             end

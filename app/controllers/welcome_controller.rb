@@ -248,7 +248,7 @@ class WelcomeController < ApplicationController
         Search.create(misura: query.to_s , stagione: stagione, finished: false)
         puts Search.last.inspect
         
-        PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'performance-M'})
+        PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'performance-L'})
       end  
       k = 0
       
