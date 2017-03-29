@@ -59,12 +59,14 @@ class Pneumatico < ActiveRecord::Base
             
             # FARNESEPNEUS.IT
             if fornitori.include? "FarnesePneus"
+              threads << Thread.new {
                 begin
                   search_farnese(query,stagione,max_results, options)
                 ensure
                 #guarantee that the thread is releasing the DB connection after it is done
                   ActiveRecord::Base.connection_pool.release_connection
                 end
+              }
             end
             
             # OLPNEUS
