@@ -1,3 +1,4 @@
+       
 
 <div class="container" id = "items_grid">
     
@@ -20,20 +21,22 @@
 $( document ).ready(function() {
    
 
-    var intervalId = setInterval(update, 8000);
+    var intervalId = setInterval(update, 5000);
     function update() {
+        var completed = $('.temp_information').data('completed');
+        
+        if(completed){
+            clearInterval(intervalId);
+            $('#spinner').hide();
+            return;
+        }
         var end = document.getElementById('fine');
         //console.log(end);
         if (end == null) {
             console.log("leaving");
             $('#spinner').hide();
             clearInterval(intervalId);
-            return
-        }
-        if (end.innerHTML == 'true' || end == null){
-            console.log("removing");
-            $('#spinner').hide();
-            clearInterval(intervalId);
+            return;
         }
         else{
          $.ajax({
