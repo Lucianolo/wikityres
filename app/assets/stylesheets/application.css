@@ -341,8 +341,8 @@ hr {
 .pagination{
   width: 100%;
   text-align: right;
-  margin:0;
-  padding: 0;
+  margin:0 !important;
+  padding: 0 !important;
   
 }
 @media only screen and (max-width: 350px){

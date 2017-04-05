@@ -632,7 +632,13 @@ private
   
             nome = row.css('div.DescrizioneArticolo').text.gsub("CAM."," ").gsub("SET.","SET").gsub("SET","").strip
             p_netto = row.css('td.CatalogoDisp.ALT.allinea')[1].text.strip.gsub(",",".").to_f.round(2)
-            stock = row.css('td.CatalogoDisp.allinea strong')[1].text.to_i + row.css('td.CatalogoDisp.allinea strong')[2].text.to_i + row.css('td.CatalogoDisp.allinea strong')[3].text.to_i + row.css('td.CatalogoDisp.allinea strong')[4].text.to_i
+            stock = row.css('td.CatalogoDisp.allinea strong')[1].text.gsub("+","").to_i + row.css('td.CatalogoDisp.allinea strong')[2].text.gsub("+","").to_i  + row.css('td.CatalogoDisp.allinea strong')[3].text.gsub("+","").to_i  
+            
+            if row.at_css('td.CatalogoDisp.allinea div strong').nil?
+              stock += row.css('td.CatalogoDisp.allinea strong')[4].text.gsub("+","").to_i 
+            else
+              stock += row.at_css('td.CatalogoDisp.allinea div strong').text.gsub("+","").to_i 
+            end
             
             misura = nome.gsub('-','R').split('R',2).first.strip.split(" ").first.strip.gsub(/[^0-9]/, '')
             if query.to_s.length == 5
