@@ -64,13 +64,12 @@ class WelcomeController < ApplicationController
             else
               inactives.push el.nome
             end
-            puts el.nome
+            
           end
         end
         @res.each do |item|
           if inactives.include? item.nome_fornitore 
-            puts "removing"
-            puts item
+            
             @res.delete item
           end
         end
@@ -95,7 +94,9 @@ class WelcomeController < ApplicationController
     end
     
     @finished = Search.where(misura: misura_query).first.finished
-    puts @finished
+    if @finished
+      puts "Fine"
+    end
     respond_to do |format|
         format.js
     end
@@ -147,14 +148,14 @@ class WelcomeController < ApplicationController
     stagione = params[:stagione]
     @stagione = stagione
     # DA AGGIUNGERE SUPPORTO CAMION
-    puts params[:misura].length
+    puts "Lunghezza query: "+params[:misura].length.to_s
     if (params[:misura].to_i.to_s != params[:misura]) || (@veicolo == "leggero" && params[:misura].length != 7) || (@veicolo == "pesante" && params[:misura].length > 8) || (@veicolo == "pesante" && params[:misura].length < 4) 
       flash.now[:alert] = "Ricerca non valida"
       redirect_to root_path
     else
       query_list = [query]
       
-      puts query_list
+      
       if query.to_s.length == 7
         tmp_misura = query.to_s[0..4]
         tmp_raggio = query.to_s[5..-1]
@@ -206,8 +207,7 @@ class WelcomeController < ApplicationController
         
         @res.each do |item|
           if inactives.include? item.nome_fornitore 
-            puts "removing"
-            puts item
+            
             @res.delete item
           end
         end
