@@ -322,7 +322,7 @@ private
       else
         add = 2.30
       end
-      
+      c = 0
       
       rows.each do |row|
         begin
@@ -338,7 +338,7 @@ private
           
           modello.slice! marca
           
-          puts "Pneus26: "+modello
+          #puts "Pneus26: "+modello
           
           p_finale = p_netto + add + ((p_netto + add )/100)*22    
           
@@ -347,16 +347,19 @@ private
           
           if (misura_totale == tmp)
             Pneumatico.create(query: misura_totale , nome_fornitore: "Pneus26", marca: marca.upcase , misura: misura, raggio: raggio, modello: modello, cod_vel: cod_vel, fornitore: @pneus26, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+            c+=1
           end
+          
           
         rescue => e
           puts e.message
           next
         end
       end
-      
-    file.close
     
+      file.close
+      
+      puts "Pneus26: Risultati -> "+c.to_s
     else
       browser.close
       puts "no results for Pneus26"
@@ -461,6 +464,7 @@ private
         add = 2.30
       end
       
+      c = 0
       rows.each do |row|
         #puts row
         begin
@@ -498,7 +502,7 @@ private
           if seconda_riga.text != row.css('td span.block').first.text
             descrizione = descrizione + " "  + seconda_riga.text
           end
-          puts "MaxiTyre: "+descrizione
+          #puts "MaxiTyre: "+descrizione
           
           p_netto = row.css("td b.green").text.gsub("€","").strip.gsub(",",".").to_f.round(2)
           if row.css("td span.weather").first.nil? 
@@ -519,15 +523,15 @@ private
           
           if (misura_totale == tmp)
             Pneumatico.create(query: misura_totale  , nome_fornitore: "MaxiTyre", marca: marca.upcase , misura: misura, raggio: raggio, modello: descrizione, cod_vel: cod_vel, fornitore: @maxityre, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: 25, stagione: stagione, pfu: @pfu)
-  
+            c+=1
           end
         rescue => e
           puts e.message
           next
         end
       end
-    file.close
-    
+      file.close
+      puts "MaxiTyre: Risultati -> "+c.to_s
     else
       browser.close
       puts "no results for MaxiTyre"
@@ -617,6 +621,7 @@ private
       table.search('tr.RigaOfferta').each do |anchor|
         anchor['class']="Riga"
       end
+     
       table.css('tbody tr.Riga').each do |row|
         begin
         #puts row
@@ -645,7 +650,7 @@ private
               raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip.gsub(/[^0-9]/, '')
             end
   
-            puts "CarliniGomme: "+nome
+            #puts "CarliniGomme: "+nome
             # CONTROLLO SULLA VALIDITA' DEL CAMPO RAGGIO --- DA SISTEMARE PER ALCUNI VALORI
            
             if raggio.to_i.to_s != raggio
@@ -658,7 +663,7 @@ private
             tmp_stagione = row.css('td.CatalogoDisp.allinea img').first['src'].split("/").last.split(".").first
             
             pfu = row.css('td.CatalogoDisp.allinea i').first.text.strip.to_f
-            puts pfu
+            
 =begin
             if @pfu == 'C2'
               add = 17.60
@@ -682,6 +687,7 @@ private
             if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
               Pneumatico.create(query: misura_totale , nome_fornitore: "CarliniGomme", marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @carlinigomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: pfu)
               j+=1
+             
             end
           end 
           i+=1
@@ -692,7 +698,7 @@ private
       end
         
       file.close
-    
+      puts "CarliniGomme: Risultati -> "+j.to_s
     else
       browser.close
       puts "no results for carlinigomme"
@@ -834,7 +840,7 @@ private
               raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip.gsub(/[^0-9]/, '')
             end
             
-            puts "OLPneus: "+nome
+            #puts "OLPneus: "+nome
             # CONTROLLO SULLA VALIDITA' DEL CAMPO RAGGIO --- DA SISTEMARE PER ALCUNI VALORI
            
             if raggio.to_i.to_s != raggio
@@ -869,7 +875,7 @@ private
       end
         
       file.close
-    
+      puts "OLPNEUS: Risultati -> "+j.to_s
     else
       browser.close
       puts "no results for olpneus"
@@ -960,9 +966,10 @@ private
     file = File.open('pages/maxpneus.html', 'r')
     document = Nokogiri::HTML(file)
     tmp = query_old.to_s
+    c = 0
     document.css('tr').each do |row|
       begin
-        puts "MaxPneus:" + row.text
+        #puts "MaxPneus:" + row.text
         misura = row.css('td')[1].text + row.css('td')[2].text
         if query.to_s.length > 7
           raggio = row.css('td')[3].text[0..1]+row.css('td')[3].text.last
@@ -982,15 +989,16 @@ private
         misura_totale = misura+raggio
         
         if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-            Pneumatico.create(query: misura_totale, nome_fornitore: "MaxPneus", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @maxpneus, prezzo_netto: prezzo_netto, prezzo_finale: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel, pfu: @pfu)
+          Pneumatico.create(query: misura_totale, nome_fornitore: "MaxPneus", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @maxpneus, prezzo_netto: prezzo_netto, prezzo_finale: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel, pfu: @pfu)
+          c+=1
         end
       rescue => e
         puts e.message
         next
       end
     end
-    
     file.close
+    puts "MaxPneus: Risultati -> "+c.to_s
   end
   
   def self.search_pendingomme(query,stagione,max_results, options)
@@ -1036,7 +1044,7 @@ private
     document = Nokogiri::HTML(file)
     tmp = query.to_s
   
-    
+    c = 0
     document.css('ul li').each do |row|
       begin
         line = row.css('h5').text.strip
@@ -1075,7 +1083,7 @@ private
         else
           modello = misura+" "+"R"+raggio+" "+marca+" "+line.split(" ").second.strip+" "+cod_vel
         end
-         puts "PendinGomme: "+modello
+         #puts "PendinGomme: "+modello
         if stagione == "All Season"
           stagione = "4 Stagioni"
         end
@@ -1095,6 +1103,7 @@ private
         
         if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
           Pneumatico.create(query: misura_totale  , nome_fornitore: "PendinGomme", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel, pfu: @pfu)
+          c+=1
         end
       rescue => e
         puts e.message
@@ -1102,7 +1111,7 @@ private
       end
     end
     file.close
-    
+    puts "PendinGomme: Risultati -> "+c.to_s
   end
   
   def self.search_farnese(query,stagione,max_results, options)
@@ -1188,7 +1197,7 @@ private
         begin
           if i < max_results
             modello = row.css('.row-description').text.strip.gsub("-","R").gsub("CAM.","").gsub("COP.","").gsub(",",".").gsub("B","R")
-            puts "FarnesePneus: "+ modello
+            #puts "FarnesePneus: "+ modello
             misura = modello.split("R",2).first.strip.gsub(/[^0-9]/, '')
             marca_tmp = row.css('td.row-manufacturer img').first['src'].split("/").last.split('.').first.to_i.to_s
             marca = marche_pneumatici[marca_tmp]
@@ -1242,6 +1251,7 @@ private
       end
       @pfu = Pneumatico.where(nome_fornitore: "FarnesePneus").last.pfu
       file.close
+      puts "FarnesePneus: Risultati -> "+i.to_s
     else
       #browser.close
       @pfu = 2.30
@@ -1355,7 +1365,7 @@ private
               stock += x.strip.to_i
             end
           end
-          puts "Fintyre: "+modello
+          #puts "Fintyre: "+modello
           if query.to_s.length == 7
             if (modello[6] != "R" && modello[7] != "R")
               raggio = modello.split(" ").second.split(" ").first.gsub(/[^0-9]/, '')
@@ -1423,6 +1433,7 @@ private
         end
       end
       file.close    
+      puts "Fintyre: Risultati -> "+i.to_s
     else
       browser.close
       puts "No results for Fintyre"
@@ -1518,7 +1529,7 @@ private
               marca = row.search('td:nth-child(2)').search('img').first.attr('src').split("/").last[0..-5].gsub("%20"," ").upcase
             end
             nome = row.search('td:nth-child(3)').text.strip
-            puts "CentroGomme: "+nome
+            #puts "CentroGomme: "+nome
             
             p_netto = row.search('td:nth-child(10)').text[4..-1].strip.gsub(",",".").to_f
             
@@ -1570,8 +1581,8 @@ private
           next
         end
       end
-      
       file.close   
+      puts "CentroGomme: Risultati -> "+j.to_s
     else
       browser.close
       puts "No results for CentroGomme"
@@ -1689,7 +1700,7 @@ private
               raggio = nome.gsub('-','R').split('R',2).second.split(" ").first.strip
             end
             
-            puts "MultiTires: "+nome
+            #puts "MultiTires: "+nome
             # CONTROLLO SULLA VALIDITA' DEL CAMPO RAGGIO --- DA SISTEMARE PER ALCUNI VALORI
             
             if raggio.to_i.to_s != raggio
@@ -1728,7 +1739,7 @@ private
       end
         
       file.close
-    
+      puts "MultiTires: Risultati -> "+j.to_s
     else
       browser.close
       puts "no results for multitires"
@@ -1839,7 +1850,7 @@ private
       document = Nokogiri::HTML(file)
      
       tmp = query.to_s
-      
+      c = 0
       #table = document.css('table x-grid-item')
       document.css('table.x-grid-item tr').each do |row|
         begin
@@ -1852,7 +1863,7 @@ private
           
           modello = row.css("td.x-grid-cell")[1].text
           
-          puts "MaxTyre: "+modello
+          #puts "MaxTyre: "+modello
           tmp_stagione = row.css("td.x-grid-cell")[10].css("img").first['src'].split("/").last.split(".").first
           if tmp_stagione == "sole"
             stagione = "Estate"
@@ -1895,7 +1906,8 @@ private
           
           
           if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp)
-              Pneumatico.create(query: misura_totale  , nome_fornitore: "MaxTyre", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, pfu: @pfu)
+            Pneumatico.create(query: misura_totale  , nome_fornitore: "MaxTyre", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, pfu: @pfu)
+            c+=1
           end
         rescue => e
           puts e.message
@@ -1903,6 +1915,7 @@ private
         end
       end
       file.close
+      puts "MaxTyre: Risultati -> "+c.to_s
     else
       browser.close
       puts "no results for maxtyre"
