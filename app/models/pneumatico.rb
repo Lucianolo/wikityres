@@ -201,7 +201,7 @@ class Pneumatico < ActiveRecord::Base
             # MULTITYRES
             
             @query = query.to_s
-            puts @query
+            #puts @query
             value = system( " pkill -9 'phantomjs' ")
             puts value
             Search.where(misura: @query).first.update(finished: true)
@@ -289,7 +289,7 @@ private
       end
             
     }
-    puts flag
+    #puts flag
     if flag
       rows = ""
       table = browser.div(:class => 'category-products').ol(:id => 'products-list')
@@ -407,7 +407,7 @@ private
       end
             
     }
-    puts flag 
+    #puts flag 
     if flag
       if browser.button(:text => /Vedere ulteriori risultati/).exists?
         browser.button(:text => /Vedere ulteriori risultati/).click
@@ -420,7 +420,7 @@ private
       rows = ""
       i = 1
       while i < 3
-        puts i
+        #puts i
         table = browser.table(:id => 'result-table')
         table.tbody.rows.each do |row|
           rows = rows+row.html
@@ -595,7 +595,7 @@ private
             
       
     }
-    puts flag 
+    #puts flag 
     if flag
           
       table = browser.iframe(:id => 'search1').table(:class => 'gvTheGrid')
@@ -769,7 +769,7 @@ private
             
       
     }
-    puts flag 
+    #puts flag 
     if flag
           
       table = browser.iframe(:id => 'search1').table(:class => 'gvTheGrid')
@@ -921,7 +921,7 @@ private
     
     browser.ul(:class => 'dt-button-collection dropdown-menu fixed three-column').links.each do |li|
       if li.text == "Stagione"
-        puts li.text
+       
         li.click
         browser.link(:class => 'btn btn-default buttons-collection buttons-colvis').click
         break
@@ -929,8 +929,7 @@ private
     end
     
     browser.text_field(:class => 'form-control input-sm').set query
-    puts browser.text_field(:class => 'form-control input-sm').value
-    
+   
     
     sleep 1
     
@@ -1796,7 +1795,7 @@ private
             if link.text[1..-1] == "Ricerca"
             
               if stagione == "Tutte"
-                  puts "clicking link"
+                  #puts "clicking link"
                   browser.send_keys :enter
                   #browser.links[index].click
               elsif stagione == "Estate"
@@ -1826,7 +1825,7 @@ private
           break
         end
       rescue Watir::Exception::UnknownObjectException
-        puts "Exception, Retrying"
+        puts "MaxTyre: Exception, Retrying"
         count+=1
         retry
       end
@@ -1859,6 +1858,7 @@ private
           else
             marca = ""
           end
+         
          
           
           modello = row.css("td.x-grid-cell")[1].text
@@ -1931,9 +1931,9 @@ private
     browser.div(:class => "x-grid-item-container").tables.each do |item|
       table.push item.html
     end
-    puts 
+    
     while j<15
-      puts flag
+      #puts flag
         if flag == true
           puts "Devo ritornaaa"
           break
@@ -1958,7 +1958,7 @@ private
          
           j+=1
       rescue Watir::Exception::UnknownObjectException
-        puts "End"
+        
         flag = true
         next
       end
@@ -1978,7 +1978,7 @@ private
         begin
           yield
           if (element.exists?)
-            puts "Success"
+            
             #puts element.html
             wait = false
             return true
