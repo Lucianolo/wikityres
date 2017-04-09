@@ -18,11 +18,9 @@ class Pneumatico < ActiveRecord::Base
         Pneumatico.delay.add_to_db(tmp_list, 300)
         
       end
-      
-      for i in 0..query_list.length-1
-        PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'standard-2X'})
-        sleep 1
-      end
+     
+      PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'performance-L'})
+    
       
     end
     

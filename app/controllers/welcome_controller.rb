@@ -296,10 +296,9 @@ class WelcomeController < ApplicationController
       
     end
     
-    for i in 0..query_list.length-1
-      PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'standard-2X'})
-      sleep 1
-    end
+   
+    PlatformAPI.connect_oauth("5681181a-1f63-4619-b3fd-832be797e7ca").dyno.create("wikityres",{command: 'rake jobs:workoff', size: 'performance-L'})
+    
     #Selenium::WebDriver::PhantomJS.path = Rails.root.join('bin','phantomjs').to_s
 
     
