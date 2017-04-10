@@ -2,7 +2,7 @@ development:
   adapter: postgresql
   encoding: SQL_ASCII
   database: project_development
-  pool: 30
+  pool: 8
   username: 
   password:
 
@@ -18,7 +18,7 @@ production:
   adapter: postgresql
   encoding: SQL_ASCII
   database: project_production
-  pool: 30
+  pool: 8
   username: 
   password:
 
