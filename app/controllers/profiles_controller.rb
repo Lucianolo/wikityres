@@ -113,13 +113,13 @@ class ProfilesController < ApplicationController
         if pneumatico.nil?
             redirect_to :magazzino
         else
-            if params[:params] == "pezzi"
+            if params[:params] == "pneumatici_disponibili"
             
                 
                 
-                pezzi = params[:pezzi]
+                pezzi = params[:pneumatici_disponibili]
                 
-                pneumatico.update(pezzi: pezzi)
+                pneumatico.update(pneumatici_disponibili: pezzi)
                 
                
             elsif params[:params] == "ubicazione"
@@ -146,7 +146,7 @@ class ProfilesController < ApplicationController
 private
     
     def magazzino_params
-        params.require(:magazzino).permit(:gruppo, :corda , :serie, :cerchio, :misura, :cod_carico, :cod_vel, :marca, :modello, :dot, :battistrada, :lotto, :shore, :targa, :cliente, :rete, :scaffale, :ubicazione, :pezzi, :stagione)
+        params.require(:magazzino).permit(:pneumatico, :corda , :serie, :cerchio, :misura, :cod_carico, :cod_vel, :marca, :modello, :dot, :battistrada, :lotto, :shore, :targa, :cliente, :rete, :scaffale, :ubicazione, :pneumatici_disponibili, :stagione)
     end
 end
 

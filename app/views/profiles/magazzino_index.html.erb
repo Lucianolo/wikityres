@@ -84,7 +84,7 @@
       MODELLO
     </div>
     <div class="col-lg-2">
-      STAGIONE
+      STAGIONALITA'
     </div>
     <div class="col-lg-1">
       C. VEL.
@@ -123,7 +123,7 @@
             <% end %>
           </div>
           <div class="col-lg-1 text-center">
-            <%= pneumatico.pezzi %>
+            <%= pneumatico.pneumatici_disponibili %>
           </div>
           <div class="col-lg-1 " style="padding: 0 0 0 15px;">
             <%= button_to "INFO", edit_magazzino_path(pneumatico.id), method: :get, :class => "btn btn-primary edit-button", :style => "width: 100%;padding: 6px 6px;" %>

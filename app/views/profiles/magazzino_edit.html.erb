@@ -102,7 +102,7 @@
     <% if v != "nil" && v != "" && k != "id" && k != "created_at" && k != "updated_at" && k != "user_id"%>
       <div class="row item2">
         <div class="col-md-6 intestazione">
-          <%= k.capitalize %>
+          <%= k.capitalize.gsub("_"," ") %>
         </div>
         <div class="col-md-6 intestazione">
           <%= v %>
@@ -117,9 +117,9 @@
       Aggiorna Quantità
     </div>
     <div class="col-md-6 valore">
-      <%= form_tag(update_magazzino_path(:pezzi), :method => "get") do %>
+      <%= form_tag(update_magazzino_path(:pneumatici_disponibili), :method => "get") do %>
         <input type="hidden" name="id" value="<%= @pneumatico.id %>" >
-        <%= text_field_tag(:pezzi, "", :style => 'color:black;', :class => 'small-input') %>
+        <%= text_field_tag(:pneumatici_disponibili, "", :style => 'color:black;', :class => 'small-input') %>
         <button type="submit" class="btn btn-success">Invia</button>
       <% end %>
     </div>
