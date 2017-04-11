@@ -73,7 +73,7 @@ class ProfilesController < ApplicationController
     
     
     def magazzino_index
-
+=begin
         Magazzino.delete_all
         text = File.read("2.csv")
         csv = CSV.parse(text, :headers => true)
@@ -82,7 +82,7 @@ class ProfilesController < ApplicationController
           pneu = Magazzino.create!(row.to_hash.symbolize_keys)
           pneu.update(user_id: current_user.id)
         end
-
+=end
         @pneumatici_magazzino = Magazzino.where(user_id: current_user.id)
     end
     
