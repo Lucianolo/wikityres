@@ -1,3 +1,42 @@
+<script type="text/javascript">
+$('document').ready(function(){
+   
+   $('#filters').jplist({
+      
+    //enable/disable logging information in the browser console
+    debug: false
+         
+    //the path to the items container
+    ,itemsBox: '.table-fill' 
+
+    //the path to the item within the items container
+    ,itemPath: '.table-item'
+
+    //the path to the bundles and controls panel
+    ,panelPath: '.jplist-panel'
+
+    //the path to the 'no results' message
+    ,noResults: '.jplist-no-results' 
+        
+    //animate to top - enabled by data-control-animate-to-top="true" attribute in control. 
+    ,animateToTop: 'html, body'
+    ,animateToTop: 0 //in milliseconds (1000 ms = 1 sec)
+
+    
+   });
+  
+
+
+
+    
+    
+         
+    
+   
+});
+</script>
+
+
 <%= content_tag :div, class: "temp_information", data: {completed: finished} do %>
 <% end %>     
   
@@ -177,40 +216,3 @@
         <p id="fine"><%= finished %></p>
         
 
-<script type="text/javascript">
-$('document').ready(function(){
-   
-   $('#filters').jplist({
-      
-    //enable/disable logging information in the browser console
-    debug: false
-         
-    //the path to the items container
-    ,itemsBox: '.table-fill' 
-
-    //the path to the item within the items container
-    ,itemPath: '.table-item'
-
-    //the path to the bundles and controls panel
-    ,panelPath: '.jplist-panel'
-
-    //the path to the 'no results' message
-    ,noResults: '.jplist-no-results' 
-        
-    //animate to top - enabled by data-control-animate-to-top="true" attribute in control. 
-    ,animateToTop: 'html, body'
-    ,animateToTop: 0 //in milliseconds (1000 ms = 1 sec)
-
-    
-   });
-  
-
-
-
-    
-    
-         
-    
-   
-});
-</script>

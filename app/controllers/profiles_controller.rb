@@ -1,3 +1,4 @@
+require 'csv'
 class ProfilesController < ApplicationController
     def index
         @queries = Search.where(tag:"routine")
@@ -69,4 +70,73 @@ class ProfilesController < ApplicationController
             redirect_to profile_path
         end
     end
+    
+    
+    def magazzino_index
+
+        Magazzino.delete_all
+        text = File.read("2.csv")
+        csv = CSV.parse(text, :headers => true)
+        csv.each do |row|
+          row = row.to_hash.with_indifferent_access
+          pneu = Magazzino.create!(row.to_hash.symbolize_keys)
+          pneu.update(user_id: current_user.id)
+        end
+
+        @pneumatici_magazzino = Magazzino.where(user_id: current_user.id)
+    end
+    
+    def magazzino_new 
+        @magazzino = Magazzino.new
+        @pneumatico_test = Magazzino.last
+    end
+    
+    def magazzino_create
+        @pneumatico = Magazzino.create!(magazzino_params)
+        
+        @pneumatico.update(user_id: current_user.id)
+        
+        redirect_to :magazzino
+    end
+    
+    def magazzino_edit
+        @pneumatico = Magazzino.find(params[:params])
+        
+        if @pneumatico.user_id != current_user.id 
+            redirect_to :magazzino
+        end
+    end
+    
+    def magazzino_update
+        puts params
+        pneumatico = Magazzino.find(params[:id])
+        
+        if pneumatico.nil?
+            redirect_to :magazzino
+        else
+            
+            
+            pezzi = params[:pezzi]
+            
+            pneumatico.update(pezzi: pezzi)
+            
+            redirect_to :magazzino
+        
+        end
+        
+    end
+    
+    def magazzino_delete
+        Magazzino.find(params[:id]).delete
+        redirect_to :magazzino
+    end
+    
+    
+private
+    
+    def magazzino_params
+        params.require(:magazzino).permit(:gruppo, :corda , :serie, :cerchio, :misura, :cod_carico, :cod_vel, :marca, :modello, :dot, :battistrada, :lotto, :shore, :targa, :cliente, :rete, :scaffale, :ubicazione, :pezzi, :stagione)
+    end
 end
+
+

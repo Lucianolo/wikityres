@@ -39,3 +39,50 @@
     width: 100% !important;
   }
 }
+
+/* magazzino.html.erb */
+
+.no-margin {
+  padding: 0 0 !important;
+  margin: 0 0 !important;
+}
+
+.filters2 {
+  
+}
+
+.item {
+  font-family: "Roboto" !important;
+  font-size: 1.2em;
+  padding-bottom: .4em;
+  padding-top: .4em;
+  border-bottom: .5px solid black;
+}
+
+.heading {
+  font-family: "Roboto" !important;
+  font-size: 1.4em;
+}
+
+.intestazione {
+  font-family: "Roboto" !important;
+  text-align: center;
+
+  font-size: 2em;
+}
+.valore {
+  font-family: "Roboto" !important;
+  text-align: center;
+
+  font-size: 1.8em;
+}
+.item2{
+  border-bottom: .1px solid #8E9AA5;
+}
+
+.small-input {
+  max-width: 10%;
+  border-radius: 25px;
+  border: 2px solid ;
+  padding: 2px; 
+}

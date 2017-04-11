@@ -8,6 +8,12 @@ Rails.application.routes.draw do
   get 'welcome/update_results/' , to: 'welcome#update_results'
   get 'welcome/index/:params' => 'welcome#index', as: :search
   
+  get 'magazzino' => 'profiles#magazzino_index', as: :magazzino
+  get 'magazzino/new' => 'profiles#magazzino_new', as: :new_magazzino
+  post 'magazzino/new' => 'profiles#magazzino_create', as: :create_magazzino
+  get 'magazzino/edit/:params' => 'profiles#magazzino_edit', as: :edit_magazzino
+  get 'magazzino/:params' => 'profiles#magazzino_update', as: :update_magazzino
+  get 'magazzino/remove/:id' => 'profiles#magazzino_delete', as: :delete_magazzino
   get 'welcome/search'
   
   get 'welcome/cron_job' => 'welcome#cron_job', as: :cron_job

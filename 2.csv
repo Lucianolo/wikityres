@@ -1,0 +1,143 @@
+gruppo,corda,serie,cerchio,misura,cod_carico,cod_vel,marca,modello,dot,battistrada,lotto,shore,targa,cliente,rete,scaffale,ubicazione,pezzi,stagione
+Nuove,205,55,16,2055516,91,V,CONTINENTAL,ECO CONTACT 5,O916,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,185,65,15,1856515,88,H,MICHELIN,ENERGY SAVER + ,3915,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,0,ESTIVO
+Nuove,175,60,15,1756015,81,H,SAILUN,ATREZO ECO,2216,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,195,55,15,1955515,85,V,FALKEN,ZE 914,1816,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,165,65,14,1656514,79,T,VREDSTEIN,nil,3613,nil,531,58:05:00,nil,nil,nil,Scaffale negozio,Scaffale negozio,0,INVERNALE
+Nuove,165,65,14,1656514,79,T,JINYU,nil,2913,nil,526,70,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,165,70,14,1657014,81,T,BRIDGESTONE,nil,1513,nil,527,70,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,225,55,17,2255517,97,H,JINYU,nil,1513,nil,474,66,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,225,55,17,2255517,97,H,JINYU,nil,2313,nil,473,66,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,215,55,18,2155518,99,V,MICHELIN,CROSS CLIMATE,5016,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ALL SEASON
+Nuove,165,70,14,1657014,81,T,VREDSTEIN,nil,3713,nil,529,69:05:00,nil,nil,nil,Scaffale negozio,Scaffale negozio,3,ALL SEASON
+Nuove,165,65,15,1656515,81,T,BRIDGESTONE,nil,2313,nil,522,68,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,165,65,15,1656515,81,T,BRIDGESTONE,nil,2313,nil,521,68,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,215,65,15,2156515,96,H,EVERGREEN,nil,2512,nil,591,67,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,215,45,17,2154517,91,W XL,OVATION,nil,3416,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,205,40,Z17,20540Z17,84,W XL,EVERGREEN,nil,2512,nil,501,70,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,185,60,15,1856015,88,H XL,AUTOGRIP,F101,4213,nil,nil,69,nil,nil,nil,PIANO TERRA,1BA,4,ESTIVO
+Nuove,225,45,17,2254517,91,Y FR,MATADOR,MP 47,2216,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,205,50,Z17,20550Z17,93,W XL,RIKEN,nil,2716,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,205,55,16,2055516,94,V XL,RIKEN,nil,1616,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,205,55,16,2055516,91,H,MARSHAL,nil,3916,nil,CASTIGLIONI MARCO,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,205,55,16,2055516,91,H,SAILUN,nil,2614,nil,556,65,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,225,55,16,2255516,95,H,PIRELLI,nil,3315,nil,532,64:05:00,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,195,55,16,1955516,87,V,SAILUN,nil,2916,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ALL SEASON
+Nuove,165,70,13,1657013,79,T,NOKIAN,nil,3712,nil,505,71,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,195,55,15,1955515,85,H,VREDESTEIN,nil,2612,nil,96,78:05:00,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,205,55,16,2055516,91,V,PIRELLI,P7,2416,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,10,ESTIVO
+Nuove,215,45,Z17,21545Z17,91,Y,FALKEN,AZENIS,2514,nil,nil,78:05:00,nil,nil,nil,Scaffale negozio,Scaffale negozio,2,ESTIVO
+Nuove,215,55,16,2155516,97,W XL,SAILUN,nil,4215,nil,nil,66:05:00,nil,nil,nil,PIANO TERRA,1AM,2,ESTIVO
+Nuove,205,55,16,2055516,91,V,MICHELIN,ENERGY SAVER,4516,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,195,65,15,1956515,91,H,MICHELIN,ENERGY SAVER +  ,2416,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,225,45,17,2254517,99,W XL,EVERGREEN,EU 72,4712,nil,nil,75,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,195,60,15,1956015,88,T,GOODYEAR,nil,2413,nil,539,65,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,175,70,14,1757014,88,T,JINYU,nil,2913,07:02,298,72:05:00,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,185,65,15,1856515,88,H,VREDESTEIN,nil,213,nil,538,74:05:00,nil,nil,nil,Scaffale negozio,Scaffale negozio,3,ALL SEASON
+Nuove,165,60,14,1656014,79,T,VREDESTEIN,nil,3613,nil,534,76,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,205,55,16,2055516,91,V,YOKOHAMA,BLUE HEARTH,4615,nil,nil,75,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,185,75,16,1857516,104/102 R,C,RUNWAY,ENDURO,4415,nil,nil,73,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,225,70,15,2257015,112/110 R,C,RIKEN,CARGO,3216,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,225,75,16,2257516,121/120 R,C ,SAILUN,nil,3216,nil,479,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,195,65,15,1956515,95,T XL,SAILUN,nil,2415,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,155,65,14,1556514,75,T,FALKEN,HS 449,2514,nil,nil,48,nil,nil,nil,Scaffale negozio,Scaffale negozio,0,ESTIVO
+Nuove,195,65,15,1956515,95,V,MICHELIN,CROSS CLIMATE,3315,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ALL SEASON
+Nuove,185,55,15,1855515,86,H,MICHELIN,CROSS CLIMATE,2816,nil,nil,45,nil,nil,nil,Scaffale negozio,Scaffale negozio,3,ALL SEASON
+Nuove,175,65,14,1756514,82,T,CONTINENTAL,WINTER CONTACT,1916,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,175,65,15,1756515,84,H,EVERGREEN,nil,3911,nil,535,76,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,175,65,15,1756515,84,T,RUNWAY,nil,3013,nil,548,72,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,195,65,15,1956515,95,V,MICHELIN,CROSS CLIMATE,2516,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ALL SEASON
+Nuove,225,50,18,2255018,95,T,COOPER,nil,2815,nil,590,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,205,55,16,2055516,91,W,HANKOOK,VENTUS PRIME 2,1116,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,155,65,14,1556514,75,T,PIRELLI,SCORPION 3,4013,nil,nil,69,nil,nil,nil,Scaffale negozio,Scaffale negozio,0,ESTIVO
+Nuove,175,65,14,1756514,82,T,KLEBER,KRISALP HP 2,2316,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,205,55,16,2055516,94,V,MICHELIN,CROSS CLIMATE,4816,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,2,ALL SEASON
+Nuove,245,40,18,2454018,97,V,KLEBER,KRISALP,2714,nil,nil,72,nil,nil,nil,Scaffale negozio,Scaffale negozio,2,INVERNALE
+Nuove,175,55,15,1755515,77,T,CONTINENTAL,WINTER CONTACT,2814,nil,nil,67,nil,nil,nil,Scaffale negozio,Scaffale negozio,2,INVERNALE
+Nuove,205,55,17,2055517,95,V,MICHELIN,CROSS CLIMATE,3616,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ALL SEASON
+Nuove,225,45,Z17,22545Z17,94,W,SILVERSTONE,nil,4115,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,175,65,14,1756514,75,T,MATADOR,PM16,1216,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AB,1,ESTIVO
+Nuove,155,65,14,1556514,75,T,FIRESTONE,MULTIHAWK 2,3416,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AB,0,ESTIVO
+Nuove,135,80,13,1358013,70,T,KLEBER,VIAXER,1415,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AB,4,ESTIVO
+Nuove,155,65,13,1556513,73,T,FIRESTONE,MULTIHAWK 2,4516,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AB,4,ESTIVO
+Nuove,155,55,13,1555513,73,H,KHUMO,SOLUS KH17,4414,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AB,1,ESTIVO
+Nuove,155,80,13,1558013,79,T,AUTOGRIP,RADIAL 102,4113,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AB,1,ESTIVO
+Nuove,155,80,13,1558013,79,T,FIRESTONE,MULTIHAWK 2,317,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AB,4,ESTIVO
+Nuove,195,60,15,1956015,88,T,GOODYEAR,nil,2413,nil,536,65,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,195,60,15,1956015,88,H,MATADOR,MP44,4915,nil,nil,nil,nil,nil,nil,PIANO TERRA,1BA,1,ESTIVO
+Nuove,195,55,15,1955515,85,V,HIFLY,HF201,4115,nil,nil,nil,nil,nil,nil,PIANO TERRA,1BM,4,ESTIVO
+Nuove,195,55,15,1955515,85,V,HANKOOK,VENTUS PRIME 3,2416,nil,nil,nil,nil,nil,nil,PIANO TERRA,1BM,2,ESTIVO
+Nuove,195,65,15,1956515,91,H,DEBICA,PRESTO HP,4516,nil,584,nil,nil,nil,nil,PIANO TERRA,1AM,2,ESTIVO
+Nuove,195,55,16,1955516,91,V XL,HIFLY,HF805,1916,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AM,0,ESTIVO
+Nuove,195,60,15,1956015,88,V,CENTARA,VANTI TOURING,3516,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AM,0,ESTIVO
+Nuove,195,55,16,1955516,87,W,CENTARA,VANTI HP,3116,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AM,1,ESTIVO
+Nuove,205,55,16,2055516,91,V,CENTARA,VANTI TOURING,3516,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AA,13,ESTIVO
+Nuove,205,55,16,2055516,91,V,HANKOOK,VENTUS PRIME 3,1716,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AA,2,ESTIVO
+Nuove,215,45,17,2154517,91,W,FALKEN,ZIEX ZE914,2715,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AA,2,ESTIVO
+Nuove,215,45,17,2154517,91,W XL,CENTARA,VANTI HP,3516,nil,nil,nil,nil,nil,nil,PIANO TERRA,1BM,3,ESTIVO
+Nuove,225,45,17,2254517,94,W XL,CENTARA,VANTI HP,3516,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,205,50,17,2055017,93,W XL,CENTARA,VANTI HP,3516,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,8,ESTIVO
+Nuove,225,50,17,2255017,98,W XL,CENTARA,VANTI HP,3516,nil,nil,nil,nil,nil,nil,PIANO TERRA,1BM,7,ESTIVO
+Nuove,195,45,16,1954516,84,V XL,RIKEN,MAYSTORM 2B2,2516,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AM,4,ESTIVO
+Nuove,185,60,15,1856015,84,H,CENTARA,VANTI TOURING,3516,nil,nil,nil,nil,nil,nil,PIANO TERRA,1BA,8,ESTIVO
+Nuove,185,60,15,1856015,84,T,FIRESTONE,MULTIHAWK 2,1716,nil,nil,nil,nil,nil,nil,PIANO TERRA,1BA,2,ESTIVO
+Nuove,185,55,15,1855515,82,H,BRIDGESTONE,ECOPIA EP 150,2216,nil,nil,nil,nil,nil,nil,PIANO TERRA,1BA,4,ESTIVO
+Nuove,225,50,17,2255017,98,W XL,CENTARA,VANTI HP,3516,nil,nil,nil,nil,nil,nil,PIANO TERRA,1BA,4,ESTIVO
+Nuove,215,70,15C,2157015C,109\107,R,OVATION,V-02,416,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CB,2,ESTIVO
+Nuove,195,70,15C,1957015C,104/102 R,R,CONTINENTAL,VANCONTACT 100,1515,nil,nil,nil,nil,TECNO ALT,nil,PIANO TERRA,1CB,1,ESTIVO
+Nuove,225,65,16C,2256516C,112/110 ,T,WINDEFORCE,MILEMAX,1316,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CB,1,ESTIVO
+Nuove,215,60,16C,2156016C,108/106,R,OVATION,V-02,3816,nil,585,nil,nil,nil,nil,PIANO TERRA,1CB,4,ESTIVO
+Nuove,215,60,16,2156016,95,H,OVATION,VI-682,1216,nil,504,nil,nil,nil,nil,PRIMO PIANO,2AB,4,ESTIVO
+Nuove,185,65,14,1856514,86,T,MATADOR,MP16,1811,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CM,1,ESTIVO
+Nuove,185,55,15,1855515,82,V,CENTARA,VANTI TOURING,3516,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CM,0,ESTIVO
+Nuove,185,55,15,1855515,82,H,CONTINENTAL,PREMIUM CONTACT 5 ,3316,nil,nil,nil,nil,nil,nil,PIANO TERRA,1BA,1,ESTIVO
+Nuove,145,65,15,1456515,72,T,HIFLY,HF201,1816,nil,nil,nil,nil,LUCIOTTI MASSIMO,nil,PIANO TERRA,1CM,0,ESTIVO
+Nuove,145,65,15,1456515,72,T,CONTINENTAL,ECOCONTACT EP,4615,nil,nil,nil,nil,SEPORT,nil,PIANO TERRA,1CM,1,ESTIVO
+Nuove,205,55,16,2055516,94,W XL,HORIZON,HH301,1215,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,175,50,16,1755016,77,V,TRISTAR,ECOPWER 2,2315,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CM,2,ESTIVO
+Nuove,165,65,14,1656514,79,T,AUTOGRIP,RADIAL 102,2513,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CA,8,ESTIVO
+Nuove,165,70,14,1657014,81,T,MATADOR,MP16,4315,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CA,4,ESTIVO
+Nuove,165,70,14,1657014,81,T,CENTARA,VANTI AS,3516,nil,nil,nil,nil,nil,nil,Scaffale Promo,Scaffale Promo,4,ESTIVO
+Nuove,175,70,14,1757014,88,T XL,MATADOR,PM16,1716,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CA,2,ESTIVO
+Nuove,175,65,15,1756515,84,H,HIFLY,HF201,4515,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CA,2,ESTIVO
+Nuove,175,65,15,1756515,84,H,FIRESTONE,MULTIHAWK 2,2316,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CA,2,ESTIVO
+Nuove,175,65,15,1756515,84,T,FIRESTONE,MULTIHAWK 2,116,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CA,0,ESTIVO
+Nuove,175,65,15,1756515,84,H,APLUS,A606,116,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CA,4,ESTIVO
+Nuove,225,65,16C,2256516C,112/110 ,R,HORIZON,HR601,2415,nil,nil,nil,nil,nil,nil,PIANO TERRA,DBGN,4,ESTIVO
+Nuove,225,65,16C,2256516C,112/110 ,T,OVATION,V-02,4016,nil,nil,nil,nil,ARGO,nil,PIANO TERRA,DBGN,4,ESTIVO
+Nuove,245,45,18,2454518,100,V XL,ROTALLA,ICE-PLUS S210,3614,nil,595,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,195,55,15,1955515,85,V,HORIZON,HH301,2016,nil,nil,nil,nil,nil,nil,PIANO TERRA,1BM,2,ESTIVO
+Nuove,205,55,16,2055516,91,V,CENTARA,VANTI TOURING,3516,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,26,ESTIVO
+Nuove,225,45,17,2254517,nil,nil,PIRELLI,P7,nil,nil,CON CERCHIO GIULIETTA,nil,nil,nil,nil,PRIMO PIANO,2AB,3,ESTIVO
+Nuove,225,45,17,2254517,nil,nil,CONTINENTAL,SPORT CONT. 3 ,nil,nil,CON CERCHIO GIULIETTA,nil,nil,nil,nil,PRIMO PIANO,2AB,4,ESTIVO
+Nuove,205,55,16,2055516,nil,nil,CONTINENTAL,SPORT CONT. 3 ,nil,nil,CON CERCHIO GIULIETTA,nil,nil,nil,nil,PRIMO PIANO,2AB,4,ESTIVO
+Nuove,305,30,20,3053020,nil,nil,MICHELIN,PILOT SPORT CUP3,2013,nil,nil,nil,nil,nil,nil,PRIMO PIANO,2AB,2,ESTIVO
+Nuove,245,35,20,2453520,nil,nil,MICHELIN,PILOT SPORT CUP3,2013,nil,nil,nil,nil,nil,nil,PRIMO PIANO,2AB,2,ESTIVO
+Nuove,165,70,14,1657014,81,T,AUTOGRIP,RADIAL 102,3613,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CA,2,ESTIVO
+Nuove,205,55,17,2055517,nil,nil,MICHELIN,PRIMACY 3,nil,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,195,55,16,1955516,87,H,RIKEN,MAYSTORM 2B2,5016,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AM,4,ESTIVO
+Nuove,175,65,14,1756514,82,T,FIRESTONE,MULTIHAWK 2,nil,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CM,0,ESTIVO
+Nuove,185,65,15,1856515,88,T,FORMULA,ENERGY,nil,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CM,0,ESTIVO
+Nuove,195,75,16C,1957516C,107,R,FIRESTONE,VANHAWK 2,nil,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CB,4,ESTIVO
+Nuove,185,65,14,1856514,86,H,SUPERIA,RS200,nil,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CM,4,ESTIVO
+Nuove,155,65,14,1556514,75,T,AOTELI,P307,nil,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AB,0,ESTIVO
+Nuove,285,45,19,2854519,107,W,CONTINENTAL,CROSS CONTACT,nil,nil,nil,nil,nil,nil,nil,PRIMO PIANO,2AA,1,ESTIVO
+Nuove,225,75,16,2257516,121/120 ,R,MATADOR,MAXILLA 2,nil,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CB,2,ESTIVO
+Nuove,195,75,16,1957516,107/105 ,R,MASTERSTEEL,LIGHT TRUCK,nil,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CB,6,ESTIVO
+Nuove,195,55,16,1955516,87,V,AOTELI,P607,nil,nil,nil,nil,nil,nil,nil,PIANO TERRA,1AM,4,ESTIVO
+Nuove,185,65,14,1856514,86,T,ROADSTONE,CP 661,916,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CM,2,ESTIVO
+Nuove,175,65,14,1756514,82,T,HORIZON,HH301,1016,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CA,4,ESTIVO
+Nuove,185,65,15,1856515,88,T,RIKEN,MAYSTORM 2B2,5016,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CM,2,ESTIVO
+Nuove,175,65,14,1756514,82,T,FIRESTONE,MULTIHAWK 2,417,nil,nil,nil,nil,nil,nil,PIANO TERRA,1CA,4,ESTIVO
+Nuove,155,65,14,1556514,nil,nil,PIRELLI,SOTTOZERO 3,nil,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,245,45,17,2454517,nil,nil,EVERGREEN,EU 72,nil,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,175,65,15,1756515,84,T,CONTINENTAL,ECOCONTACT 5,nil,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,195,60,15,1956015,88,H,MICHELIN,ENERGY SAVER +,nil,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
+Nuove,195,55,16,1955516,87,V,SAILUN,ATREZZO,nil,nil,558,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,165,65,14,1656514,nil,nil,EVERGREEN,nil,nil,nil,526,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,205,55,16,2055516,nil,nil,MARSHALL,nil,nil,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,155,65,14,1556514,75,T,CONTINENTAL,ECO CONTACT 3,nil,nil,nil,nil,nil,DI VINCENZO ANTONIO,nil,PIANO TERRA,1AB,4,ESTIVO
+Nuove,155,65,14,1556514,75,T,FALKEN,nil,nil,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,INVERNALE
+Nuove,205,55,16,2055516,91,V,CENTARA,VANTI TOURING,nil,nil,nil,nil,nil,nil,nil,Scaffale Promo,Scaffale Promo,4,ESTIVO
+Nuove,225,50,17,2255017,98,W XL,CENTARA,VANTI HP,nil,nil,nil,nil,nil,nil,nil,Scaffale Promo,Scaffale Promo,6,ESTIVO
+Nuove,225,65,16,2256516,112/110,R,CENTARA,COMMERCIAL,nil,nil,nil,nil,nil,nil,nil,PRIMO PIANO,2AB,2,ESTIVO

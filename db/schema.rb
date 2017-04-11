@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170315174107) do
+ActiveRecord::Schema.define(version: 20170410154051) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,34 @@ ActiveRecord::Schema.define(version: 20170315174107) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "magazzinos", force: :cascade do |t|
+    t.string   "gruppo"
+    t.string   "corda"
+    t.string   "serie"
+    t.string   "cerchio"
+    t.string   "misura"
+    t.string   "cod_carico"
+    t.string   "cod_vel"
+    t.string   "marca"
+    t.string   "modello"
+    t.string   "dot"
+    t.string   "battistrada"
+    t.string   "lotto"
+    t.string   "shore"
+    t.string   "targa"
+    t.string   "cliente"
+    t.string   "rete"
+    t.string   "scaffale"
+    t.string   "ubicazione"
+    t.string   "pezzi"
+    t.string   "stagione"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.integer  "user_id"
+  end
+
+  add_index "magazzinos", ["user_id"], name: "index_magazzinos_on_user_id", using: :btree
 
   create_table "pneumaticos", force: :cascade do |t|
     t.string   "marca"
@@ -78,4 +106,5 @@ ActiveRecord::Schema.define(version: 20170315174107) do
     t.datetime "updated_at",      null: false
   end
 
+  add_foreign_key "magazzinos", "users"
 end

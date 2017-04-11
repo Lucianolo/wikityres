@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  gruppo: MyString
+  corda: MyString
+  serie: MyString
+  cerchio: MyString
+  misura: MyString
+  cod_carico: MyString
+  cod_vel: MyString
+  marca: MyString
+  modello: MyString
+  dot: MyString
+
+two:
+  gruppo: MyString
+  corda: MyString
+  serie: MyString
+  cerchio: MyString
+  misura: MyString
+  cod_carico: MyString
+  cod_vel: MyString
+  marca: MyString
+  modello: MyString
+  dot: MyString

@@ -1,0 +1,31 @@
+<div class="container" style="color:white;">
+<%= form_for :magazzino do |f| %>
+  <% @pneumatico_test.as_json.each do |k,v|  %> 
+    <% if k != "id" && k != "created_at" && k != "updated_at" && k != "user_id"%>
+      <div class="row item2">
+        <div class="col-md-6 intestazione">
+          <%= f.label k %>
+        </div>
+        <div class="col-md-6 intestazione">
+          <%= f.text_field(k , :style => 'color:black !important;') %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+  <br>
+  <div class="row item2 actions">
+    <div class="col-md-4">
+      
+    </div>
+    <div class="col-md-4 no-margin text-center">
+      <%= f.submit "AGGIUNGI", :class => 'btn btn-success btn-lg'%>
+    </div>
+    <div class="col-md-4">
+      
+    </div>
+    
+  </div>
+  
+<% end %>
+<br>
+</div>

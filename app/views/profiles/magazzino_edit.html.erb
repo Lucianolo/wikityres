@@ -1,0 +1,127 @@
+<div class="container" style="color:white;">
+  
+
+<!-- 
+  <div class="row item2">
+    <div class="col-md-6 intestazione">
+      Misura
+    </div>
+    <div class="col-md-6 valore">
+      %= @pneumatico.corda + " " + @pneumatico.serie + "/" + @pneumatico.cerchio %>
+    </div>
+  </div>
+  <div class="row item2">
+    <div class="col-md-6 intestazione">
+      Marca
+    </div>
+    <div class="col-md-6 valore">
+      %= @pneumatico.marca %>
+    </div>
+  </div>
+  % if @pneumatico.modello != "nil" %>
+    <div class="row item2">
+      <div class="col-md-6 intestazione">
+        Modello
+      </div>
+      <div class="col-md-6 valore">
+        %= @pneumatico.modello %>
+      </div>
+    </div>
+  % end %>
+  <div class="row item2">
+    <div class="col-md-6 intestazione">
+      Stagione
+    </div>
+    <div class="col-md-6 valore">
+      %= @pneumatico.stagione.downcase.capitalize %>
+    </div>
+  </div>
+  % if @pneumatico.dot != "nil" %>
+    <div class="row item2">
+      <div class="col-md-6 intestazione">
+        DOT
+      </div>
+      <div class="col-md-6 valore">
+        %= @pneumatico.dot %>
+      </div>
+    </div>
+  % end %>
+  % if @pneumatico.cod_vel != "nil" || @pneumatico.cod_carico != "nil" %>
+    <div class="row item2">
+      <div class="col-md-6 intestazione">
+        Cod. Carico/Velocità
+      </div>
+      <div class="col-md-6 valore">
+        %= @pneumatico.cod_carico+" " +@pneumatico.cod_vel %>
+      </div>
+    </div>
+  % end %>
+  % if @pneumatico.scaffale != "nil" || @pneumatico.ubicazione != "nil" %>
+    <div class="row item2">
+      <div class="col-md-6 intestazione">
+        Scaffale/Ubicazione
+      </div>
+      <div class="col-md-6 valore">
+        %= @pneumatico.scaffale + " / " + @pneumatico.ubicazione %>
+      </div>
+    </div>
+  % end %>
+  % if @pneumatico.lotto != "nil" %>
+    <div class="row item2">
+      <div class="col-md-6 intestazione">
+        Lotto
+      </div>
+      <div class="col-md-6 valore">
+        %= @pneumatico.lotto %>
+      </div>
+    </div>
+  % end %>
+  % if @pneumatico.shore != "nil" %>
+    <div class="row item2">
+      <div class="col-md-6 intestazione">
+        Shore
+      </div>
+      <div class="col-md-6 valore">
+        %= @pneumatico.shore %>
+      </div>
+    </div>
+  % end %>
+  <div class="row item2">
+    <div class="col-md-6 intestazione">
+      Numero Pezzi
+    </div>
+    <div class="col-md-6 valore">
+      %= @pneumatico.pezzi %>
+    </div>
+  </div>
+  
+-->
+  
+    
+  <% @pneumatico.as_json.each do |k,v|  %> 
+    <% if v != "nil" && v != "" && k != "id" && k != "created_at" && k != "updated_at" && k != "user_id"%>
+      <div class="row item2">
+        <div class="col-md-6 intestazione">
+          <%= k.capitalize %>
+        </div>
+        <div class="col-md-6 intestazione">
+          <%= v %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+  
+  <div class="row item2">
+    
+    <div class="col-md-6 intestazione">
+      Aggiorna Quantità
+    </div>
+    <div class="col-md-6 valore">
+      <%= form_tag(update_magazzino_path(:pezzi), :method => "get") do %>
+        <input type="hidden" name="id" value="<%= @pneumatico.id %>" >
+        <%= text_field_tag(:pezzi, "", :style => 'color:black;', :class => 'small-input') %>
+        <button type="submit" class="btn btn-success">Invia</button>
+      <% end %>
+    </div>
+  </div>
+</div>

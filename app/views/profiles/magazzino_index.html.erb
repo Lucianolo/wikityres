@@ -1,0 +1,194 @@
+
+
+
+
+<div class="container" id="filters2">
+
+            <!-- panel -->
+  <div class="row">
+    <div class="jplist-panel">
+      <!-- filter by title -->
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 text-filter" >
+        <div class="text-filter-box">
+          <i class="fa fa-search  jplist-icon"></i>
+          <input 
+              data-path=".misura-magazzino" 
+              type="text" 
+              value="" 
+              placeholder="Misura" 
+              data-control-type="textbox" 
+              data-control-name="misura-magazzino-filter" 
+              data-control-action="filter"
+          />
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 text-filter" >
+        <div class="text-filter-box">
+          <i class="fa fa-search  jplist-icon"></i>
+          <input 
+              data-path=".marca-magazzino" 
+              type="text" 
+              value="" 
+              placeholder="Marca" 
+              data-control-type="textbox" 
+              data-control-name="marca-magazzino-filter" 
+              data-control-action="filter"
+          />
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12  text-filter">
+        <div class="text-filter-box">
+          <i class="fa fa-search  jplist-icon"></i>
+          <input 
+            data-path=".modello-magazzino" 
+            type="text" 
+            value="" 
+            placeholder="Descrizione" 
+            data-control-type="textbox" 
+            data-control-name="descrizione-magazzino-filter" 
+            data-control-action="filter"
+          />
+        </div>
+      </div>   
+      <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
+        <div class="dropdown">
+          <span class="btn btn-lg dropbtn">STAGIONE</span>
+          <div class="dropdown-content">
+            <div class="jplist-group" style="" data-control-type="checkbox-text-filter" data-control-action="filter" data-control-name="stagione-magazzino" data-path=".stagione-magazzino" >
+              <ul><li><label><input value="ESTIVO" id="ESTIVO" type="checkbox"/>ESTIVO
+              </label></li></ul>
+              <ul><li><label><input value="INVERNALE" id="INVERNALE" type="checkbox"/>INVERNALE
+              </label></li></ul>
+              <ul><li><label><input value="ALL SEASON" id="ALL SEASON" type="checkbox"/>ALL SEASON
+              </label></li></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6 pull-right" style="padding-top: .6em;">
+        <%= link_to "Aggiungi", new_magazzino_path ,:class => "btn btn-lg dropbtn" %>
+      </div>
+    </div>
+    
+    
+  </div>
+  <br>
+  <div class="row well heading">
+    <div class="col-lg-2">
+      MISURA
+    </div>
+    <div class="col-lg-2">
+      MARCA
+    </div>
+    <div class="col-lg-2">
+      MODELLO
+    </div>
+    <div class="col-lg-2">
+      STAGIONE
+    </div>
+    <div class="col-lg-1">
+      C. VEL.
+    </div>
+    <div class="col-lg-1">
+      GIACENZA
+    </div>
+    <div class="col-lg-2 text-center">
+      AZIONI
+    </div>
+  </div>
+  <div class="row well results">
+      
+    
+    <% i = 0 %>
+    <% @pneumatici_magazzino.each do |pneumatico| %>
+      <div class="row item " style="margin-left: 5px; margin-right: 5px;">
+        
+          <div class="col-lg-2 misura-magazzino">
+            <%= pneumatico.misura %>
+          </div>
+          <div class="col-lg-2 marca-magazzino">
+            <%= pneumatico.marca %>
+          </div>
+          <div class="col-lg-2 modello-magazzino">
+            <% if pneumatico.modello != "nil" %>
+              <%= pneumatico.modello %>
+            <% end %>
+          </div>
+          <div class="col-lg-2 stagione-magazzino">
+            <%= pneumatico.stagione %>
+          </div>
+          <div class="col-lg-1 cod_vel">
+            <% if pneumatico.cod_carico!="nil" && pneumatico.cod_vel!="nil" %>
+              <%= pneumatico.cod_carico + pneumatico.cod_vel %>
+            <% end %>
+          </div>
+          <div class="col-lg-1 text-center">
+            <%= pneumatico.pezzi %>
+          </div>
+          <div class="col-lg-1 " style="padding: 0 0 0 15px;">
+            <%= button_to "INFO", edit_magazzino_path(pneumatico.id), method: :get, :class => "btn btn-primary edit-button", :style => "width: 100%;padding: 6px 6px;" %>
+            
+          </div>
+          <div class="col-lg-1" style="padding: 0 15px 0 0;">
+            <%= button_to "ELIMINA", delete_magazzino_path(pneumatico.id), method: :get, :class => "btn btn-danger delete-button", :style => "width: 100%;padding: 6px 6px;" %>
+            
+          </div>
+        </div>
+    <% end %>
+  </div>
+  <div class="row">
+    <div class="col-lg-4"></div>
+    <div class="col-lg-4 jplist-no-results"><h3>NESSUN RISULTATO</h3></div>
+    <div class="col-lg-4"></div>
+  </div>
+  
+</div>
+
+<script>
+$( "button.edit-button" ).click(function() {
+  var item1 = $(".visible");
+  var item2 = $(".edit");
+  $( this).parent().parent().parent().find( item1 ).css("display", "none");
+  $( this).parent().parent().parent().find( item2 ).css("display", "block");
+});
+</script>
+<script>
+$( "button.annulla" ).click(function() {
+  
+  var item1 = $(".visible");
+  var item2 = $(".edit");
+  $( this).parent().parent().parent().parent().find( item2 ).css("display", "none");
+  $( this).parent().parent().parent().parent().find( item1 ).css("display", "block");
+});
+
+</script>
+
+<script type="text/javascript">
+$('document').ready(function(){
+   
+   $('#filters2').jplist({
+      
+    //enable/disable logging information in the browser console
+    debug: false,
+         
+    //the path to the items container
+    itemsBox: '.results' ,
+    
+    //the path to the item within the items container
+    itemPath: '.item',
+
+    //the path to the bundles and controls panel
+    panelPath: '.jplist-panel',
+
+    //the path to the 'no results' message
+    noResults: '.jplist-no-results' ,
+        
+    //animate to top - enabled by data-control-animate-to-top="true" attribute in control. 
+    animateToTop: 'html, body',
+    animateToTop: 0 //in milliseconds (1000 ms = 1 sec)
+
+    
+   });
+  
+});
+</script>

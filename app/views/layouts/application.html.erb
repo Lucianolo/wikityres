@@ -48,7 +48,8 @@
           <ul class="nav navbar-nav navbar-right">
           <% if logged_in? %>
             <li class="<%= 'active' if params[:controller] == 'welcome' %>"><%= link_to "HOME", root_path %></li>
-            <li class="<%= 'active' if params[:controller] == 'profiles' %>"><%= link_to "IMPOSTAZIONI", profile_path %></li>
+            <li class="<%= 'active' if params[:controller] == 'profiles' %>"><%= link_to "MAGAZZINO", magazzino_path %></li>
+            <li class="<%= 'active' if params[:controller] == 'profiles' %>"><%= link_to "IMPOSTAZIONI" , profile_path %></li>
             <li>
               <%= link_to "ESCI", logout_path, method: "delete" %>
             </li>
