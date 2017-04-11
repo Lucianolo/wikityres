@@ -108,23 +108,34 @@ class ProfilesController < ApplicationController
     end
     
     def magazzino_update
-        puts params
+        puts params[:params]
         pneumatico = Magazzino.find(params[:id])
-        
         if pneumatico.nil?
             redirect_to :magazzino
         else
+            if params[:params] == "pezzi"
             
+                
+                
+                pezzi = params[:pezzi]
+                
+                pneumatico.update(pezzi: pezzi)
+                
+               
+            elsif params[:params] == "ubicazione"
+                ubicazione = params[:ubicazione]
             
-            pezzi = params[:pezzi]
+                pneumatico.update(ubicazione: ubicazione)
+                
+                
+                    
+            end
             
-            pneumatico.update(pezzi: pezzi)
-            
-            redirect_to :magazzino
-        
+            redirect_to edit_magazzino_path(pneumatico.id)
         end
-        
     end
+    
+   
     
     def magazzino_delete
         Magazzino.find(params[:id]).delete

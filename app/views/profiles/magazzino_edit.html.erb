@@ -124,4 +124,17 @@
       <% end %>
     </div>
   </div>
+  <div class="row item2">
+    
+    <div class="col-md-6 intestazione">
+      Aggiorna Ubicazione
+    </div>
+    <div class="col-md-6 valore">
+      <%= form_tag(update_magazzino_path(:ubicazione), :method => "get") do %>
+        <input type="hidden" name="id" value="<%= @pneumatico.id %>" >
+        <%= text_field_tag(:ubicazione, "", :style => 'color:black;', :class => 'medium-input') %>
+        <button type="submit" class="btn btn-success">Invia</button>
+      <% end %>
+    </div>
+  </div>
 </div>
