@@ -1,4 +1,4 @@
-gruppo,corda,serie,cerchio,misura,cod_carico,cod_vel,marca,modello,dot,battistrada,lotto,shore,targa,cliente,rete,scaffale,ubicazione,pezzi,stagione
+pneumatico,corda,serie,cerchio,misura,cod_carico,cod_vel,marca,modello,dot,battistrada,lotto,shore,targa,cliente,rete,scaffale,ubicazione,pneumatici_disponibili,stagione
 Nuove,205,55,16,2055516,91,V,CONTINENTAL,ECO CONTACT 5,O916,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
 Nuove,185,65,15,1856515,88,H,MICHELIN,ENERGY SAVER + ,3915,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,0,ESTIVO
 Nuove,175,60,15,1756015,81,H,SAILUN,ATREZO ECO,2216,nil,nil,nil,nil,nil,nil,Scaffale negozio,Scaffale negozio,4,ESTIVO
