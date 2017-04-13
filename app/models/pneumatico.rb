@@ -1,4 +1,6 @@
 require 'platform-api'
+require "activerecord-import/base"
+ActiveRecord::Import.require_adapter('postgresql')
 class Pneumatico < ActiveRecord::Base
     
     def self.update 
@@ -323,7 +325,7 @@ private
         add = 2.30
       end
       c = 0
-      
+      values = []
       rows.each do |row|
         begin
           modello = row.css(".product-name").text
@@ -346,7 +348,8 @@ private
           
           
           if (misura_totale == tmp)
-            Pneumatico.create(query: misura_totale , nome_fornitore: "Pneus26", marca: marca.upcase , misura: misura, raggio: raggio, modello: modello, cod_vel: cod_vel, fornitore: @pneus26, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+            values.push([misura_totale, "Pneus26", marca.upcase, misura, raggio, modello, cod_vel, @pneus26, p_netto, p_finale, stock, stagione, @pfu])
+            #Pneumatico.create(query: misura_totale , nome_fornitore: "Pneus26", marca: marca.upcase , misura: misura, raggio: raggio, modello: modello, cod_vel: cod_vel, fornitore: @pneus26, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             c+=1
           end
           
@@ -359,6 +362,8 @@ private
     
       file.close
       
+      keys = [:query, :nome_fornitore, :marca, :misura, :raggio, :modello, :cod_vel, :fornitore, :prezzo_netto, :prezzo_finale, :giacenza, :stagione, :pfu]
+      Pneumatico.import keys, values
       puts "Pneus26: Risultati -> "+c.to_s
     else
       browser.close
@@ -465,6 +470,7 @@ private
       end
       
       c = 0
+      values = []
       rows.each do |row|
         #puts row
         begin
@@ -522,6 +528,7 @@ private
           
           
           if (misura_totale == tmp)
+            values.push([misura_totale, "MaxiTyre", marca.upcase, misura, raggio, descrizione, cod_vel, @maxityre, p_netto, p_finale, 25, stagione, @pfu])
             Pneumatico.create(query: misura_totale  , nome_fornitore: "MaxiTyre", marca: marca.upcase , misura: misura, raggio: raggio, modello: descrizione, cod_vel: cod_vel, fornitore: @maxityre, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: 25, stagione: stagione, pfu: @pfu)
             c+=1
           end
@@ -531,6 +538,8 @@ private
         end
       end
       file.close
+      keys = [:query, :nome_fornitore, :marca, :misura, :raggio, :modello, :cod_vel, :fornitore, :prezzo_netto, :prezzo_finale, :giacenza, :stagione, :pfu]
+      Pneumatico.import keys, values
       puts "MaxiTyre: Risultati -> "+c.to_s
     else
       browser.close
@@ -622,6 +631,7 @@ private
         anchor['class']="Riga"
       end
      
+      values = []
       table.css('tbody tr.Riga').each do |row|
         begin
         #puts row
@@ -685,6 +695,7 @@ private
               stagione = "4 Stagioni"
             end
             if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
+              values.push([misura_totale, "CarliniGomme", marca.upcase, misura, raggio, nome, @carlinigomme, p_netto, p_finale, stock, stagione, pfu])
               Pneumatico.create(query: misura_totale , nome_fornitore: "CarliniGomme", marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @carlinigomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: pfu)
               j+=1
              
@@ -698,6 +709,9 @@ private
       end
         
       file.close
+      
+      keys = [:query, :nome_fornitore, :marca, :misura, :raggio, :modello, :fornitore, :prezzo_netto, :prezzo_finale, :giacenza, :stagione, :pfu]
+      Pneumatico.import keys, values
       puts "CarliniGomme: Risultati -> "+j.to_s
     else
       browser.close
@@ -813,7 +827,7 @@ private
       table.search('tr.ARANCIO').each do |anchor|
         anchor['class']="Riga"
       end
-     
+      values = []
       table.css('tbody tr.Riga').each do |row|
         #puts row
         begin
@@ -861,8 +875,9 @@ private
             else
               stagione = "4 Stagioni"
             end
-            if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
-              Pneumatico.create(query: misura_totale , nome_fornitore: "OLPneus", marca: marca , misura: misura, raggio: raggio, modello: nome, fornitore: @olpneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: local_pfu)
+            if (misura_totale == tmp)
+              values.push([misura_totale, "OLPneus", marca, misura, raggio, nome, @olpneus, p_netto, p_finale, stock, stagione, local_pfu])
+              #Pneumatico.create(query: misura_totale , nome_fornitore: "OLPneus", marca: marca , misura: misura, raggio: raggio, modello: nome, fornitore: @olpneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: local_pfu)
               j+=1
             end
           end 
@@ -875,6 +890,8 @@ private
       end
         
       file.close
+      keys = [:query, :nome_fornitore, :marca, :misura, :raggio, :modello, :fornitore, :prezzo_netto, :prezzo_finale, :giacenza, :stagione, :pfu]
+      Pneumatico.import keys, values
       puts "OLPNEUS: Risultati -> "+j.to_s
     else
       browser.close
@@ -966,6 +983,7 @@ private
     document = Nokogiri::HTML(file)
     tmp = query_old.to_s
     c = 0
+    values = []
     document.css('tr').each do |row|
       begin
         #puts "MaxPneus:" + row.text
@@ -988,7 +1006,9 @@ private
         misura_totale = misura+raggio
         
         if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-          Pneumatico.create(query: misura_totale, nome_fornitore: "MaxPneus", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @maxpneus, prezzo_netto: prezzo_netto, prezzo_finale: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel, pfu: @pfu)
+          values.push([misura_totale, "MaxPneus", marca.upcase, misura, raggio, modello, @maxpneus, prezzo_netto, prezzo_netto, giacenza, stag, cod_vel, @pfu])
+
+          #Pneumatico.create(query: misura_totale, nome_fornitore: "MaxPneus", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @maxpneus, prezzo_netto: prezzo_netto, prezzo_finale: prezzo_netto, giacenza: giacenza, stagione: stag, cod_vel: cod_vel, pfu: @pfu)
           c+=1
         end
       rescue => e
@@ -997,6 +1017,8 @@ private
       end
     end
     file.close
+    keys = [:query, :nome_fornitore, :marca, :misura, :raggio, :modello, :fornitore, :prezzo_netto, :prezzo_finale, :giacenza, :stagione, :cod_vel, :pfu]
+    Pneumatico.import keys, values
     puts "MaxPneus: Risultati -> "+c.to_s
   end
   
@@ -1044,6 +1066,7 @@ private
     tmp = query.to_s
   
     c = 0
+    values = []
     document.css('ul li').each do |row|
       begin
         line = row.css('h5').text.strip
@@ -1100,8 +1123,9 @@ private
         misura_totale = misura+raggio
         
         
-        if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-          Pneumatico.create(query: misura_totale  , nome_fornitore: "PendinGomme", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel, pfu: @pfu)
+        if ( misura_totale == tmp ) #!(Pneumatico.exists?(modello: modello)) &&
+          values.push([misura_totale, "PendinGomme", marca.upcase, misura, raggio, modello, @pendingomme, prezzo_netto, p_finale, giacenza, stagione, cod_vel, @pfu])
+          #Pneumatico.create(query: misura_totale  , nome_fornitore: "PendinGomme", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @pendingomme, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, cod_vel: cod_vel, pfu: @pfu)
           c+=1
         end
       rescue => e
@@ -1110,6 +1134,8 @@ private
       end
     end
     file.close
+    keys = [:query, :nome_fornitore, :marca, :misura, :raggio, :modello, :fornitore, :prezzo_netto, :prezzo_finale, :giacenza, :stagione, :cod_vel, :pfu]
+    Pneumatico.import keys, values
     puts "PendinGomme: Risultati -> "+c.to_s
   end
   
@@ -1192,6 +1218,7 @@ private
       tmp = query.to_s
      
       i = 0
+      values=[]
       document.css('tbody tr').each do |row|
         begin
           if i < max_results
@@ -1237,9 +1264,10 @@ private
             
             misura_totale = misura+raggio
             
-          
-            if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-              Pneumatico.create(query: misura_totale , nome_fornitore: "FarnesePneus", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @farnesepneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione_db, pfu: pfu)
+            
+            if (misura_totale == tmp )
+              values.push([misura_totale, "FarnesePneus", marca.upcase, misura, raggio, modello, @farnesepneus, p_netto, p_finale, stock, stagione_db, pfu])
+              #Pneumatico.create(query: misura_totale , nome_fornitore: "FarnesePneus", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @farnesepneus, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione_db, pfu: pfu)
               i+=1
             end
           end
@@ -1248,8 +1276,12 @@ private
           next
         end
       end
-      @pfu = Pneumatico.where(nome_fornitore: "FarnesePneus").last.pfu
       file.close
+      keys = [:query, :nome_fornitore, :marca, :misura, :raggio, :modello, :fornitore, :prezzo_netto, :prezzo_finale, :giacenza, :stagione, :pfu]
+      Pneumatico.import keys, values
+      @pfu = Pneumatico.where(nome_fornitore: "FarnesePneus").last.pfu
+      
+      
       puts "FarnesePneus: Risultati -> "+i.to_s
     else
       #browser.close
@@ -1340,6 +1372,7 @@ private
      
       tmp = query.to_s
       i = 0
+      values = []
       document.css('tbody tr').each do |row|
         begin
         if (i<max_results && row.css('td.descrizione').text != "")
@@ -1421,8 +1454,9 @@ private
         
           misura_totale = misura+raggio
           
-          if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp )
-            Pneumatico.create(query: misura_totale, nome_fornitore: "Fintyre",marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @fintyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+          if (misura_totale == tmp )
+            values.push([misura_totale, "Fintyre", marca.upcase, misura, raggio, modello, @fintyre, prezzo_netto, p_finale, stock, stagione, @pfu])
+            #Pneumatico.create(query: misura_totale, nome_fornitore: "Fintyre",marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @fintyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
             i+=1
           end
         end
@@ -1432,6 +1466,8 @@ private
         end
       end
       file.close    
+      keys = [:query, :nome_fornitore, :marca, :misura, :raggio, :modello, :fornitore, :prezzo_netto, :prezzo_finale, :giacenza, :stagione, :pfu]
+      Pneumatico.import keys, values
       puts "Fintyre: Risultati -> "+i.to_s
     else
       browser.close
@@ -1517,6 +1553,7 @@ private
       
       i = 0
       j = 0
+      values = []
       document.css('tbody tr').each do |row|
         
         begin
@@ -1569,8 +1606,9 @@ private
             
             misura_totale = misura+raggio
             
-            if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp )
-              Pneumatico.create(query: misura_totale , nome_fornitore: "CentroGomme" ,marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @centrogomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
+            if (misura_totale == tmp )
+              values.push([misura_totale, "CentroGomme", marca.upcase, misura, raggio, nome, @centrogomme, p_netto, p_finale, stock, stagione, @pfu])
+              #Pneumatico.create(query: misura_totale , nome_fornitore: "CentroGomme" ,marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @centrogomme, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: @pfu)
               j+=1
             end
           end
@@ -1581,6 +1619,8 @@ private
         end
       end
       file.close   
+      keys = [:query, :nome_fornitore, :marca, :misura, :raggio, :modello, :fornitore, :prezzo_netto, :prezzo_finale, :giacenza, :stagione, :pfu]
+      Pneumatico.import keys, values
       puts "CentroGomme: Risultati -> "+j.to_s
     else
       browser.close
@@ -1676,7 +1716,7 @@ private
         anchor['class']="Riga"
       end
       
-      
+      values = []
       table.css('tbody tr.Riga').each do |row|
         begin
           if i.even? && j<max_results*2
@@ -1724,8 +1764,9 @@ private
               stagione = "4 Stagioni"
             end
             if p_netto.to_i != 0
-              if (!(Pneumatico.exists?(modello: nome)) && misura_totale == tmp)
-                Pneumatico.create(query: misura_totale  , nome_fornitore: "MultiTires", marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: local_pfu)
+              if (misura_totale == tmp)
+                values.push([misura_totale, "MultiTires", marca.upcase, misura, raggio, nome, @multitires, p_netto, p_finale, stock, stagione, local_pfu])
+                #Pneumatico.create(query: misura_totale  , nome_fornitore: "MultiTires", marca: marca.upcase, misura: misura, raggio: raggio, modello: nome, fornitore: @multitires, prezzo_netto: p_netto, prezzo_finale: p_finale, giacenza: stock, stagione: stagione, pfu: local_pfu)
                 j+=1
               end
             end
@@ -1738,6 +1779,8 @@ private
       end
         
       file.close
+      keys = [:query, :nome_fornitore, :marca, :misura, :raggio, :modello, :fornitore, :prezzo_netto, :prezzo_finale, :giacenza, :stagione, :pfu]
+      Pneumatico.import keys, values
       puts "MultiTires: Risultati -> "+j.to_s
     else
       browser.close
@@ -1851,6 +1894,7 @@ private
       tmp = query.to_s
       c = 0
       #table = document.css('table x-grid-item')
+      values = []
       document.css('table.x-grid-item tr').each do |row|
         begin
           if row.css('td.x-grid-cell img').first["title"] != ""
@@ -1905,8 +1949,9 @@ private
           misura_totale = misura + raggio
           
           
-          if (!(Pneumatico.exists?(modello: modello)) && misura_totale == tmp)
-            Pneumatico.create(query: misura_totale  , nome_fornitore: "MaxTyre", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, pfu: @pfu)
+          if (misura_totale == tmp)
+            values.push([misura_totale, "MaxTyre", marca.upcase, misura, raggio, modello, @maxtyre, prezzo_netto, p_finale, giacenza, stagione, @pfu])
+            #Pneumatico.create(query: misura_totale  , nome_fornitore: "MaxTyre", marca: marca.upcase, misura: misura, raggio: raggio, modello: modello, fornitore: @maxtyre, prezzo_netto: prezzo_netto, prezzo_finale: p_finale, giacenza: giacenza, stagione: stagione, pfu: @pfu)
             c+=1
           end
         rescue => e
@@ -1915,6 +1960,8 @@ private
         end
       end
       file.close
+      keys = [:query, :nome_fornitore, :marca, :misura, :raggio, :modello, :fornitore, :prezzo_netto, :prezzo_finale, :giacenza, :stagione, :pfu]
+      Pneumatico.import keys, values
       puts "MaxTyre: Risultati -> "+c.to_s
     else
       browser.close

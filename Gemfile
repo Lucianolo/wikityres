@@ -5,7 +5,7 @@ gem 'puma'
 gem 'delayed_job_active_record'
 #gem 'delayed_job_worker_pool'
 #gem 'hirefire'
-
+gem "activerecord-import", ">= 0.2.0"
 gem 'platform-api'
 gem "hirefire-resource"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
